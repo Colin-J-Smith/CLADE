@@ -1,8 +1,3 @@
-
-Colin Smith <Colin.Smith@colorado.edu>
-Mon, Feb 3, 7:18 PM (13 hours ago)
-to me
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
