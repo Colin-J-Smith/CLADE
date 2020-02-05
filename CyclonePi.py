@@ -70,7 +70,7 @@ class Cyclone(object):
     def play(self):
         print(self.current_led)
         # start a single period
-        while self.last_time - time.perf_counter() < self.period:
+        while (time.perf_counter() - self.last_time) < self.period:
             # Light the next LED
             self.leds[str(self.current_led)].start(50) # 50% duty cycle
            
