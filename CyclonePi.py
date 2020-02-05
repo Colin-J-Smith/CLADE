@@ -59,7 +59,7 @@ class Cyclone(object):
     def pause(self):
         # turn off all leds
         for key, val in self.leds.items():
-            val.stop()
+            val.start(100)
        
         # wait for the button to be pressed before restarting
         while GPIO.input(self.button_pin):
@@ -89,7 +89,7 @@ class Cyclone(object):
 
 
         # turn off the led
-        self.leds[str(self.current_led)].stop()
+        self.leds[str(self.current_led)].start(100)
 
         # increment the LED pin
         if self.current_led == max(self.led_pins):
