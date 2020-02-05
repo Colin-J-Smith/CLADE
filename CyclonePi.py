@@ -60,6 +60,7 @@ class Cyclone(object):
             print(key)
             print(val)
             print(type(val))
+            print(self.leds)
             val.stop()
        
         # wait for the button to be pressed before restarting
