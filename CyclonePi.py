@@ -48,7 +48,7 @@ class Cyclone(object):
             self.leds[str(channel)] = GPIO.PWM(channel, 50) # PWM at 50Hz
             self.leds[str(channel)].start(50)
 
-        time.sleep(5)
+        time.sleep(3)
        
         # Set up the button input pin
         GPIO.setup(self.button_pin, GPIO.IN)
@@ -64,6 +64,7 @@ class Cyclone(object):
         # wait for the button to be pressed before restarting
         while not GPIO.input(self.button_pin):
             time.sleep(0.1)
+        self.last_time = time.perf_counter()
         self.play()
        
    
