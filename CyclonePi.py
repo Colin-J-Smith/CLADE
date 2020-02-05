@@ -45,6 +45,7 @@ class Cyclone(object):
         # Set up the GPIO LED pins
         for channel in self.led_pins:
             self.leds[str(channel)] = GPIO.PWM(channel, 50) # PWM at 50Hz
+            self.leds[str(channel)].start(50)
        
         # Set up the button input pin
         GPIO.setup(self.button_pin, GPIO.IN)
@@ -99,3 +100,7 @@ class Cyclone(object):
         self.last_time = time.perf_counter()
         # repeat the loop
         self.play() 
+
+
+if __name__== "__main__":
+  Cyclone()
