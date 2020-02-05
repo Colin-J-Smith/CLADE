@@ -40,7 +40,7 @@ class Cyclone(object):
         self.winning_led = 22 # uses a 0 indexed list
         self.current_led = min(self.led_pins)
        
-        #self.period = 1 # number of seconds each led is lit up
+        self.period = 0.1 # number of seconds each led is lit up
        
         # Set up the GPIO LED pins
         for channel in self.led_pins:
@@ -105,4 +105,4 @@ class Cyclone(object):
 
 
 if __name__== "__main__":
-  Cyclone(period=0.1)
+  Cyclone()
