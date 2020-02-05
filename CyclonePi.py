@@ -34,7 +34,7 @@ class Cyclone(object):
         self.led_pins = range(19,26)
         self.leds = {}
        
-        self.button_pin = 10
+        self.button_pin = 12
         self.last_button_state = False
        
         self.winning_led = 22 # uses a 0 indexed list
@@ -47,6 +47,8 @@ class Cyclone(object):
             GPIO.setup(channel, GPIO.OUT)
             self.leds[str(channel)] = GPIO.PWM(channel, 50) # PWM at 50Hz
             self.leds[str(channel)].start(50)
+
+        time.sleep(5)
        
         # Set up the button input pin
         GPIO.setup(self.button_pin, GPIO.IN)
