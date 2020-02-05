@@ -44,8 +44,8 @@ class Cyclone(object):
        
         # Set up the GPIO LED pins
         for channel in self.led_pins:
-            self.leds[str(channel)] = GPIO.setup(channel, GPIO.OUT)
-            self.leds[str(channel)].PWM(channel, 50) # PWM at 50Hz
+            GPIO.setup(channel, GPIO.OUT)
+            self.leds[str(channel)] = GPIO.PWM(channel, 50) # PWM at 50Hz
             self.leds[str(channel)].start(50)
        
         # Set up the button input pin
