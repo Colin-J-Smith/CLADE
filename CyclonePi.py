@@ -40,7 +40,7 @@ class Cyclone(object):
         self.winning_led = 22 # uses a 0 indexed list
         self.current_led = min(self.led_pins)
        
-        self.period = 1 # number of seconds each led is lit up
+        #self.period = 1 # number of seconds each led is lit up
        
         # Set up the GPIO LED pins
         for channel in self.led_pins:
@@ -67,7 +67,6 @@ class Cyclone(object):
        
    
     def play(self):
-        print(self.current_led)
         # start a single period
         while (time.perf_counter() - self.last_time) < self.period:
             # Light the next LED
