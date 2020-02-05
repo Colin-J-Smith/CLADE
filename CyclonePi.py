@@ -62,7 +62,7 @@ class Cyclone(object):
             val.start(100)
        
         # wait for the button to be pressed before restarting
-        while GPIO.input(self.button_pin):
+        while not GPIO.input(self.button_pin):
             time.sleep(0.1)
         self.play()
        
@@ -82,6 +82,7 @@ class Cyclone(object):
                 # check if the active led pin is a winner
                 if self.current_led == self.winning_led:
                     time.sleep(3) # wait for 3 seconds
+                    self.current_led = min(self.led_pins)
                     self.pause() # pause the game
                     return
                    
