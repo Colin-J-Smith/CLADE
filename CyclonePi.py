@@ -56,7 +56,7 @@ class Cyclone(object):
    
     def pause(self):
         # turn off all leds
-        for key, val in self.leds:
+        for key, val in self.leds.items():
             print(key)
             print(val)
             print(type(val))
