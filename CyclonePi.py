@@ -57,6 +57,9 @@ class Cyclone(object):
     def pause(self):
         # turn off all leds
         for key, val in self.leds:
+            print(key)
+            print(val)
+            print(type(val))
             val.stop()
        
         # wait for the button to be pressed before restarting
