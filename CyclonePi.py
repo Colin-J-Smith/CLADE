@@ -38,7 +38,7 @@ class Cyclone(object):
         self.last_button_state = False
        
         self.winning_led = 22 # uses a 0 indexed list
-        self.current_led = 0
+        self.current_led = min(self.led_pins)
        
         self.period = 1 # number of seconds each led is lit up
        
@@ -57,10 +57,6 @@ class Cyclone(object):
     def pause(self):
         # turn off all leds
         for key, val in self.leds.items():
-            print(key)
-            print(val)
-            print(type(val))
-            print(self.leds)
             val.stop()
        
         # wait for the button to be pressed before restarting
