@@ -7,7 +7,7 @@ Created on Mon Feb  3 18:12:57 2020
 """
 import time
 import RPi.GPIO as GPIO
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 # INIT MODE
@@ -31,13 +31,13 @@ class Cyclone(object):
    
     def __init__(self, period=0.5):
         self.last_time = time.perf_counter()
-        self.led_pins = range(7)
+        self.led_pins = range(19,26)
         self.leds = {}
        
         self.button_pin = 10
         self.last_button_state = False
        
-        self.winning_led = 3 # uses a 0 indexed list
+        self.winning_led = 22 # uses a 0 indexed list
         self.current_led = 0
        
         self.period = 1 # number of seconds each led is lit up
@@ -83,19 +83,18 @@ class Cyclone(object):
                    
             # save the button state for this check
             self.last_button_state = button_state
-                       
-            # increment the LED pin
-            if self.current_led == 6:
-                self.current_led = 0
-            else:
-                self.current_led += 1
+
+
+        # turn off the led
+        self.leds[str(self.current_led)].stop()
+
+        # increment the LED pin
+        if self.current_led == max(self.led_pins):
+            self.current_led = min(self.led_pins)
+        else:
+            self.current_led += 1
          
         # When a single period finishes
-        # turn off the led
-        try:
-            self.leds[str(self.current_led-1)].stop()
-        except:
-            pass
         # record the iteration time
         self.last_time = time.perf_counter()
         # repeat the loop
