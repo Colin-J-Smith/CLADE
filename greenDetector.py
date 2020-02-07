@@ -11,7 +11,6 @@ import cv2
 import numpy as np
 from difflib import SequenceMatcher
 import sys
-import RPi.GPIO as GPIO
 
 
 def similar(a, b):
@@ -75,15 +74,18 @@ while True:
 		
 		while True:	
 			if exitNow==1:
-                break
+				break
+
 
 			hue = cv2.getTrackbarPos('Hue', 'image')
 			sat = cv2.getTrackbarPos('Sat', 'image')
 			val = cv2.getTrackbarPos('Val', 'image')
-            
-            
-            
-            lower=[hue,sat,val]
+
+			GPIO.output(trigger_pin, GPIO.LOW)
+			
+			
+
+			lower=[hue,sat,val]
 			lower=np.array(lower, dtype="uint8")
 			lower2=[[[hue,sat,val]]]
 			lower2=np.array(lower2, dtype="uint8")
@@ -138,7 +140,10 @@ while True:
 					cv2.circle(vis, (cX, cY), 7, (255, 255, 255), -1)
 					cv2.putText(vis, "Green Light", (cX - 20, cY - 20),
 						cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
-                    GPIO.output(trigger_pin, GPIO.HIGH)
+
+					# Trigger the button
+					GPIO.output(trigger_pin, GPIO.HIGH)
+
 			except:
 				pass
 			
