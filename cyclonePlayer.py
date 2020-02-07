@@ -76,13 +76,12 @@ while True:
 		while True:	
 			if exitNow==1:
 				break
-            
-            GPIO.output(trigger_pin, GPIO.LOW)
 
 			hue = cv2.getTrackbarPos('Hue', 'image')
 			sat = cv2.getTrackbarPos('Sat', 'image')
 			val = cv2.getTrackbarPos('Val', 'image')
 			
+            GPIO.output(trigger_pin, GPIO.LOW)
 			
 
 			lower=[hue,sat,val]
