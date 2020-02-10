@@ -12,6 +12,8 @@ import numpy as np
 from difflib import SequenceMatcher
 import sys
 
+import RPi.GPIO as GPIO
+
 
 def similar(a, b):
 	return SequenceMatcher(None, a, b).ratio()
