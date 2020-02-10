@@ -160,24 +160,24 @@ while True:
 			# ch=cv2.waitKey(1)
 			# print(ch)
 
-			if ch == 27:
-				exitNow=True
-				break
+			# if ch == 27:
+			# 	exitNow=True
+			# 	break
 			
-			elif ch==112 and pause==0:
+			# elif ch==112 and pause==0:
 				
-				pause=1
-				print("paused")
+			# 	pause=1
+			# 	print("paused")
 		
-			elif ch==112 and pause ==1:
-				pause=0
-				print("unPaused")
+			# elif ch==112 and pause ==1:
+			# 	pause=0
+			# 	print("unPaused")
 
-				break
-			elif pause==1:
-				pass
-			else:
-				break
+			# 	break
+			# elif pause==1:
+			# 	pass
+			# else:
+			# 	break
 	except KeyboardInterrupt:
 		raise
 	except cv2.error as e:
