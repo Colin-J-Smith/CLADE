@@ -83,7 +83,7 @@ while True:
 			sat = cv2.getTrackbarPos('Sat', 'image')
 			val = cv2.getTrackbarPos('Val', 'image')
 
-			GPIO.output(trigger_pin, GPIO.LOW)
+			#GPIO.output(trigger_pin, GPIO.LOW)
 			
 			
 
@@ -138,10 +138,10 @@ while True:
 
 
 					
-					cv2.drawContours(vis, [cnts[max1]], -1, (0, 255, 0), 2)
-					cv2.circle(vis, (cX, cY), 7, (255, 255, 255), -1)
-					cv2.putText(vis, "Green Light", (cX - 20, cY - 20),
-						cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+					# cv2.drawContours(vis, [cnts[max1]], -1, (0, 255, 0), 2)
+					# cv2.circle(vis, (cX, cY), 7, (255, 255, 255), -1)
+					# cv2.putText(vis, "Green Light", (cX - 20, cY - 20),
+					# 	cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
 					# Trigger the button
 					GPIO.output(trigger_pin, GPIO.HIGH)
@@ -149,16 +149,16 @@ while True:
 			except:
 				pass
 			
-			cc=(int(chosenColor[0][0][0]),int(chosenColor[0][0][1]),int(chosenColor[0][0][2]))
-			cv2.circle(imgBGR, (50, 50), 50, cc, -1)
+			# cc=(int(chosenColor[0][0][0]),int(chosenColor[0][0][1]),int(chosenColor[0][0][2]))
+			# cv2.circle(imgBGR, (50, 50), 50, cc, -1)
 
-			visBGR=cv2.cvtColor(vis, cv2.COLOR_HSV2BGR) 
-			thresh = cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR)
+			# visBGR=cv2.cvtColor(vis, cv2.COLOR_HSV2BGR) 
+			# thresh = cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR)
 			
-			cv2.imshow('image',np.hstack([imgBGR,thresh, visBGR])) #np.hstack([original, vis]))#np.hstack([thresh, gray2]))
+			# cv2.imshow('image',np.hstack([imgBGR,thresh, visBGR])) #np.hstack([original, vis]))#np.hstack([thresh, gray2]))
 			
-			ch=cv2.waitKey(1)
-			print(ch)
+			# ch=cv2.waitKey(1)
+			# print(ch)
 
 			if ch == 27:
 				exitNow=True
