@@ -71,7 +71,7 @@ while True:
 		flag, imgInit = cap.read()
 
 		
-		imgBGR = cv2.resize(imgInit,(300, 300),cv2.INTER_AREA)
+		imgBGR = cv2.resize(imgInit,(100, 100),cv2.INTER_AREA)
 		img=cv2.cvtColor(imgBGR, cv2.COLOR_BGR2HSV) 
 		
 		while True:	
@@ -138,10 +138,10 @@ while True:
 
 
 					
-					# cv2.drawContours(vis, [cnts[max1]], -1, (0, 255, 0), 2)
-					# cv2.circle(vis, (cX, cY), 7, (255, 255, 255), -1)
-					# cv2.putText(vis, "Green Light", (cX - 20, cY - 20),
-					# 	cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+					cv2.drawContours(vis, [cnts[max1]], -1, (0, 255, 0), 2)
+					cv2.circle(vis, (cX, cY), 7, (255, 255, 255), -1)
+					cv2.putText(vis, "Green Light", (cX - 20, cY - 20),
+						cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
 					# Trigger the button
 					GPIO.output(trigger_pin, GPIO.HIGH)
@@ -149,35 +149,35 @@ while True:
 			except:
 				pass
 			
-			# cc=(int(chosenColor[0][0][0]),int(chosenColor[0][0][1]),int(chosenColor[0][0][2]))
-			# cv2.circle(imgBGR, (50, 50), 50, cc, -1)
+			cc=(int(chosenColor[0][0][0]),int(chosenColor[0][0][1]),int(chosenColor[0][0][2]))
+			cv2.circle(imgBGR, (50, 50), 50, cc, -1)
 
-			# visBGR=cv2.cvtColor(vis, cv2.COLOR_HSV2BGR) 
-			# thresh = cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR)
+			visBGR=cv2.cvtColor(vis, cv2.COLOR_HSV2BGR) 
+			thresh = cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR)
 			
-			# cv2.imshow('image',np.hstack([imgBGR,thresh, visBGR])) #np.hstack([original, vis]))#np.hstack([thresh, gray2]))
+			cv2.imshow('image',np.hstack([imgBGR,thresh, visBGR])) #np.hstack([original, vis]))#np.hstack([thresh, gray2]))
 			
-			# ch=cv2.waitKey(1)
-			# print(ch)
+			ch=cv2.waitKey(1)
+			print(ch)
 
-			# if ch == 27:
-			# 	exitNow=True
-			# 	break
+			if ch == 27:
+				exitNow=True
+				break
 			
-			# elif ch==112 and pause==0:
+			elif ch==112 and pause==0:
 				
-			# 	pause=1
-			# 	print("paused")
+				pause=1
+				print("paused")
 		
-			# elif ch==112 and pause ==1:
-			# 	pause=0
-			# 	print("unPaused")
+			elif ch==112 and pause ==1:
+				pause=0
+				print("unPaused")
 
-			# 	break
-			# elif pause==1:
-			# 	pass
-			# else:
-			# 	break
+				break
+			elif pause==1:
+				pass
+			else:
+				break
 	except KeyboardInterrupt:
 		raise
 	except cv2.error as e:
