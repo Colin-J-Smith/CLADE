@@ -16,7 +16,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  sensVal = map(analogRead(sensPin), 0, 1023, 0, 5); // read in the sensor value and remap it to the voltage range
+  sensVal = map(analogRead(sensPin), 0, 1023, 0.0, 5.0); // read in the sensor value and remap it to the voltage range
 
   if outputVar { // if we are above the threshold
     if sensVal < threshLow { // if the sensed value drops below the threshold
