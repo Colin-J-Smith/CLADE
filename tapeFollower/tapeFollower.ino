@@ -11,9 +11,9 @@ float sensVal_R; //value read in by the reflectance sensor R
 int sensPin_L = A0;
 int sensPin_R = A1;
 
-float threshVal = 3.5; //nominal threshold value
-float threshLow = threshVal -1; // lower hysteretic threshold
-float threshHigh = threshVal +1; // upper hysteretic threshold
+float threshVal = .5; //nominal threshold value
+float threshLow = threshVal -0.25; // lower hysteretic threshold
+float threshHigh = threshVal +0.25; // upper hysteretic threshold
 
 bool outputVal_L = false;
 bool outputVal_R = false;
@@ -65,28 +65,26 @@ void loop() {
   // 4 Logic cases
   //TODO: change to switch statement
   if (sensVal_L < threshLow){//seeing black on L
-    motorSpeedA = 255; //drive the left motor
+    motorSpeedB = 100; //drive the left motor
   }
   if (sensVal_L > threshHigh){ //seeing yellow on L
-    motorSpeedA = 0; //stop the left motor
+    motorSpeedB = -100; //stop the left motor
   }
   if (sensVal_R < threshLow){//seeing black on R
-    motorSpeedB = 255; //drive the right motor
+    motorSpeedA = 100; //drive the right motor
   }
   if (sensVal_R > threshHigh){//seeing yellow on R
-    motorSpeedB = 0; //stop the right motor
+    motorSpeedA = -100; //stop the right motor
   }
 
   spinMotor(motorSpeedA, motorSpeedB);
 
   if (debug) {
-    Serial.print('LED State:');
+    Serial.print("Sensor Val:");
     Serial.print('\t');
-    Serial.print(outputVar);
+    Serial.print(sensVal_L);
     Serial.print('\t');
-    Serial.print('Sensor Val:');
-    Serial.print('\t');
-    Serial.println(sensVal);
+    Serial.println(sensVal_R);
   }
     
 
