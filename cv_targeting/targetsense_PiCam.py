@@ -1,15 +1,19 @@
-# Targeting Software
-# Version: 2
+# Targeting Software for a Live PiCam Feed
+# Version: 4
 # Author: Dan Warner
 # Date Created: 11 Mar 2020, Dan Warner
 # Last Modified: 17 Mar 2020, Lea Chandler
-# TODO: add base (fallen target) detection, test with more pictures
+# TODO: test this
+
 
 # setup
 import cv2
 import numpy as np
 import imutils
 import os
+import time
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 
 # display options
 show_thresholds = False
@@ -71,7 +75,6 @@ def process_targets(frame):
 
 
 def draw_contours(frame, contour, label):
-    contour_img = frame
     
     # compute the center of the contour
     M = cv2.moments(contour)
@@ -79,7 +82,8 @@ def draw_contours(frame, contour, label):
     cY = int(M["m01"] / M["m00"])
 
     # find image center
-    height,width = frame.shape[:2]
+    contour_img = frame
+    height,width = contour_img.shape[:2]
     x0 = width/2
     y0 = height/2
     
@@ -103,33 +107,15 @@ def get_largest_contour(contours):
 
 
 def draw_no_target(frame):
-    contour_img = frame
     
-    # find image center
-    height,width = frame.shape[:2]
-    x0 = int(width/2)
-    y0 = int(height/2)
-    
-    # add "no target" text to the image
-    cv2.putText(contour_img, "No target found", (x0 - 75, y0 - 20),
+    # add "no target" text to the image 
+    contour_img = frame    
+    cv2.putText(contour_img, "No target found", (20, 20),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)   
     return contour_img
 
 
-def main():
-
-    # choose which image to process
-    images = ['red_guy1.JPG',
-            'red_guy2.JPG',
-            'red_guy3.JPG',
-            'green_guy.JPG',
-            'no_guy.JPG']
-    img_file = images[4]
-    input_img = os.path.join('input_images', img_file)
-    
-    # read image
-    frame = cv2.imread(input_img)
-    frame = cv2.resize(frame, (720,960))
+def process_frame(frame):
 
     # get all red and green contours from the image
     bad_guy_contours, good_guy_contours = process_targets(frame)
@@ -139,31 +125,68 @@ def main():
     largest_contour_good, good_size = get_largest_contour(good_guy_contours)
 
     # if the largest contours are too small, assume no target has been found
-    if bad_size < 20000 and good_size < 20000:
-        print("No target found.")
+    if bad_size < 8000 and good_size < 8000:
         contour_img = draw_no_target(frame)
         if show_final_contour: cv2.imshow('No target found', contour_img)
 
     # if the red contour is larger, assume a bad guy has been found
     elif bad_size > good_size:
-        print("Bad guy found!!!")
         contour_img = draw_contours(frame, largest_contour_bad, 'Bad guy')
         if show_final_contour: cv2.imshow('Bad Guy!', contour_img)
 
     # if the green contour is larger, assume a good guy has been found
     else:
-        print("Good guy found!!!")
         contour_img = draw_contours(frame, largest_contour_good, 'Good guy')
         if show_final_contour: cv2.imshow('Good Guy!', contour_img)
+    
+    return contour_img
+
+
+def main():
+
+    # initialize the video capture and writer
+    frame_height = int(cap.get(3))
+    frame_width = int(cap.get(4))
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out = cv2.VideoWriter('output_videos/PiCam_feed', fourcc, 30, (frame_width, frame_height), 1)
+    
+    # initialize the camera and grab a reference to the raw camera capture
+    camera = PiCamera()
+    camera.resolution = (640, 480)
+    camera.framerate = 32
+    rawCapture = PiRGBArray(camera, size=(640, 480))
+
+    # allow the camera to warmup
+    time.sleep(0.1)
+
+    # capture frames from the camera
+    for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         
-    # save output image
-    output_img = os.path.join('output_images', 'output_'+img_file)
-    cv2.imwrite(output_img, contour_img)
-    cv2.waitKey()
+        # convert to numpy array for use by cv2
+        frame = f.array
+    
+        # Apply image processing
+        processed_frame = process_frame(frame)
+        
+        # Write and display the processed frame
+        out.write(processed_frame)
+        cv2.imshow("Live target finding", processed_frame)
+        
+        # Delay for key press to quit and frame rate (1 ms)
+        key_pressed = cv2.waitKey(1) & 0xFF
+        if key_pressed == ord('q'): break
+        
+        # clear the stream in preparation for the next frame
+        rawCapture.truncate(0)
+
+    # cleanup
+    out.release()
+    cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
     main()
+
 
 # Functions:
 #

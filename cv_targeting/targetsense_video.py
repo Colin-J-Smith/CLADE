@@ -1,15 +1,17 @@
-# Targeting Software
-# Version: 2
+# Targeting Software for Videos
+# Version: 3
 # Author: Dan Warner
 # Date Created: 11 Mar 2020, Dan Warner
 # Last Modified: 17 Mar 2020, Lea Chandler
-# TODO: add base (fallen target) detection, test with more pictures
+# TODO: fix output videos
+
 
 # setup
 import cv2
 import numpy as np
 import imutils
 import os
+import time
 
 # display options
 show_thresholds = False
@@ -71,7 +73,6 @@ def process_targets(frame):
 
 
 def draw_contours(frame, contour, label):
-    contour_img = frame
     
     # compute the center of the contour
     M = cv2.moments(contour)
@@ -79,7 +80,8 @@ def draw_contours(frame, contour, label):
     cY = int(M["m01"] / M["m00"])
 
     # find image center
-    height,width = frame.shape[:2]
+    contour_img = frame
+    height,width = contour_img.shape[:2]
     x0 = width/2
     y0 = height/2
     
@@ -103,33 +105,15 @@ def get_largest_contour(contours):
 
 
 def draw_no_target(frame):
-    contour_img = frame
     
-    # find image center
-    height,width = frame.shape[:2]
-    x0 = int(width/2)
-    y0 = int(height/2)
-    
-    # add "no target" text to the image
-    cv2.putText(contour_img, "No target found", (x0 - 75, y0 - 20),
+    # add "no target" text to the image 
+    contour_img = frame    
+    cv2.putText(contour_img, "No target found", (20, 20),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)   
     return contour_img
 
 
-def main():
-
-    # choose which image to process
-    images = ['red_guy1.JPG',
-            'red_guy2.JPG',
-            'red_guy3.JPG',
-            'green_guy.JPG',
-            'no_guy.JPG']
-    img_file = images[4]
-    input_img = os.path.join('input_images', img_file)
-    
-    # read image
-    frame = cv2.imread(input_img)
-    frame = cv2.resize(frame, (720,960))
+def process_frame(frame):
 
     # get all red and green contours from the image
     bad_guy_contours, good_guy_contours = process_targets(frame)
@@ -139,31 +123,82 @@ def main():
     largest_contour_good, good_size = get_largest_contour(good_guy_contours)
 
     # if the largest contours are too small, assume no target has been found
-    if bad_size < 20000 and good_size < 20000:
-        print("No target found.")
+    if bad_size < 8000 and good_size < 8000:
         contour_img = draw_no_target(frame)
         if show_final_contour: cv2.imshow('No target found', contour_img)
 
     # if the red contour is larger, assume a bad guy has been found
     elif bad_size > good_size:
-        print("Bad guy found!!!")
         contour_img = draw_contours(frame, largest_contour_bad, 'Bad guy')
         if show_final_contour: cv2.imshow('Bad Guy!', contour_img)
 
     # if the green contour is larger, assume a good guy has been found
     else:
-        print("Good guy found!!!")
         contour_img = draw_contours(frame, largest_contour_good, 'Good guy')
         if show_final_contour: cv2.imshow('Good Guy!', contour_img)
-        
-    # save output image
-    output_img = os.path.join('output_images', 'output_'+img_file)
-    cv2.imwrite(output_img, contour_img)
-    cv2.waitKey()
+    
+    return contour_img
 
+
+def main():
+
+    # choose which video to process
+    videos = ['green_guy_front.mp4',
+            'green_guy_side.mp4',
+            'red_guy_front.mp4',
+            'red_guy_side.mp4',
+            'target_hand.mp4']
+    vid_file = videos[3]
+    input_vid = os.path.join('input_videos', vid_file)
+    output_vid = os.path.join('output_videos', 'output_'+vid_file)
+
+    # initialize the video capture and writer
+    cap = cv2.VideoCapture(input_vid)
+    frame_height = int(cap.get(3))
+    frame_width = int(cap.get(4))
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out = cv2.VideoWriter(output_vid, fourcc, 30, (frame_width, frame_height), 1)
+    
+    # Check that video was opened successfully
+    if (cap.isOpened()== False): 
+        print("Error opening video file")
+
+    # Continuously process video frames
+    start_time = time.time()
+    while(cap.isOpened()):
+        
+        # get frame
+        ret, frame = cap.read()
+        if(ret == False):
+            end_time = time.time()
+            print("Processing Complete")
+            break
+        
+        # Apply image processing
+        processed_frame = process_frame(frame)
+        
+        # Write and display the processed frame
+        out.write(processed_frame)
+        cv2.imshow("Target finding", processed_frame)
+        
+        # Delay for key press and frame rate (10 ms)
+        key_pressed = cv2.waitKey(10) & 0xFF
+        if key_pressed == ord('q'): # quit
+            break
+        if key_pressed == ord('p'): # pause
+            print("Press 'p' again to unpause")
+            while cv2.waitKey(10) & 0xFF != ord('p'):
+                pass
+    
+    # Cleanup
+    print('Took %.3f seconds' % (time.time() - start_time))
+    cap.release()
+    out.release()
+    cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     main()
+
 
 # Functions:
 #
