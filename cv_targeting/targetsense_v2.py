@@ -2,7 +2,7 @@
 # Version: 2
 # Author: Dan Warner
 # Date Created: 11 Mar 2020, Dan Warner
-# Last Modified: 16 Mar 2020, Lea Chandler
+# Last Modified: 17 Mar 2020, Lea Chandler
 # TODO: add base (fallen target) detection, test with more pictures
 
 # setup
@@ -102,6 +102,20 @@ def get_largest_contour(contours):
     return largest_contour, size
 
 
+def draw_no_target(frame):
+    contour_img = frame
+    
+    # find image center
+    height,width = frame.shape[:2]
+    x0 = int(width/2)
+    y0 = int(height/2)
+    
+    # add "no target" text to the image
+    cv2.putText(contour_img, "No target found", (x0 - 75, y0 - 20),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)   
+    return contour_img
+
+
 def main():
 
     # choose which image to process
@@ -127,25 +141,24 @@ def main():
     # if the largest contours are too small, assume no target has been found
     if bad_size < 20000 and good_size < 20000:
         print("No target found.")
+        contour_img = draw_no_target(frame)
+        if show_final_contour: cv2.imshow('No target found', contour_img)
 
-    # otherwise, assume a target has been found
+    # if the red contour is larger, assume a bad guy has been found
+    elif bad_size > good_size:
+        print("Bad guy found!!!")
+        contour_img = draw_contours(frame, largest_contour_bad, 'Bad guy')
+        if show_final_contour: cv2.imshow('Bad Guy!', contour_img)
+
+    # if the green contour is larger, assume a good guy has been found
     else:
-        # if the red contour is larger, assume a bad guy has been found
-        if bad_size > good_size:
-            print("Bad guy found!!!")
-            contour_img = draw_contours(frame, largest_contour_bad, 'Bad guy')
-            if show_final_contour: cv2.imshow('Bad Guy!', contour_img)
-
-        # if the green contour is larger, assume a good guy has been found
-        else:
-            print("Good guy found!!!")
-            contour_img = draw_contours(frame, largest_contour_good, 'Good guy')
-            if show_final_contour: cv2.imshow('Good Guy!', contour_img)
+        print("Good guy found!!!")
+        contour_img = draw_contours(frame, largest_contour_good, 'Good guy')
+        if show_final_contour: cv2.imshow('Good Guy!', contour_img)
         
-        # save output image
-        output_img = os.path.join('output_images', 'output_'+img_file)
-        cv2.imwrite(output_img, contour_img)
-        
+    # save output image
+    output_img = os.path.join('output_images', 'output_'+img_file)
+    cv2.imwrite(output_img, contour_img)
     cv2.waitKey()
 
 
