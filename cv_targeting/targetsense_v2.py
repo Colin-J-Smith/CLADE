@@ -78,10 +78,16 @@ def draw_contours(frame, contour, label):
     cX = int(M["m10"] / M["m00"])
     cY = int(M["m01"] / M["m00"])
 
+    # find image center
+    height,width = frame.shape[:2]
+    x0 = width/2
+    y0 = height/2
+    
     # draw the contour and center of the shape on the image
+    text = label+": ("+str(cX-x0)+","+str(cY-y0)+")"
     cv2.drawContours(contour_img, [contour], -1, (0,255,0), 2)
     cv2.circle(contour_img, (cX, cY), 7, (255, 255, 255), -1)
-    cv2.putText(contour_img, label, (cX - 20, cY - 20),
+    cv2.putText(contour_img, text, (cX - 75, cY - 20),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)   
     return contour_img
 
