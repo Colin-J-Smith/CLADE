@@ -146,8 +146,7 @@ def main():
     videos = ['green_guy_front.mp4',
             'green_guy_side.mp4',
             'red_guy_front.mp4',
-            'red_guy_side.mp4',
-            'target_hand.mp4']
+            'red_guy_side.mp4']
     vid_file = videos[3]
     input_vid = os.path.join('input_videos', vid_file)
     output_vid = os.path.join('output_videos', 'output_'+vid_file)
@@ -156,8 +155,8 @@ def main():
     cap = cv2.VideoCapture(input_vid)
     frame_height = int(cap.get(3))
     frame_width = int(cap.get(4))
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(output_vid, fourcc, 30, (frame_width, frame_height), 1)
+    fourcc = cv2.VideoWriter_fourcc('M','J','P','G')
+    out = cv2.VideoWriter(output_vid, fourcc, 10, (frame_width, frame_height), 1)
     
     # Check that video was opened successfully
     if (cap.isOpened()== False): 
