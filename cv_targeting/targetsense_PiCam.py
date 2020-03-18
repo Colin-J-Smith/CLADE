@@ -143,24 +143,25 @@ def process_frame(frame):
 
 
 def main():
-    
-    frame_height = 640
-    frame_width = 480
-
+   
     # initialize the camera and grab a reference to the raw camera capture
+    frame_width = 480
+    frame_height = 640
     camera = PiCamera()
-    camera.resolution = (frame_height, frame_width)
+    camera.resolution = (640, 480)
     camera.framerate = 32
-    rawCapture = PiRGBArray(camera, size=camera.resolution))
+    rawCapture = PiRGBArray(camera, size=(640, 480))
 
     # allow the camera to warmup
     time.sleep(0.1)
 
+    # initialize the video capture and writer
+    fourcc = cv2.VideoWriter_fourcc('m','p','4','v')
+    fps = 30
+    is_color = True
+    output_vid = 'PiCam_feed'
+    out = cv2.VideoWriter(output_vid, fourcc, fps, (frame_width, frame_height), is_color)
 
-    # initialize the video writer
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter('output_videos/PiCam_feed', fourcc, 30, camera.resolution, 1)
-    
     # capture frames from the camera
     for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         
@@ -176,7 +177,8 @@ def main():
         
         # Delay for key press to quit and frame rate (1 ms)
         key_pressed = cv2.waitKey(1) & 0xFF
-        if key_pressed == ord('q'): break
+        if key_pressed == ord('q'):
+            break
         
         # clear the stream in preparation for the next frame
         rawCapture.truncate(0)
