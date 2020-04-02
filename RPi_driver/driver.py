@@ -4,19 +4,53 @@
 # Version:  1
 # Platform: Rasbian Buster with Python3
 #
-# Driver for the police academy robot. 
+# Driver for the police academy robot
 
 import os
 import sys
 import time
+import serial
 from datetime import datetime
 
 from navigation import nav, nav_msg_size
 from targeting import target, target_msg_size
 
-testing = True # change to false to run on hardware
+# states
+initializing = 0
+looking = 1
+turning = 2
+shooting = 3
+state = initializing
+
+# file objects for reading/writing
+mtr_write = None
+nav_read = None
+target_read = None
+
+# Arduino comms variables
+arduino_port = "/dev/ttyUSB0"
+arduino_baudrate = 115200
+
+# testing variables
+testing_pi_driver = True
 
 def driver():
+    while True:
+        if state == initializing:
+            init()
+        elif state == looking:
+            look()
+        elif state == turning:
+            turn()
+        elif state == shooting:
+            shoot()
+        else:
+            break # something went wrong
+
+
+def init():
+    global state, nav_read, target_read, mtr_write
+
     # navigation pipe
     r, w = os.pipe()
     pid = os.fork()
@@ -39,22 +73,46 @@ def driver():
     os.close(w)
     target_read = os.fdopen(r)
     
-    # receive and parse messages
-    while True:
-        is_nav_msg = process_msg(nav_read, nav_msg_size, process_nav_msg)
-        is_target_msg = process_msg(target_read, target_msg_size, process_target_msg)
-        if testing and not is_nav_msg and not is_target_msg:
-            break # end program if testing 
-        
+    # open serial to Arduino (or stdout for testing)
+    if testing_pi_driver:
+        mtr_write = sys.stdout
+    else:
+        mtr_write = serial.Serial(port=arduino_port, baudrate=arduino_baudrate)
+
+    # change state
+    state = looking
+
+
+def look():
+    process_msg(nav_read, nav_msg_size, process_nav_msg)
+    process_msg(target_read, target_msg_size, process_target_msg)
+
+
+def turn(): # if turning, ignore targeting commands
+    process_msg(nav_read, nav_msg_size, process_nav_msg)
+    target_read.flush()
+
+
+def shoot(): # if shooting, ignore navigation commands
+    nav_read.fush()
+    process_msg(target_read, target_msg_size, process_target_msg)
+
+
+def send_msg(msg):
+    # forward message to the Arduino (without timestamp)
+    mtr_write.write(msg)
+    if mtr_write == sys.stdout:
+        print("")
+
 
 def process_nav_msg(words):
-    print("{}".format(words[0]))
-    # TODO: handle commands
+    # TODO: handle state transitions
+    send_msg(" ".join(words[0:-1]))
 
 
 def process_target_msg(words):
-    print("{}".format(words[0]))
-    # TODO: handle commands
+    # TODO: handle state transitions
+    send_msg(" ".join(words[0:-1]))
 
 
 def process_msg(read, msg_size, process_fcn):
@@ -70,13 +128,15 @@ def process_msg(read, msg_size, process_fcn):
     words = msg.split()
     sent = float(words[-1])
     
-    # if delay between sending and receiving is greater than 0.5s, clear the
-    #    assume that received messages will be old and clear the input buffer
+    # if delay between sending and receiving is greater than 0.5s, assume that
+    #    the received messages will be old and clear the input buffer
     dt = received - sent
     if dt > 0.5:
         read.flush()
     
-    # route parsed messgae to the correct handles (nav or target)
+    # route parsed message to the correct handler (nav or target).
+    # depending on design, the driver might just forward messages from the
+    #    modules to the Arduino with no additional processing
     process_fcn(words)
     return True
 
