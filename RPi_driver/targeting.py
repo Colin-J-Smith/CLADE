@@ -31,4 +31,4 @@ def target(target_write):
         i = i+1
 
 if __name__=="__main__":
-    nav(sys.stdout)
+    target(sys.stdout)
