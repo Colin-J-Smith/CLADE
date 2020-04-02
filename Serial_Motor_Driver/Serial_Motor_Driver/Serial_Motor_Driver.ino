@@ -122,7 +122,7 @@ void loop()
                     printArrayOfInts(); // Print the values
                     Serial.println();
                     
-                    spinMotor(arrayOfInts); // spin the motor
+                    spinMotor(arrayOfInts[]); // spin the motor
  
                     receiving = false; // Stop receivinng
                 }
