@@ -96,7 +96,7 @@ void loop() {
         break;
       case RIGHT:
         goRight();
-        breal;
+        break;
       case UP:
         goUp();
         break;
@@ -114,6 +114,12 @@ void loop() {
 } // end of loop
 
 /********************************************************************************/
+void stopMove(){
+  stepperR.step(0);
+  stepperE.step(0);
+}
+
+
 void goLeft() {
   stepperR.step(100);
 }

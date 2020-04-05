@@ -50,8 +50,8 @@ def send_msg(cmd, device):
 
 
 def main():
-    outbound_tur = serial.Serial(port="/dev/ttyUSB0", baudrate=9600)
-    outbound_mtr = serial.Serial(port="/dev/ttyUSB1", baudrate=9600)
+    outbound_tur = serial.Serial(port="/dev/ttyACM0", baudrate=9600)
+    outbound_mtr = serial.Serial(port="/dev/ttyUSB0", baudrate=9600)
     print("Found port to Arduino")
 
     n_samples = 100
