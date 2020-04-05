@@ -23,21 +23,21 @@
 
 //PIN VARIABLES
 //the motor will be controlled by the motor A pins on the motor driver
-#define AIN1 13 //control pin 1 on the motor driver for the right motor
-#define AIN2 12 //control pin 2 on the motor driver for the right motor
-#define BIN1 8 //control pin 1 on the motor driver for the left motor
-#define BIN2 9 //control pin 2 on the motor driver for the left motor
-#define CIN1 13 //control pin 1 on the motor driver for the front motor
-#define CIN2 12 //control pin 2 on the motor driver for the front motor
-#define DIN1 8 //control pin 1 on the motor driver for the back motor
-#define DIN2 9 //control pin 2 on the motor driver for the back motor
-#define PWMA 11 //speed control pin on the motor driver for the right motor
-#define PWMB 10 //speed control pin on the motor driver for the left motor
-#define PWMC 11 //speed control pin on the motor driver for the right motor
-#define PWMD 10 //speed control pin on the motor driver for the left motor
+#define AIN1 2 //control pin 1 on the motor driver for the left motor
+#define AIN2 3 //control pin 2 on the motor driver for the left motor
+#define BIN1 8 //control pin 1 on the motor driver for the front motor
+#define BIN2 9 //control pin 2 on the motor driver for the front motor
+#define CIN1 7 //control pin 1 on the motor driver for the right motor
+#define CIN2 6 //control pin 2 on the motor driver for the right motor
+#define DIN1 13 //control pin 1 on the motor driver for the back motor
+#define DIN2 12 //control pin 2 on the motor driver for the back motor
+#define PWMA 4 //speed control pin on the motor driver for the left motor
+#define PWMB 10 //speed control pin on the motor driver for the front motor
+#define PWMC 5 //speed control pin on the motor driver for the right motor
+#define PWMD 11 //speed control pin on the motor driver for the back motor
 
 // MOTOR SPEED
-#define SPD 50 // duty cycle for the pwm signal
+#define SPD 200 // duty cycle for the pwm signal 0-255
 
 /********************************************************************************/
 

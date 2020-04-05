@@ -13,16 +13,19 @@
 
 //PINS
 //the motor will be controlled by the motor A pins on the motor driver
-#define stepPinE 3
-#define stepPinR 8
-#define dirPinE 4
-#define dirPinR 9
-#define firePin 2
+#define stepPinE 7
+#define dirPinE 8
+#define stepPinR 5
+#define dirPinR 6
+#define firePin 3
 
 //STEPPER
-const int NSTEPS = 3200;
-Stepper stepperE = Stepper(NSTEPS, stepPinE, dirPinE);
-Stepper stepperR = Stepper(NSTEPS, stepPinR, dirPinR);
+const int NSTEPS = 3200*4;
+Stepper stepperE = Stepper(NSTEPS, dirPinE, stepPinE);
+Stepper stepperR = Stepper(NSTEPS, dirPinR, stepPinR);
+
+//GUN
+float fireDelay = 200;
 
 
 void setup()
@@ -37,8 +40,8 @@ void setup()
   pinMode(firePin, OUTPUT);
 
   // set stepper RPM
-  stepperE.setSpeed(20); // 20 rpm
-  stepperR.setSpeed(20); // 20 rpm
+  stepperE.setSpeed(60); // 20 rpm
+  stepperR.setSpeed(120); // 20 rpm
 }
 
 // SET UP THE COMMAND PARSING
@@ -107,9 +110,11 @@ void loop() {
   
   if (commandReceived) {// Send commands to the motors
     if (strcmp(cmdBuffer, "ROT")) {
-      rotate(arrayOfInts);
+      rotate(arrayOfInts[0]);
     } else if (strcmp(cmdBuffer, "ELE")) {
-      elevate(arrayOfInts);
+      elevate(arrayOfInts[0]);
+    } else if (strcmp(cmdBuffer, "FIR")) {
+      fire();
     } else {
       //Serial.println("Error: command not recognized");
     }
@@ -135,4 +140,10 @@ void elevate(int deg) {
 
 void rotate(int deg) {
   stepperR.step(int(NSTEPS * deg / 360));
+}
+
+void fire(){
+  digitalWrite(firePin, HIGH);
+  delay(fireDelay);
+  digitalWrite(firePin, LOW);
 }
