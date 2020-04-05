@@ -24,12 +24,15 @@ state = initializing
 
 # file objects for reading/writing
 mtr_write = None
+tur_write = None
 nav_read = None
 target_read = None
 
 # Arduino comms variables
-arduino_port = "/dev/ttyUSB0"
-arduino_baudrate = 115200
+arduino_port_tur = "/dev/ttyUSB0"
+arduino_baudrate_tur = 9600
+arduino_port_mtr = "/dev/ttyUSB1"
+arduino_baudrate_mtr = 9600
 
 # testing variables
 testing_pi_driver = True
@@ -49,7 +52,7 @@ def driver():
 
 
 def init():
-    global state, nav_read, target_read, mtr_write
+    global state, nav_read, target_read, mtr_write, tur_write
 
     # navigation pipe
     r, w = os.pipe()
@@ -77,7 +80,8 @@ def init():
     if testing_pi_driver:
         mtr_write = sys.stdout
     else:
-        mtr_write = serial.Serial(port=arduino_port, baudrate=arduino_baudrate)
+        tur_write = serial.Serial(port=arduino_port_tur, baudrate=arduino_baudrate_tur)
+        mtr_write = serial.Serial(port=arduino_port_mtr, baudrate=arduino_baudrate_mtr)
 
     # change state
     state = looking
@@ -98,21 +102,28 @@ def shoot(): # if shooting, ignore navigation commands
     process_msg(target_read, target_msg_size, process_target_msg)
 
 
-def send_msg(msg):
+def send_msg_mtr(msg):
     # forward message to the Arduino (without timestamp)
     mtr_write.write(msg)
     if mtr_write == sys.stdout:
         print("")
 
 
+def send_msg_tur(msg):
+    # forward message to the Arduino (without timestamp)
+    tur_write.write(msg)
+    if tur_write == sys.stdout:
+        print("")
+
+
 def process_nav_msg(words):
     # TODO: handle state transitions
-    send_msg(" ".join(words[0:-1]))
+    send_msg_mtr(" ".join(words[0:-1]))
 
 
 def process_target_msg(words):
     # TODO: handle state transitions
-    send_msg(" ".join(words[0:-1]))
+    send_msg_tur(" ".join(words[0:-1]))
 
 
 def process_msg(read, msg_size, process_fcn):

@@ -71,7 +71,6 @@ void setup()
 /********************************************************************************/
 
 void loop() {
-
   // Get and parse the serial command
   if (Serial.available() > 0) { // If there's at least one byte to read
     char serialByte = Serial.read(); // Read it
