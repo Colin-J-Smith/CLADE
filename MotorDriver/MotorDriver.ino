@@ -11,15 +11,8 @@
 #define VALUE_SEP ','
 
 //COMMANDS
-#define STOP 'STP'
-#define FORWARD 'FWD'
-#define BACK 'BCK'
-#define LEFT 'LFT' // traverse left
-#define RIGHT 'RGT' // traverse right
-#define ROTATE_LEFT 'LLL'
-#define ROTATE_RIGHT 'RRR'
-#define TURN_LEFT 'TNL' // 90 degree turn left
-#define TURN_RIGHT 'TNR' // 90 degree turn right
+const long cmd_timeout = 1000; // miliseconds
+long cmd_issued = 0; // time command was recieved
 
 //PIN VARIABLES
 //the motor will be controlled by the motor A pins on the motor driver
@@ -81,51 +74,47 @@ void loop() {
       bufferIndex = 0;
       return;
     }
+
     if (receiving) { // If the start marker has been received
       if (!commandReceived) { // If the command hasn't been received yet
         if (serialByte == END_MARKER) { // If the command end marker is received
           cmdBuffer[bufferIndex] = '\0'; // Terminate the string in the buffer
-          receiving = false; // Stop receivinng
           commandReceived = true;
+          cmd_issued = millis();
+          receiving = false; // Stop receivinng
+        } else if (bufferIndex < cmdBuffLen) {                                         // If the received byte is not the command separator or the end marker and the command buffer is not full
+          cmdBuffer[bufferIndex++] = serialByte; // Write the new data into the buffer
+        } else { // If the command buffer is full
         }
-      } else if (bufferIndex < cmdBuffLen) {                                         // If the received byte is not the command separator or the end marker and the command buffer is not full
-        cmdBuffer[bufferIndex++] = serialByte; // Write the new data into the buffer
-      } else { // If the command buffer is full
       }
     }// end if (receiving)
   }// end if (Serial.available() > 0)
 
   if (commandReceived) {// Execute the command
-    switch (char(cmdBuffer)) {
-      case STOP:
-        stopMove();
-        break;
-      case FORWARD:
-        goFwd();
-        break;
-      case BACK:
-        goBack();
-        break;
-      case LEFT:
-        goLeft();
-        break;
-      case RIGHT:
-        goRight();
-        break;
-      case ROTATE_LEFT:
-        rotLeft();
-        break;
-      case ROTATE_RIGHT:
-        rotRight();
-        break;
-      case TURN_LEFT:
-        turnLeft();
-        break;
-      case TURN_RIGHT:
-        turnRight();
-        break;
+    // check the timeout
+    if ((millis() - cmd_issued) > cmd_timeout) {
+      stopMove();
+      return;
     }
-  }
+
+    // run the command
+    if (strcmp(cmdBuffer, "STP") == 0) {
+      stopMove();
+    } else if (strcmp(cmdBuffer, "FWD") == 0) {
+      goFwd();
+    } else if (strcmp(cmdBuffer, "BCK") == 0) {
+      goBack();
+    } else if (strcmp(cmdBuffer, "LFT") == 0) {
+      goLeft();
+    } else if (strcmp(cmdBuffer, "RGT") == 0) {
+      goRight();
+    } else if (strcmp(cmdBuffer, "LLL") == 0) {
+      rotLeft();
+    } else if (strcmp(cmdBuffer, "RRR") == 0) {
+      rotRight();
+    }
+
+  }// end if (commandReceived)
 }// end of loop
 
 /********************************************************************************/
@@ -143,6 +132,13 @@ void stopMove() {
   //back wheel
   digitalWrite(DIN1, LOW);
   digitalWrite(DIN2, LOW);
+
+  analogWrite(PWMA, 0);
+  analogWrite(PWMB, 0);
+  analogWrite(PWMC, 0);
+  analogWrite(PWMD, 0);
+
+  //  Serial.println("Stop");
 }
 
 void goFwd() {
@@ -155,6 +151,8 @@ void goFwd() {
 
   analogWrite(PWMA, SPD);
   analogWrite(PWMC, SPD);
+
+  //  Serial.println("Back");
 }
 
 void goBack() {
@@ -167,6 +165,8 @@ void goBack() {
 
   analogWrite(PWMA, SPD);
   analogWrite(PWMC, SPD);
+
+  //  Serial.println("Forward");
 }
 
 void goLeft() {
@@ -179,6 +179,8 @@ void goLeft() {
 
   analogWrite(PWMB, SPD);
   analogWrite(PWMD, SPD);
+
+  //  Serial.println("Left");
 }
 
 void goRight() {
@@ -191,6 +193,8 @@ void goRight() {
 
   analogWrite(PWMB, SPD);
   analogWrite(PWMD, SPD);
+
+  //  Serial.println("Right");
 }
 
 void rotLeft() {
@@ -211,6 +215,8 @@ void rotLeft() {
   analogWrite(PWMC, SPD);
   analogWrite(PWMB, SPD);
   analogWrite(PWMD, SPD);
+
+  //  Serial.println("Rot Left");
 }
 
 void rotRight() {
@@ -231,6 +237,8 @@ void rotRight() {
   analogWrite(PWMC, SPD);
   analogWrite(PWMB, SPD);
   analogWrite(PWMD, SPD);
+
+  //  Serial.println("Rot Right");
 }
 
 void turnLeft() {

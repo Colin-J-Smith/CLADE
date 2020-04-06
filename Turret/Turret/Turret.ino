@@ -12,12 +12,8 @@
 #define VALUE_SEP ','
 
 //COMMANDS
-#define STOP 'STP'
-#define UP 'UPP'
-#define DOWN 'DWN'
-#define LEFT 'LFT' // traverse left
-#define RIGHT 'RGT' // traverse right
-#define FIRE 'FIR'
+const long cmd_timeout = 1000; // miliseconds
+long cmd_issued = 0; // time command was recieved
 
 //PINS
 //the motor will be controlled by the motor A pins on the motor driver
@@ -28,12 +24,12 @@
 #define firePin 3
 
 //STEPPER
-const int NSTEPS = 3200*4;
+const int NSTEPS = 200;
 Stepper stepperE = Stepper(NSTEPS, dirPinE, stepPinE);
 Stepper stepperR = Stepper(NSTEPS, dirPinR, stepPinR);
 
 //GUN
-float fireDelay = 200;
+float fireDelay = 175;
 
 /********************************************************************************/
 
@@ -79,64 +75,70 @@ void loop() {
       if (!commandReceived) { // If the command hasn't been received yet
         if (serialByte == END_MARKER) { // If the command end marker is received
           cmdBuffer[bufferIndex] = '\0'; // Terminate the string in the buffer
-          receiving = false; // Stop receivinng
           commandReceived = true;
+          cmd_issued = millis();
+          receiving = false; // Stop receivinng
+        } else if (bufferIndex < cmdBuffLen) {                                         // If the received byte is not the command separator or the end marker and the command buffer is not full
+          cmdBuffer[bufferIndex++] = serialByte; // Write the new data into the buffer
+        } else { // If the command buffer is full
         }
-      } else if (bufferIndex < cmdBuffLen) {                                         // If the received byte is not the command separator or the end marker and the command buffer is not full
-        cmdBuffer[bufferIndex++] = serialByte; // Write the new data into the buffer
-      } else { // If the command buffer is full
       }
     }// end if (receiving)
   }// end if (Serial.available() > 0)
-  
+
   if (commandReceived) {// Send commands to the motors
-    switch (char(cmdBuffer)) {
-      case LEFT:
-        goLeft();
-        break;
-      case RIGHT:
-        goRight();
-        break;
-      case UP:
-        goUp();
-        break;
-      case DOWN:
-        goDown();
-        break;
-      case STOP:
-        stopMove();
-        break;
-      case FIRE:
-        fire();
-        break;
+
+    // check the timeout
+    if ((millis() - cmd_issued) > cmd_timeout) {
+      stopMove();
+      return;
     }
-  }
+    if (strcmp(cmdBuffer, "FIR") == 0) {
+      fire();
+      commandReceived = false;
+      return;
+    }
+
+    if (strcmp(cmdBuffer, "STP") == 0) {
+      stopMove();
+    } else if (strcmp(cmdBuffer, "UPP") == 0) {
+      goUp();
+    } else if (strcmp(cmdBuffer, "DWN") == 0) {
+      goDown();
+    } else if (strcmp(cmdBuffer, "LFT") == 0) {
+      goLeft();
+    } else if (strcmp(cmdBuffer, "RGT") == 0) {
+      goRight();
+    }
+    commandReceived = false;
+    return;
+  }// end if (commandReceived)
 } // end of loop
 
 /********************************************************************************/
-void stopMove(){
+void stopMove() {
   stepperR.step(0);
   stepperE.step(0);
 }
 
 
 void goLeft() {
-  stepperR.step(100);
+  stepperR.step(10);
 }
 
 void goRight() {
-  stepperR.step(-100);
+  stepperR.step(-10);
 }
 
 void goUp() {
-  stepperE.step(100);
+  stepperE.step(10);
 }
 
 void goDown() {
-  stepperE.step(-100);
+  stepperE.step(-10);
 }
 
-void fire(){
+void fire() {
   digitalWrite(firePin, HIGH);
   delay(fireDelay);
   digitalWrite(firePin, LOW);
