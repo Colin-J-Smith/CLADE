@@ -63,7 +63,7 @@ def main():
         send_msg(cmd_mtr, outbound_mtr)
         time.sleep(0.1)
 
-    #end while(True)
+    #end for:
 
 #end main()
 

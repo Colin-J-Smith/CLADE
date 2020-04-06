@@ -29,9 +29,9 @@ nav_read = None
 target_read = None
 
 # Arduino comms variables
-arduino_port_tur = "/dev/ttyUSB0"
+arduino_port_tur = "/dev/ttyACM0"
 arduino_baudrate_tur = 9600
-arduino_port_mtr = "/dev/ttyUSB1"
+arduino_port_mtr = "/dev/ttyUSB0"
 arduino_baudrate_mtr = 9600
 
 # testing variables
@@ -79,6 +79,7 @@ def init():
     # open serial to Arduino (or stdout for testing)
     if testing_pi_driver:
         mtr_write = sys.stdout
+        tur_write = sys.stdout
     else:
         tur_write = serial.Serial(port=arduino_port_tur, baudrate=arduino_baudrate_tur)
         mtr_write = serial.Serial(port=arduino_port_mtr, baudrate=arduino_baudrate_mtr)
