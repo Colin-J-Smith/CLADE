@@ -24,7 +24,7 @@ long cmd_issued = 0; // time command was recieved
 #define firePin 3
 
 //STEPPER
-const int NSTEPS = 200;
+const int NSTEPS = 400;
 Stepper stepperE = Stepper(NSTEPS, dirPinE, stepPinE);
 Stepper stepperR = Stepper(NSTEPS, dirPinR, stepPinR);
 
@@ -54,8 +54,8 @@ void setup()
   pinMode(firePin, OUTPUT);
 
   // set stepper RPM
-  stepperE.setSpeed(60); // 20 rpm
-  stepperR.setSpeed(120); // 20 rpm
+  stepperE.setSpeed(120); // 20 rpm
+  stepperR.setSpeed(200); // 20 rpm
 }
 
 /********************************************************************************/

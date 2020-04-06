@@ -148,6 +148,12 @@ void goFwd() {
   //right wheel
   digitalWrite(CIN1, HIGH);
   digitalWrite(CIN2, LOW);
+  //front wheel
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, LOW);
+  //back wheel
+  digitalWrite(DIN1, LOW);
+  digitalWrite(DIN2, LOW);
 
   analogWrite(PWMA, SPD);
   analogWrite(PWMC, SPD);
@@ -162,6 +168,12 @@ void goBack() {
   //right wheel
   digitalWrite(CIN1, LOW);
   digitalWrite(CIN2, HIGH);
+  //front wheel
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, LOW);
+  //back wheel
+  digitalWrite(DIN1, LOW);
+  digitalWrite(DIN2, LOW);
 
   analogWrite(PWMA, SPD);
   analogWrite(PWMC, SPD);
@@ -176,6 +188,12 @@ void goLeft() {
   //back wheel
   digitalWrite(DIN1, HIGH);
   digitalWrite(DIN2, LOW);
+  //left wheel
+  digitalWrite(AIN1, LOW);
+  digitalWrite(AIN2, LOW);
+  //right wheel
+  digitalWrite(CIN1, LOW);
+  digitalWrite(CIN2, LOW);
 
   analogWrite(PWMB, SPD);
   analogWrite(PWMD, SPD);
@@ -190,7 +208,13 @@ void goRight() {
   //back wheel
   digitalWrite(DIN1, LOW);
   digitalWrite(DIN2, HIGH);
-
+  //left wheel
+  digitalWrite(AIN1, LOW);
+  digitalWrite(AIN2, LOW);
+  //right wheel
+  digitalWrite(CIN1, LOW);
+  digitalWrite(CIN2, LOW);
+  
   analogWrite(PWMB, SPD);
   analogWrite(PWMD, SPD);
 
