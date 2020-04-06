@@ -12,7 +12,7 @@
 #define VALUE_SEP ','
 
 //COMMANDS
-const long cmd_timeout = 1000; // miliseconds
+const long cmd_timeout = 500; // miliseconds
 long cmd_issued = 0; // time command was recieved
 
 //PINS
@@ -33,7 +33,7 @@ Stepper stepperE = Stepper(NSTEPS, dirPinE, stepPinE);
 Stepper stepperR = Stepper(NSTEPS, dirPinR, stepPinR);
 
 //GUN
-float fireDelay = 175;
+float fireDelay = 200;
 
 /********************************************************************************/
 
@@ -95,6 +95,7 @@ void loop() {
     // check the timeout
     if ((millis() - cmd_issued) > cmd_timeout) {
       stopMove();
+      commandReceived = false;
       return;
     }
     if (strcmp(cmdBuffer, "FIR") == 0) {
@@ -116,7 +117,6 @@ void loop() {
     } else if (strcmp(cmdBuffer, "HOM") == 0) {
       goHome();
     }
-    commandReceived = false;
     return;
   }// end if (commandReceived)
 } // end of loop
