@@ -117,14 +117,50 @@ def send_msg_tur(msg):
         print("")
 
 
-def process_nav_msg(words):
-    # TODO: handle state transitions
-    send_msg_mtr(" ".join(words[0:-1]))
+def process_nav_msg(command):
+    global state
+    if command == "<STP>":
+        pass # nav should not send stop as of 4/7 @ 12 pm
+    elif command == "<FWD>":
+        state = looking
+    elif command == "<BCK>":
+        state = looking
+    elif command == "<LFT>":
+        state = looking
+    elif command == "<RGT>":
+        state = looking
+    elif command == "<LLL>":
+        state = turning
+    elif command == "<RRR>":
+        state = turning
+    else:
+        print("Invalid command received from navigation: {}".format(command))
+        return
+    send_msg_mtr(command)
 
 
-def process_target_msg(words):
-    # TODO: handle state transitions
-    send_msg_tur(" ".join(words[0:-1]))
+def process_target_msg(command):
+    global state
+    if command == "<FIR>":
+        state = shooting
+    elif command == "<STP>": # STP received when target is found to stop the wheels
+        state = shooting
+        send_msg_mtr(command)
+        return
+    elif command == "<UPP>":
+        state = shooting
+    elif command == "<DWN>":
+        state = shooting
+    elif command == "<LFT>":
+        state = shooting
+    elif command == "<RGT>":
+        state = shooting
+    elif command == "<HOM>": # HOM received when target is hit
+        state = looking
+    else:
+        print("Invalid command received from targeting: {}".format(command))
+        pass
+    send_msg_tur(command)
 
 
 def process_msg(read, msg_size, process_fcn):
@@ -149,7 +185,7 @@ def process_msg(read, msg_size, process_fcn):
     # route parsed message to the correct handler (nav or target).
     # depending on design, the driver might just forward messages from the
     #    modules to the Arduino with no additional processing
-    process_fcn(words)
+    process_fcn(words[0])
     return True
 
 
