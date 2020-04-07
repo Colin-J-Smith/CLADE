@@ -99,6 +99,7 @@ void loop() {
       return;
     }
     if (strcmp(cmdBuffer, "FIR") == 0) {
+      stopMove();
       fire();
       commandReceived = false;
       return;
