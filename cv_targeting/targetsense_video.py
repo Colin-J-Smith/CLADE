@@ -175,6 +175,9 @@ def main():
             print("Processing Complete")
             break
         
+        print(frame[0][0])
+        sys.exit(0)
+
         # Apply image processing
         processed_frame = process_frame(frame)
         

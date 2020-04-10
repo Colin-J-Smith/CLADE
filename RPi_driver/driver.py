@@ -143,7 +143,7 @@ def process_target_msg(command):
     global state
     if command == "<FIR>":
         state = shooting
-    elif command == "<STP>": # STP received when target is found to stop the wheels
+    elif command == "<STP>": # STP wheels when target is found
         state = shooting
         send_msg_mtr(command)
         return
