@@ -58,6 +58,7 @@ def msg(command):
     try:
         nav_write.write(message)
         print(message)
+        print(nav_write)
     except:
         sys.exit(0)  # broken pipe (driver has closed)
 
