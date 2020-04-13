@@ -25,7 +25,8 @@ home = "HOM" # send HOM when target has been hit
 def target(target_write_input):
     global target_write
     target_write = target_write_input
-
+    while (True):
+        send_msg(home)
 
 def send_msg(command):
     global target_write, target_msg_size
