@@ -57,12 +57,15 @@ def init():
     # navigation pipe
     r, w = os.pipe()
     pid = os.fork()
+    print(pid)########################################
     if pid == 0: # child
         os.close(r)
         nav_write = os.fdopen(w, 'w')
         nav(nav_write)
         sys.exit(0)
     os.close(w)
+
+    os.close(r)#########################################
     nav_read = os.fdopen(r)
     
     # targeting pipe
@@ -80,9 +83,11 @@ def init():
     if testing_pi_driver:
         mtr_write = sys.stdout
         tur_write = sys.stdout
+        print("test output")
     else:
         tur_write = serial.Serial(port=arduino_port_tur, baudrate=arduino_baudrate_tur)
         mtr_write = serial.Serial(port=arduino_port_mtr, baudrate=arduino_baudrate_mtr)
+        print("HW output")
 
     # change state
     state = looking
@@ -166,6 +171,9 @@ def process_target_msg(command):
 def process_msg(read, msg_size, process_fcn):
     # read messages without trailing whitespace
     msg = (read.read(msg_size)).strip()
+
+    print(msg)
+
     if not msg:
         return False # no message received
     
