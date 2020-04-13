@@ -38,10 +38,6 @@ def nav(nav_write_input):
     global nav_write
 
     nav_write = nav_write_input
-
-    while (True):
-        msg("<FWD>")
-
     main()
 
 
@@ -61,6 +57,7 @@ def msg(command):
     # output the message
     try:
         nav_write.write(message)
+        print(message)
     except:
         sys.exit(0)  # broken pipe (driver has closed)
 
