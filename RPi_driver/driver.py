@@ -107,14 +107,14 @@ def send_msg_mtr(msg):
     # forward message to the Arduino (without timestamp)
     mtr_write.write(msg)
     if mtr_write == sys.stdout:
-        print("")
+        print(msg)
 
 
 def send_msg_tur(msg):
     # forward message to the Arduino (without timestamp)
     tur_write.write(msg)
     if tur_write == sys.stdout:
-        print("")
+        print(msg)
 
 
 def process_nav_msg(command):

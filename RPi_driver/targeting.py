@@ -65,7 +65,7 @@ def target(target_write_input):
 
         # get image data from the left and right cameras
         for packet in data_packets:
-            if packet.stream_name == 'left' #or packet.stream_name == 'right':
+            if packet.stream_name == 'left': #or packet.stream_name == 'right':
                 frame_bgr = packet.getData() # [Height, Width, Channel]
                 processed_frame = process_image(rame_bgr)
                 #cv2.imshow(packet.stream_name, processed_frame)
