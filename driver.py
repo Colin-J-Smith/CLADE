@@ -57,7 +57,6 @@ def init():
     # navigation pipe
     r, w = os.pipe()
     pid = os.fork()
-    print(pid)########################################
     if pid == 0: # child
         print("I am the child")
         os.close(r)
@@ -65,8 +64,6 @@ def init():
         nav(nav_write)
         sys.exit(0)
     os.close(w)
-
-    #os.close(r)#########################################
     nav_read = os.fdopen(r)
     
     # targeting pipe
