@@ -168,6 +168,9 @@ def process_target_msg(command):
 def process_msg(read, msg_size, process_fcn):
     # read messages without trailing whitespace
     msg = (read.read(msg_size)).strip()
+
+    print(mag)
+    
     if not msg:
         return False # no message received
     
