@@ -1,1 +1,0 @@
-# Luxonis Camera Development
