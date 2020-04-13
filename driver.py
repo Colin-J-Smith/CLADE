@@ -189,13 +189,13 @@ def process_msg(read, msg_size, process_fcn):
     #    the received messages will be old and clear the input buffer
     dt = received - sent
     if dt > 0.5:
-        read.flush()
+        return
     
     # route parsed message to the correct handler (nav or target).
     # depending on design, the driver might just forward messages from the
     #    modules to the Arduino with no additional processing
     process_fcn(words[0])
-    return True
+    return
 
 
 if __name__=="__main__":
