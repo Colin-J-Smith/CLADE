@@ -19,7 +19,7 @@ up = "UPP"
 down = "DWN"
 left = "LFT"
 right = "RGT"
-home = "HOM" # send HOM when target has been hit
+home = "<HOM>" # send HOM when target has been hit
 
 
 def target(target_write_input):
