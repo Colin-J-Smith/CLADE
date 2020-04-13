@@ -59,13 +59,14 @@ def init():
     pid = os.fork()
     print(pid)########################################
     if pid == 0: # child
+        print("I am the child")
         os.close(r)
         nav_write = os.fdopen(w, 'w')
         nav(nav_write)
         sys.exit(0)
     os.close(w)
 
-    os.close(r)#########################################
+    #os.close(r)#########################################
     nav_read = os.fdopen(r)
     
     # targeting pipe
