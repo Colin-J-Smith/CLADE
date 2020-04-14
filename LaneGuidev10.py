@@ -276,34 +276,34 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
         nav_point_x = int((left_x2 + right_x2) / 2)
         if left_line[0] > 250:
             with open(logfile, "a") as f:
-                print("lateral right", file=f)
+                print("two lines lateral right", file=f)
             command = "<RGT>"
         elif right_line[2] < 390:
             with open(logfile, "a") as f:
-                print("lateral left", file=f)
+                print("two lines lateral left", file=f)
             command = "<LFT>"
         elif nav_point_x > int(1.05 * mid):
             with open(logfile, "a") as f:
-                print("turn right", file=f)
+                print("two lines turn right", file=f)
             command = "<RRR>"
         elif nav_point_x < int(.95 * mid):
             with open(logfile, "a") as f:
-                print("turn left", file=f)
+                print("two lines turn left", file=f)
             command = "<LLL>"
         else:
             with open(logfile, "a") as f:
-                print("drive straight", file=f)
+                print("two lines drive straight", file=f)
             command = "<FWD>"
     elif len(right_line) > 0:
         right_x2 = right_line[0]
         nav_point_x = int(right_x2 - 200)
         if nav_point_x < int(mid):
             with open(logfile, "a") as f:
-                print("turn left", file=f)
+                print("right line turn left", file=f)
             command = "<LLL>"
         else:
             with open(logfile, "a") as f:
-                print("drive straight", file=f)
+                print("right line drive straight", file=f)
             command = "<FWD>"
     elif len(left_line) > 0:
         left_x2 = left_line[2]
@@ -311,11 +311,11 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
         nav_point_x = int(left_x2 + 200)
         if nav_point_x > int(mid):
             with open(logfile, "a") as f:
-                print("turn right", file=f)
+                print("left line turn right", file=f)
             command = "<RRR>"
         else:
             with open(logfile, "a") as f:
-                print("drive straight", file=f)
+                print("left line drive straight", file=f)
             command = "<FWD>"
     else:
         with open(logfile, "a") as f:
