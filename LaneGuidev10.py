@@ -192,7 +192,7 @@ def create_lanes(lane_edges, frame):
             if (AbsDistance_center <= 15) and (avg_center_line > detection_lane):
                 int_count += 1
             with open(logfile, "a") as f:
-                print("lane counter is ON - Abs Distance =", AbsDistance_center, "center_line =", avg_center_line, file=f)
+                print("lane counter is ON! - Abs Distance =", AbsDistance_center, "center_line =", avg_center_line, file=f)
 
     return right_line, left_line, center_line
 
