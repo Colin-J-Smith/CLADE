@@ -504,7 +504,7 @@ def create_intersection(intersection_edges, frame):
 
     with open(logfile, "a") as f:
         print("left_int:", left_int, "right_int:", right_int, file=f)
-        
+
     """ state modifier"""
     # state1 == 1 when the camera detects intersection lines and the bottom of those lines is low enough in the field
     # of view that the system can make a guidance decision with a high degree of confidence. This ensures we see the
@@ -522,9 +522,9 @@ def create_intersection(intersection_edges, frame):
     elif lines is not None:
         if len(left_int) > 0 and 200 < left_int[1] < 400:
             state1 = 1
-        elif len(quad3_int) > 0 and quad3_int[1] > 250:
+        elif len(quad3_int) > 0 and quad3_int[1] > 320:
             state1 = 1
-        elif right_int_count > 2 or (len(right_int) > 0 and 200 < right_int[3] < 400):
+        elif len(right_int) > 0 and 200 < right_int[3] < 400:
             state1 = 1
 
     return slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int
