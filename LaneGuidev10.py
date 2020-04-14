@@ -189,22 +189,10 @@ def create_lanes(lane_edges, frame):
         if intersection_state == 1:
             avg_center_line = (int(center_line[1]) + int(center_line[3])) / 2
             AbsDistance_center = abs(avg_center_line - detection_lane)
-
             if (AbsDistance_center <= 15) and (avg_center_line > detection_lane):
                 int_count += 1
-<<<<<<< HEAD
             with open(logfile, "a") as f:
-<<<<<<< HEAD
-<<<<<<< HEAD
                 print("lane counter is ON! - Abs Distance =", AbsDistance_center, "center_line =", avg_center_line, file=f)
-=======
->>>>>>> parent of 8c4efdd... tweaks
-=======
-                print("lane counter is ON - Abs Distance =", AbsDistance_center, "center_line =", avg_center_line, file=f)
->>>>>>> parent of 1b4d52c... tweaks
-=======
-                print("lane counter is ON - Abs Distance =", AbsDistance_center, "center_line =", avg_center_line, file=f)
->>>>>>> parent of 1b4d52c... tweaks
 
     return right_line, left_line, center_line
 
