@@ -282,11 +282,11 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
             with open(logfile, "a") as f:
                 print("two lines lateral left", file=f)
             command = "<LFT>"
-        elif nav_point_x > int(1.05 * mid):
+        elif nav_point_x > int(1.1 * mid):
             with open(logfile, "a") as f:
                 print("two lines turn right", file=f)
             command = "<RRR>"
-        elif nav_point_x < int(.95 * mid):
+        elif nav_point_x < int(.9 * mid):
             with open(logfile, "a") as f:
                 print("two lines turn left", file=f)
             command = "<LLL>"
