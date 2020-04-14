@@ -282,11 +282,11 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
             with open(logfile, "a") as f:
                 print("lateral left", file=f)
             command = "<LFT>"
-        elif nav_point_x > int(1.05 * mid):
+        elif nav_point_x > int(1.1 * mid):
             with open(logfile, "a") as f:
                 print("turn right", file=f)
             command = "<RRR>"
-        elif nav_point_x < int(.95 * mid):
+        elif nav_point_x < int(.9 * mid):
             with open(logfile, "a") as f:
                 print("turn left", file=f)
             command = "<LLL>"
@@ -629,7 +629,7 @@ def main():
 
         with open(logfile, "a") as q:
             print("intersection_state=", intersection_state, "state1=", state1,  file=q)
-        # show_test(lane_image)
+        show_test(lane_image)
 
         key_pressed = cv2.waitKey(1) & 0xFF          # Delay for key press to quit and frame rate (1 ms)
         if key_pressed == ord('q'):
