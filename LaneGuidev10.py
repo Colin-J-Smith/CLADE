@@ -296,7 +296,7 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
             command = "<FWD>"
     elif len(right_line) > 0:
         right_x2 = right_line[0]
-        nav_point_x = int(right_x2 - 220)
+        nav_point_x = int(right_x2 - 250)
         if nav_point_x < int(mid):
             with open(logfile, "a") as f:
                 print("right line turn left", file=f)
@@ -308,7 +308,7 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
     elif len(left_line) > 0:
         left_x2 = left_line[2]
         left_x1 = left_line[0]
-        nav_point_x = int(left_x2 + 220)
+        nav_point_x = int(left_x2 + 250)
         if nav_point_x > int(mid):
             with open(logfile, "a") as f:
                 print("left line turn right", file=f)
