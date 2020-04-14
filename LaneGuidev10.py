@@ -1,7 +1,7 @@
 # LaneGuidance Software
 # Version: 10!
 # Date Created: 2 Mar 2020
-# Last Modified: 6 April 2020
+# Last Modified:  6 April 2020
 
 
 # setup
@@ -257,7 +257,8 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
         left_x2 = left_line[2]
         right_x2 = right_line[0]
         nav_point_x = int((left_x2 + right_x2) / 2)
-        # print('turn around')
+        with open(logfile, "a") as f:
+            print("turn around", file=f)
         delay = delay_180
         turn = "<LLL>"
         start_turn = time.time()
@@ -274,41 +275,51 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
         right_x2 = right_line[0]
         nav_point_x = int((left_x2 + right_x2) / 2)
         if left_line[0] > 250:
-            # print("lateral right")
+            with open(logfile, "a") as f:
+                print("lateral right", file=f)
             command = "<RGT>"
         elif right_line[2] < 390:
-            # print("lateral left")
+            with open(logfile, "a") as f:
+                print("lateral left", file=f)
             command = "<LFT>"
         elif nav_point_x > int(1.1 * mid):
-            # print('turn right')
+            with open(logfile, "a") as f:
+                print("turn right", file=f)
             command = "<RRR>"
         elif nav_point_x < int(.9 * mid):
-            # print('turn left')
+            with open(logfile, "a") as f:
+                print("turn left", file=f)
             command = "<LLL>"
         else:
-            # print("drive straight")
+            with open(logfile, "a") as f:
+                print("drive straight", file=f)
             command = "<FWD>"
     elif len(right_line) > 0:
         right_x2 = right_line[0]
         nav_point_x = int(right_x2 - 150)
         if nav_point_x < int(mid):
-            # print('turn left')
+            with open(logfile, "a") as f:
+                print("turn left", file=f)
             command = "<LLL>"
         else:
-            # print('drive straight')
+            with open(logfile, "a") as f:
+                print("drive straight", file=f)
             command = "<FWD>"
     elif len(left_line) > 0:
         left_x2 = left_line[2]
         left_x1 = left_line[0]
         nav_point_x = int(left_x2 + 150)
         if nav_point_x > int(mid):
-            # print('turn right')
+            with open(logfile, "a") as f:
+                print("turn right", file=f)
             command = "<RRR>"
         else:
-            # print('drive straight')
+            with open(logfile, "a") as f:
+                print("drive straight", file=f)
             command = "<FWD>"
     else:
-        # print("no lines detected")
+        with open(logfile, "a") as f:
+            print("no lines detected - drive straight", file=f)
         command = "<FWD>"
 
     cv2.line(lane_image, (mid, height), (nav_point_x, int(height/2)), [0, 255, 255], 10)
@@ -534,7 +545,8 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
         delay = delay_0
 
     # for testing
-    # print('guidance decision is:', turn)
+    with open(logfile, "a") as f:
+        print("guidance decision is:", turn, file=f)
 
     intersection_state = 1
 
@@ -543,6 +555,7 @@ def main():
     global state1
     global intersection_state
     global int_count
+    global logfile
 
     # initialize the camera and grab a reference to the raw camera capture
     camera = PiCamera()
@@ -551,6 +564,8 @@ def main():
     camera.framerate = 10
     rawCapture = PiRGBArray(camera, size=(640, 480))
 
+    now = datetime.now()
+    logfile = str("log") + str(now) + str(".txt")
     # allow the camera to warmup
     time.sleep(0.1)
 
@@ -574,9 +589,6 @@ def main():
 
         frame = cv2.remap(raw_frame, map_x, map_y, cv2.INTER_LINEAR)
 
-        # cv2.namedWindow('frame', cv2.WINDOW_AUTOSIZE)  # create a window
-        # cv2.imshow('frame', frame)  # show the image in that window
-
         lane_vertices = lane_roi(frame)
         lane_edges = process_lanes(frame, lane_vertices)
         right_line, left_line, center_line = create_lanes(lane_edges, frame)
@@ -599,11 +611,13 @@ def main():
         elif intersection_state == 1:
             command = "<FWD>"
             msg(command)
-            # print("drive", command)
-            # print("int count is:", int_count)
+            with open(logfile, "a") as q:
+                print("drive", command, file=q)
+                print("int count is:", int_count, file=q)
         elif intersection_state == 2:
             # execute decision and reset all states
-            # print("Go", turn)
+            with open(logfile, "a") as q:
+                print("Go", turn)
             # pause execution of decisions until turn has been completed
             start_turn = time.time()
             while int(time.time() - start_turn) < delay:
@@ -613,6 +627,8 @@ def main():
             intersection_state = 0
             int_count = 0
 
+        with open(logfile, "a") as q:
+            print("intersection_state=", intersection_state, "state1=", state1,  file=q)
         # show_test(lane_image)
 
         key_pressed = cv2.waitKey(1) & 0xFF          # Delay for key press to quit and frame rate (1 ms)
