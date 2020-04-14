@@ -194,9 +194,13 @@ def create_lanes(lane_edges, frame):
                 int_count += 1
 <<<<<<< HEAD
             with open(logfile, "a") as f:
+<<<<<<< HEAD
                 print("lane counter is ON! - Abs Distance =", AbsDistance_center, "center_line =", avg_center_line, file=f)
 =======
 >>>>>>> parent of 8c4efdd... tweaks
+=======
+                print("lane counter is ON - Abs Distance =", AbsDistance_center, "center_line =", avg_center_line, file=f)
+>>>>>>> parent of 1b4d52c... tweaks
 
     return right_line, left_line, center_line
 
