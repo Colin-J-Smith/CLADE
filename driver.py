@@ -108,14 +108,14 @@ def shoot(): # if shooting, ignore navigation commands
 
 def send_msg_mtr(msg):
     # forward message to the Arduino (without timestamp)
-    mtr_write.write(msg)
+    mtr_write.write(msg.encode('utf-8'))
     if mtr_write == sys.stdout:
         print("")
 
 
 def send_msg_tur(msg):
     # forward message to the Arduino (without timestamp)
-    tur_write.write(msg)
+    tur_write.write(msg.encode('utf-8'))
     if tur_write == sys.stdout:
         print("")
 
