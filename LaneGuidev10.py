@@ -357,7 +357,7 @@ def process_intersection(frame, intersection_vertices):
     # Convert image to grayscale and HSV, and filter out colors that aren't purple"
     gray = cv2.cvtColor(ROI, cv2.COLOR_BGR2GRAY)
     processed_hsv = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
-    lower_purple = np.array([140, 125, 50], dtype=int)
+    lower_purple = np.array([140, 70, 50], dtype=int)
     upper_purple = np.array([170, 255, 240], dtype=int)
     mask_purple = cv2.inRange(processed_hsv, lower_purple, upper_purple)
     processed = cv2.bitwise_and(gray, mask_purple)
