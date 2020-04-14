@@ -26,6 +26,8 @@ state1 = 0
 int_count = 0
 nav_write = sys.stdout
 nav_msg_size = 50
+right_int_count = 0
+left_int_count = 0
 
 # delay timers
 delay_90 = 3
@@ -382,6 +384,8 @@ def create_intersection(intersection_edges, frame):
     global intersection_state
     global state1
     global int_count
+    global left_int_count
+    global right_int_count
 
     # Hough Lines for intersection
     lines = cv2.HoughLinesP(intersection_edges, rho=1, theta=np.pi / 180, threshold=50, minLineLength=30, maxLineGap=70)
@@ -438,6 +442,7 @@ def create_intersection(intersection_edges, frame):
         x2 = int(left_fit_avg[2])
         y2 = int(left_fit_avg[3])
         left_int = [x1, y1, x2, y2]
+        left_int_count += 1
     left_int = np.array(left_int)
 
     if len(right_fit) > 0:
@@ -447,6 +452,7 @@ def create_intersection(intersection_edges, frame):
         x2 = int(right_fit_avg[2])
         y2 = int(right_fit_avg[3])
         right_int = [x1, y1, x2, y2]
+        right_int_count += 1
     right_int = np.array(right_int)
 
     if len(quad1) > 0:
@@ -510,11 +516,11 @@ def create_intersection(intersection_edges, frame):
         if int_count == 2:
             intersection_state = 2
     elif lines is not None:
-        if len(left_int) > 0 and 200 < left_int[1] < 400:
+        if left_int_count > 2 or (len(left_int) > 0 and 200 < left_int[1] < 400):
             state1 = 1
         elif len(quad3_int) > 0 and quad3_int[1] > 250:
             state1 = 1
-        elif len(right_int) > 0 and 200 < right_int[3] < 400:
+        elif right_int_count > 2 or (len(right_int) > 0 and 200 < right_int[3] < 400):
             state1 = 1
 
     return slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int
@@ -561,7 +567,7 @@ def main():
     camera = PiCamera()
     camera.resolution = (640, 480)
     camera.rotation = 180
-    camera.framerate = 12
+    camera.framerate = 16
     rawCapture = PiRGBArray(camera, size=(640, 480))
 
     now = datetime.now()
