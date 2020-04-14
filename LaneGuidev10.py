@@ -282,11 +282,11 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
             with open(logfile, "a") as f:
                 print("lateral left", file=f)
             command = "<LFT>"
-        elif nav_point_x > int(1.1 * mid):
+        elif nav_point_x > int(1.05 * mid):
             with open(logfile, "a") as f:
                 print("turn right", file=f)
             command = "<RRR>"
-        elif nav_point_x < int(.9 * mid):
+        elif nav_point_x < int(.95 * mid):
             with open(logfile, "a") as f:
                 print("turn left", file=f)
             command = "<LLL>"
@@ -296,7 +296,7 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
             command = "<FWD>"
     elif len(right_line) > 0:
         right_x2 = right_line[0]
-        nav_point_x = int(right_x2 - 150)
+        nav_point_x = int(right_x2 - 200)
         if nav_point_x < int(mid):
             with open(logfile, "a") as f:
                 print("turn left", file=f)
@@ -308,7 +308,7 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
     elif len(left_line) > 0:
         left_x2 = left_line[2]
         left_x1 = left_line[0]
-        nav_point_x = int(left_x2 + 150)
+        nav_point_x = int(left_x2 + 200)
         if nav_point_x > int(mid):
             with open(logfile, "a") as f:
                 print("turn right", file=f)
@@ -561,7 +561,7 @@ def main():
     camera = PiCamera()
     camera.resolution = (640, 480)
     camera.rotation = 180
-    camera.framerate = 16
+    camera.framerate = 24
     rawCapture = PiRGBArray(camera, size=(640, 480))
 
     now = datetime.now()
