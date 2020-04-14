@@ -517,7 +517,7 @@ def create_intersection(intersection_edges, frame):
         if int_count == 2:
             intersection_state = 2
     elif lines is not None:
-        if left_int_count > 2 or (len(left_int) > 0 and 200 < left_int[1] < 400):
+        if len(left_int) > 0 and 200 < left_int[1] < 400:
             state1 = 1
         elif len(quad3_int) > 0 and quad3_int[1] > 250:
             state1 = 1
@@ -538,7 +538,7 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
     turn_left = 0
     priority = turn_left
 
-    if len(left_int) > 0 and priority == 0:
+    if left_int_count > 1 or len(left_int) > 0:
         turn = "<LLL>"
         delay = delay_90
     elif len(quad1_int) > 0 or len(quad2_int) > 0 or len(quad3_int) > 0 or len(quad4_int) > 0:
@@ -548,6 +548,8 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
         turn = "<RRR>"
         delay = delay_90
     else:
+        with open(logfile, "a") as f:
+            print("guidance decisions aren't working", turn, file=f)
         turn = "<FWD>"
         delay = delay_0
 
