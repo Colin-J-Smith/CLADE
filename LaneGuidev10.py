@@ -366,15 +366,13 @@ def process_intersection(frame, intersection_vertices):
     kernel_size = 3
 
     processed = cv2.GaussianBlur(processed, (kernel_size, kernel_size), 0)
-    cv2.namedWindow('processed', cv2.WINDOW_AUTOSIZE)  # create a window
-    cv2.imshow('processed', processed)  # show the image in that window
+
     # detect edges in the image
     low_threshold = 50
     high_threshold = 150
 
     intersection_edges = cv2.Canny(processed, low_threshold, high_threshold)
-    cv2.namedWindow('edges', cv2.WINDOW_AUTOSIZE)  # create a window
-    cv2.imshow('edges', intersection_edges)  # show the image in that window
+
     return intersection_edges
 
 
@@ -603,9 +601,6 @@ def main():
 
         frame = cv2.remap(raw_frame, map_x, map_y, cv2.INTER_LINEAR)
 
-        cv2.namedWindow('frame', cv2.WINDOW_AUTOSIZE)  # create a window
-        cv2.imshow('frame', frame)  # show the image in that window
-
         lane_vertices = lane_roi(frame)
         lane_edges = process_lanes(frame, lane_vertices)
         right_line, left_line, center_line = create_lanes(lane_edges, frame)
@@ -646,7 +641,7 @@ def main():
 
         with open(logfile, "a") as q:
             print("intersection_state=", intersection_state, "state1=", state1,  file=q)
-        show_test(lane_image)
+        # show_test(lane_image)
 
         key_pressed = cv2.waitKey(1) & 0xFF          # Delay for key press to quit and frame rate (1 ms)
         if key_pressed == ord('q'):
