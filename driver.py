@@ -87,15 +87,6 @@ def init():
         mtr_write = serial.Serial(port=arduino_port_mtr, baudrate=arduino_baudrate_mtr)
         print("HW output")
 
-    while (True):
-        msg = nav_read.read(nav_msg_size)
-        print(msg)
-
-        msg = target_read.read(target_msg_size)
-        print(msg)
-        
-    sys.exit(0)
-
     # change state
     state = looking
 
@@ -119,14 +110,14 @@ def send_msg_mtr(msg):
     # forward message to the Arduino (without timestamp)
     mtr_write.write(msg)
     if mtr_write == sys.stdout:
-        print(msg)
+        print("")
 
 
 def send_msg_tur(msg):
     # forward message to the Arduino (without timestamp)
     tur_write.write(msg)
     if tur_write == sys.stdout:
-        print(msg)
+        print("")
 
 
 def process_nav_msg(command):
