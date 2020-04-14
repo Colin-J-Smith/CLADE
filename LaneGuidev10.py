@@ -494,16 +494,19 @@ def create_intersection(intersection_edges, frame):
 
     # Count the number of horizontal intersection lines that pass through the detection lane at the bottom of the screen
     # by adding 1 to the int count
-    detection_lane = 320
+    detection_lane = 300
     if len(quad3_int) > 0:
         avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
         if intersection_state == 1:
             if AbsDistance <= 20 and avg_y > detection_lane:
                 int_count += 1
+            with open(logfile, "a") as f:
+                print("intersection counter is ON! - Abs Distance =", AbsDistance, "center_line =", avg_y, file=f)
 
     with open(logfile, "a") as f:
         print("left_int:", left_int, "right_int:", right_int, "quad3int:", quad3_int, file=f)
+
 
     """ state modifier"""
     # state1 == 1 when the camera detects intersection lines and the bottom of those lines is low enough in the field
