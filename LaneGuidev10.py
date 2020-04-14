@@ -183,13 +183,13 @@ def create_lanes(lane_edges, frame):
 
         # this is a detection lane at 400 pixels down from the top of the screen (out of 480) that will assist counting
         # when a center line crosses
-        detection_lane = 360  # may need to be tweaked
+        detection_lane = 300  # may need to be tweaked
         # count the number of times a center line crosses the detection lane
         # two int_counts lets the robot know its in the center of an intersection
         if intersection_state == 1:
             avg_center_line = (int(center_line[1]) + int(center_line[3])) / 2
             AbsDistance_center = abs(avg_center_line - detection_lane)
-            if (AbsDistance_center <= 15) and (avg_center_line > detection_lane):
+            if AbsDistance_center <= 20:
                 int_count += 1
             with open(logfile, "a") as f:
                 print("lane counter is ON! - Abs Distance =", AbsDistance_center, "center_line =", avg_center_line, file=f)
