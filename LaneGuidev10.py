@@ -492,7 +492,7 @@ def create_intersection(intersection_edges, frame):
         avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
         if intersection_state == 1:
-            if (AbsDistance <= 7) and (avg_y > detection_lane):
+            if (AbsDistance <= 10) and (avg_y > detection_lane):
                 int_count += 1
 
     """ state modifier"""
@@ -510,11 +510,11 @@ def create_intersection(intersection_edges, frame):
         if int_count == 2:
             intersection_state = 2
     elif lines is not None:
-        if len(left_int) > 0 and 300 < left_int[1] < 400:
+        if len(left_int) > 0 and 200 < left_int[1] < 400:
             state1 = 1
-        elif len(quad3_int) > 0 and quad3_int[1] > 300:
+        elif len(quad3_int) > 0 and quad3_int[1] > 250:
             state1 = 1
-        elif len(right_int) > 0 and 300 < right_int[3] < 400:
+        elif len(right_int) > 0 and 200 < right_int[3] < 400:
             state1 = 1
 
     return slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int
@@ -561,7 +561,7 @@ def main():
     camera = PiCamera()
     camera.resolution = (640, 480)
     camera.rotation = 180
-    camera.framerate = 10
+    camera.framerate = 16
     rawCapture = PiRGBArray(camera, size=(640, 480))
 
     now = datetime.now()
