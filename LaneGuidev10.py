@@ -57,7 +57,6 @@ def msg(command):
     # output the message
     try:
         nav_write.write(message)
-        print(message)
         nav_write.flush()
     except:
         sys.exit(0)  # broken pipe (driver has closed)
@@ -549,7 +548,7 @@ def main():
     camera = PiCamera()
     camera.resolution = (640, 480)
     camera.rotation = 180
-    camera.framerate = 2
+    camera.framerate = 6
     rawCapture = PiRGBArray(camera, size=(640, 480))
 
     # allow the camera to warmup
@@ -575,8 +574,8 @@ def main():
 
         frame = cv2.remap(raw_frame, map_x, map_y, cv2.INTER_LINEAR)
 
-        cv2.namedWindow('frame', cv2.WINDOW_AUTOSIZE)  # create a window
-        cv2.imshow('frame', frame)  # show the image in that window
+        # cv2.namedWindow('frame', cv2.WINDOW_AUTOSIZE)  # create a window
+        # cv2.imshow('frame', frame)  # show the image in that window
 
         lane_vertices = lane_roi(frame)
         lane_edges = process_lanes(frame, lane_vertices)
@@ -614,7 +613,7 @@ def main():
             intersection_state = 0
             int_count = 0
 
-        show_test(lane_image)
+        # show_test(lane_image)
 
         key_pressed = cv2.waitKey(1) & 0xFF          # Delay for key press to quit and frame rate (1 ms)
         if key_pressed == ord('q'):
