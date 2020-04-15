@@ -131,7 +131,6 @@ def main():
     frame = cv2.imread(input_img)
     frame = cv2.resize(frame, (720,960))
 
-    print(sizeof(frame))
 
     print(frame[0])
     print()
