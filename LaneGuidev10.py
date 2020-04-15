@@ -40,6 +40,8 @@ def nav(nav_write_input):
     global nav_write
 
     nav_write = nav_write_input
+    while (True):
+        msg("<FWD>")
     main()
 
 
