@@ -66,7 +66,7 @@ def target(target_write_input):
 
         # get image data from the left and right cameras
         for packet in data_packets:
-            if packet.stream_name == 'left': #or packet.stream_name == 'right':
+            if packet.stream_name == 'previewout':
                 frame_bgr = packet.getData() # [Height, Width, Channel]
                 print(len(frame_bgr[0]))
                 print(len(frame_bgr[1]))
