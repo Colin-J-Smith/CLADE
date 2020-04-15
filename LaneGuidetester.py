@@ -588,7 +588,7 @@ def main():
     now = datetime.now()
     logfile = str("log") + str(now) + str(".txt")
     # allow the camera to warmup
-    time.sleep(0.1)
+    time.sleep(1)
 
     # camera distortion corrections
     k = np.array([[243.48186479, 0., 305.08168044],
