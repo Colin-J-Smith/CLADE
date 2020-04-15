@@ -73,7 +73,7 @@ def target(target_write_input):
                 data2 = data[2,:,:]
                 frame_bgr = cv2.merge([data0, data1, data2])
                 #cv2.imshow(packet.stream_name,frame_bgr)
-                processed_frame = process_image(frame_bgr[2])
+                processed_frame = process_image(frame_bgr)
                 cv2.imshow(packet.stream_name, processed_frame)
 
         if cv2.waitKey(1) == ord('q'):
