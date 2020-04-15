@@ -66,14 +66,19 @@ def target(target_write_input):
 
         # get image data from the left and right cameras
         for packet in data_packets:
-            if packet.stream_name == 'depth_color_h':
-                frame_bgr = packet.getData() # [Height, Width, Channel]
+            if packet.stream_name == 'previewout':
+                data = packet.getData() # [Height, Width, Channel]
+                data0 = data[0,:,:]
+                data1 = data[1,:,:]
+                data2 = data[2,:,:]
+                frame_bgr = cv2.merge([data0, data1, data2])
                 print(len(frame_bgr[0]))
                 print(len(frame_bgr[1]))
                 print(len(frame_bgr[2]))
                 print(len(frame_bgr))
                 print(frame_bgr)
                 cv2.imshow(packet.stream_name,frame_bgr)
+                return
                 #processed_frame = process_image(frame_bgr[2])
                 #cv2.imshow(packet.stream_name, processed_frame)
 
