@@ -24,8 +24,8 @@ def relative_to_abs_path(relative_path):
     dirname = Path(__file__).parent
     return str((dirname / relative_path).resolve())
 
-device_cmd_file    = relative_to_abs_path('depthai.cmd')
-blob_file          = relative_to_abs_path('mobilenet_ssd.blob')
+device_cmd_file    = relative_to_abs_path('luxonis_resources/depthai.cmd')
+blob_file          = relative_to_abs_path('luxonis_resources/mobilenet_ssd.blob')
 
 
 # --------------------------
