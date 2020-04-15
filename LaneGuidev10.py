@@ -31,7 +31,7 @@ left_int_count = 0
 
 # delay timers
 delay_90 = 2
-delay_180 = 6
+delay_180 = 4
 delay_0 = 1
 
 
