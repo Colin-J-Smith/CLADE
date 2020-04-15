@@ -93,6 +93,8 @@ def send_msg(command):
 def command_from_target_location(dx, dy):
     send_msg(stop) # command wheels to stop if target is found
     
+    print("Found target at ({}, {})".format(dx, dy))
+
     if dx + offsetX > tolX: # center is in right side of image
         send_msg(left)
     elif dx + offsetX < -tolX:
