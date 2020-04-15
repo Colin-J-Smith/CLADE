@@ -68,7 +68,9 @@ def target(target_write_input):
         for packet in data_packets:
             if packet.stream_name == 'left': #or packet.stream_name == 'right':
                 frame_bgr = packet.getData() # [Height, Width, Channel]
-                print(frame_bgr)
+                print(frame_bgr[0])
+                print(frame_bgr[1])
+                print(frame_bgr[2])
                 processed_frame = process_image(frame_bgr[2])
                 #cv2.imshow(packet.stream_name, processed_frame)
 
