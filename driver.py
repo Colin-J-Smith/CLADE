@@ -54,14 +54,17 @@ def driver():
 def init():
     global state, nav_read, target_read, mtr_write, tur_write
 
+    # Fork the driver process into 3 separate processes, 
+    # 2 child processes running targeting and nav, and 
+    # one parent process handing hardware comms
+
     # navigation pipe
     r, w = os.pipe()
     pid = os.fork()
     if pid == 0: # child
-        print("I am the child")
         os.close(r)
         nav_write = os.fdopen(w, 'w')
-        nav(nav_write)
+        nav(nav_write) # run the navigation
         sys.exit(0)
     os.close(w)
     nav_read = os.fdopen(r)
@@ -72,7 +75,7 @@ def init():
     if pid == 0: # child
         os.close(r)
         target_write = os.fdopen(w, 'w')
-        target(target_write)
+        target(target_write) # run the targeting
         sys.exit(0)
     os.close(w)
     target_read = os.fdopen(r)
@@ -102,7 +105,7 @@ def turn(): # if turning, ignore targeting commands
 
 
 def shoot(): # if shooting, ignore navigation commands
-    nav_read.fush()
+    nav_read.flush()
     process_msg(target_read, target_msg_size, process_target_msg)
 
 
