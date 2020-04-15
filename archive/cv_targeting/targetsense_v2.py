@@ -131,6 +131,18 @@ def main():
     frame = cv2.imread(input_img)
     frame = cv2.resize(frame, (720,960))
 
+    print(sizeof(frame))
+
+    print(frame[0])
+    print()
+    print(frame[1])
+    print()
+    print(frame[2])
+
+
+    import sys
+    sys.exit(0)
+    
     # get all red and green contours from the image
     bad_guy_contours, good_guy_contours = process_targets(frame)
 
