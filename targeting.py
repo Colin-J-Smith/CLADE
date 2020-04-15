@@ -36,6 +36,7 @@ def send_msg(command):
     
     try:
         target_write.write(msg)
+        target_write.flush()
     except:
         sys.exit(0)
 

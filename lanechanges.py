@@ -30,7 +30,7 @@ right_int_count = 0
 left_int_count = 0
 
 # delay timers
-delay_90 = 2
+delay_90 = 3
 delay_180 = 6
 delay_0 = 1
 
@@ -183,13 +183,13 @@ def create_lanes(lane_edges, frame):
 
         # this is a detection lane at 400 pixels down from the top of the screen (out of 480) that will assist counting
         # when a center line crosses
-        detection_lane = 300  # may need to be tweaked
+        detection_lane = 250  # may need to be tweaked
         # count the number of times a center line crosses the detection lane
         # two int_counts lets the robot know its in the center of an intersection
         if intersection_state == 1:
             avg_center_line = (int(center_line[1]) + int(center_line[3])) / 2
             AbsDistance_center = abs(avg_center_line - detection_lane)
-            if AbsDistance_center <= 50:
+            if (AbsDistance_center <= 15) and (avg_center_line > detection_lane):
                 int_count += 1
             with open(logfile, "a") as f:
                 print("lane counter is ON! - Abs Distance =", AbsDistance_center, "center_line =", avg_center_line, file=f)
@@ -357,7 +357,7 @@ def process_intersection(frame, intersection_vertices):
     # Convert image to grayscale and HSV, and filter out colors that aren't purple"
     gray = cv2.cvtColor(ROI, cv2.COLOR_BGR2GRAY)
     processed_hsv = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
-    lower_purple = np.array([140, 35, 50], dtype=int)
+    lower_purple = np.array([140, 125, 50], dtype=int)
     upper_purple = np.array([170, 255, 240], dtype=int)
     mask_purple = cv2.inRange(processed_hsv, lower_purple, upper_purple)
     processed = cv2.bitwise_and(gray, mask_purple)
@@ -389,7 +389,7 @@ def create_intersection(intersection_edges, frame):
     global right_int_count
 
     # Hough Lines for intersection
-    lines = cv2.HoughLinesP(intersection_edges, rho=1, theta=np.pi / 360, threshold=50, minLineLength=30, maxLineGap=70)
+    lines = cv2.HoughLinesP(intersection_edges, rho=1, theta=np.pi / 180, threshold=50, minLineLength=30, maxLineGap=70)
     line_image = np.zeros_like(frame)
 
     # Create Main Lines by averaging all detected hough lines for intersection
@@ -499,14 +499,8 @@ def create_intersection(intersection_edges, frame):
         avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
         if intersection_state == 1:
-            if AbsDistance <= 20 and avg_y > detection_lane:
+            if (AbsDistance <= 10) and (avg_y > detection_lane):
                 int_count += 1
-            with open(logfile, "a") as f:
-                print("intersection counter is ON! - Abs Distance =", AbsDistance, "center_line =", avg_y, file=f)
-
-    with open(logfile, "a") as f:
-        print("left_int:", left_int, "right_int:", right_int, "quad3int:", quad3_int, file=f)
-
 
     """ state modifier"""
     # state1 == 1 when the camera detects intersection lines and the bottom of those lines is low enough in the field
@@ -523,11 +517,11 @@ def create_intersection(intersection_edges, frame):
         if int_count == 2:
             intersection_state = 2
     elif lines is not None:
-        if len(left_int) > 0 and 200 < left_int[1] < 400:
+        if left_int_count > 2 or (len(left_int) > 0 and 200 < left_int[1] < 400):
             state1 = 1
-        elif len(quad3_int) > 0 and quad3_int[1] > 320:
+        elif len(quad3_int) > 0 and quad3_int[1] > 250:
             state1 = 1
-        elif len(right_int) > 0 and 200 < right_int[3] < 400:
+        elif right_int_count > 2 or (len(right_int) > 0 and 200 < right_int[3] < 400):
             state1 = 1
 
     return slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int
@@ -544,7 +538,7 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
     turn_left = 0
     priority = turn_left
 
-    if left_int_count > 1 or len(left_int) > 0:
+    if len(left_int) > 0 and priority == 0:
         turn = "<LLL>"
         delay = delay_90
     elif len(quad1_int) > 0 or len(quad2_int) > 0 or len(quad3_int) > 0 or len(quad4_int) > 0:
@@ -554,8 +548,6 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
         turn = "<RRR>"
         delay = delay_90
     else:
-        with open(logfile, "a") as f:
-            print("guidance decisions aren't working", turn, file=f)
         turn = "<FWD>"
         delay = delay_0
 

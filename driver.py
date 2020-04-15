@@ -35,7 +35,7 @@ arduino_port_mtr = "/dev/ttyUSB0"
 arduino_baudrate_mtr = 9600
 
 # testing variables
-testing_pi_driver = True
+testing_pi_driver = False
 
 def driver():
     while True:
@@ -111,16 +111,16 @@ def shoot(): # if shooting, ignore navigation commands
 
 def send_msg_mtr(msg):
     # forward message to the Arduino (without timestamp)
-    mtr_write.write(msg)
+    mtr_write.write(msg.encode('utf-8'))
     if mtr_write == sys.stdout:
-        print(msg)
+        print("")
 
 
 def send_msg_tur(msg):
     # forward message to the Arduino (without timestamp)
-    tur_write.write(msg)
+    tur_write.write(msg.encode('utf-8'))
     if tur_write == sys.stdout:
-        print(msg)
+        print("")
 
 
 def process_nav_msg(command):
@@ -172,11 +172,6 @@ def process_target_msg(command):
 def process_msg(read, msg_size, process_fcn):
     # read messages without trailing whitespace
     msg = (read.read(msg_size)).strip()
-
-    print(msg)
-
-    if not msg:
-        return False # no message received
     
     # get the message receive time
     received = float(datetime.now().strftime('%S.%f'))
