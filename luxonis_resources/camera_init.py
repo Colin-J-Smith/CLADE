@@ -36,7 +36,8 @@ def camera_init(streams=None, configs=None):
 
     # output streams: left, right, previewout, metaout, disparity, depth_sipp, depth_color_h
     if streams is None:
-        streams = ['left', 'right', 'previewout'] # make sure to always put 'left' first
+        #streams = ['left', 'right', 'previewout'] # make sure to always put 'left' first
+        streams = ['left', 'previewout'] # make sure to always put 'left' first
  
     # camera configs
     if configs is None:
