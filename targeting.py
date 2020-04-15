@@ -43,8 +43,8 @@ upper_red2 = np.array([180, 255, 255], dtype=int)
 lower_green = np.array([30, 100, 50], dtype=int)
 upper_green = np.array([90, 255, 255], dtype=int)
 
-# TODO
 # targeting callibration
+target_threshold = 5000
 tolX = 5    # tolerance for x "center" of image, in pixels
 tolY = 5    # tolerance for y "center" of image, in pixels
 offsetX = 0 # x-offset of center of image from center of robot, in pixels
@@ -102,17 +102,17 @@ def command_from_target_location(dx, dy):
     
     print("Found target at ({}, {})".format(dx, dy))
 
-    if dx + offsetX > tolX: # center is in right side of image
-        send_msg(left)
-    elif dx + offsetX < -tolX:
+    if dx + offsetX > tolX:
         send_msg(right)
+    elif dx + offsetX < -tolX:
+        send_msg(left)
     else:
         shoot = True
     
-    if dy + offsetY > tolY: # center is in top half
-        send_msg(down)
-    elif dy + offsetY < -tolY:
+    if dy + offsetY > tolY:
         send_msg(up)
+    elif dy + offsetY < -tolY:
+        send_msg(down)
     elif shoot == True:
         send_msg(fire)
 
@@ -214,7 +214,7 @@ def process_image(frame):
     largest_contour_good, good_size = get_largest_contour(good_guy_contours)
 
     # if the largest contours are too small, assume no target has been found
-    if bad_size < 8000 and good_size < 8000:
+    if bad_size < target_threshold and good_size < target_threshold:
         contour_img = draw_no_target(frame)
         send_msg(home)
         
