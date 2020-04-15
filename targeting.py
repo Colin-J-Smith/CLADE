@@ -97,6 +97,7 @@ def send_msg(command):
 
 
 def command_from_target_location(dx, dy):
+    shoot = False
     send_msg(stop) # command wheels to stop if target is found
     
     print("Found target at ({}, {})".format(dx, dy))
@@ -105,11 +106,15 @@ def command_from_target_location(dx, dy):
         send_msg(left)
     elif dx + offsetX < -tolX:
         send_msg(right)
+    else:
+        shoot = True
     
     if dy + offsetY > tolY: # center is in top half
         send_msg(down)
     elif dy + offsetY < -tolY:
         send_msg(up)
+    elif shoot == True:
+        send_msg(fire)
 
 
 # --------------------------
