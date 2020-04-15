@@ -57,6 +57,7 @@ offsetY = 0 # y-offset of center of image from center of robot, in pixels
 
 def target(target_write_input):
     global target_write, pipeline
+    i = 0
     target_write = target_write_input
     pipeline = camera_init()
     while True:

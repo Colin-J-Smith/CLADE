@@ -10,7 +10,7 @@
 # IMPORTS
 # --------------------------
 
-import depthai as depthai
+import depthai
 import os
 from os import path
 from pathlib import Path
