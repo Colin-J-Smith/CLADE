@@ -104,11 +104,11 @@ def command_from_target_location(dx, dy):
     print("Found target at ({}, {})".format(dx, dy))
 
     if dx + offsetX > tolX:
-        send_msg(right)
-        print("right")
-    elif dx + offsetX < -tolX:
         send_msg(left)
         print("left")
+    elif dx + offsetX < -tolX:
+        send_msg(right)
+        print("right")
     else:
         shoot = True
     
