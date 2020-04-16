@@ -90,7 +90,7 @@ def send_msg(command):
     try:
         target_write.write(msg)
         import time
-        time.sleep(0.01)
+        time.sleep(0.05)
     except:
         sys.exit(0)
 
