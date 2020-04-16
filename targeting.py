@@ -23,7 +23,7 @@ from camera_init import camera_init
 # GLOBALS
 # --------------------------
 
-global target_write, pipeline
+global target_write
 target_msg_size = 50
 
 # commands
@@ -56,7 +56,7 @@ offsetY = 0 # y-offset of center of image from center of robot, in pixels
 # --------------------------
 
 def target(target_write_input, pipeline_input):
-    global target_write, pipeline
+    global target_write
     i = 0
     target_write = target_write_input
     pipeline = pipeline_input
@@ -238,4 +238,6 @@ def process_image(frame):
 
 
 if __name__=="__main__":
-    target(sys.stdout)
+    pipeline = camera_init()
+    target(sys.stdout, pipeline)
+
