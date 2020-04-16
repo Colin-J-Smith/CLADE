@@ -47,7 +47,7 @@ upper_green = np.array([90, 255, 255], dtype=int)
 target_threshold = 5000
 tolX = 5    # tolerance for x "center" of image, in pixels
 tolY = 5    # tolerance for y "center" of image, in pixels
-offsetX = 0 # x-offset of center of image from center of robot, in pixels
+offsetX = -4 # x-offset of center of image from center of robot, in pixels
 offsetY = 0 # y-offset of center of image from center of robot, in pixels
 
 
