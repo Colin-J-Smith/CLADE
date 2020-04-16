@@ -55,12 +55,11 @@ offsetY = 0 # y-offset of center of image from center of robot, in pixels
 # SUBSYSTEM FUNCTIONS
 # --------------------------
 
-def target(target_write_input, pipeline_input):
+def target(target_write_input):
     global target_write
     i = 0
     target_write = target_write_input
-    pipeline = pipeline_input
-    #pipeline = camera_init()
+    pipeline = camera_init()
     while True:
         # retreive data from the device (data is stored in packets)
         data_packets = pipeline.get_available_data_packets()
@@ -238,6 +237,4 @@ def process_image(frame):
 
 
 if __name__=="__main__":
-    pipeline = camera_init()
-    target(sys.stdout, pipeline)
-
+    target(sys.stdout)
