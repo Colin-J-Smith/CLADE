@@ -45,10 +45,10 @@ upper_green = np.array([90, 255, 255], dtype=int)
 
 # targeting callibration
 target_threshold = 5000
-tolX = 5    # tolerance for x "center" of image, in pixels
-tolY = 5    # tolerance for y "center" of image, in pixels
-offsetX = -4 # x-offset of center of image from center of robot, in pixels
-offsetY = 0 # y-offset of center of image from center of robot, in pixels
+tolX = 5       # tolerance for x "center" of image, in pixels
+tolY = 5       # tolerance for y "center" of image, in pixels
+offsetX = -5   # x-offset of center of image from center of robot, in pixels
+offsetY = -40  # y-offset of center of image from center of robot, in pixels
 
 
 # --------------------------
@@ -89,6 +89,8 @@ def send_msg(command):
     
     try:
         target_write.write(msg)
+        import time
+        time.sleep(0.01)
     except:
         sys.exit(0)
 
