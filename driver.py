@@ -15,6 +15,9 @@ from datetime import datetime
 from LaneGuidev10 import nav, nav_msg_size
 from targeting import target, target_msg_size
 
+import luxonis_resources.depthai as depthai
+from camera_init import camera_init
+
 # states
 initializing = 0
 looking = 1
@@ -75,7 +78,8 @@ def init():
     if pid == 0: # child
         os.close(r)
         target_write = os.fdopen(w, 'w')
-        target(target_write) # run the targeting
+        pipeline = camera_init()
+        target(target_write, pipeline) # run the targeting
         sys.exit(0)
     os.close(w)
     target_read = os.fdopen(r)
