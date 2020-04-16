@@ -41,7 +41,7 @@ def nav(nav_write_input):
 
     nav_write = nav_write_input
     while (True):
-        msg("<FWD>")
+        msg("<STP>")
     main()
 
 

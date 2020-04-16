@@ -126,7 +126,7 @@ def send_msg_tur(msg):
 def process_nav_msg(command):
     global state
     if command == "<STP>":
-        pass # nav should not send stop as of 4/7 @ 12 pm
+        state = shooting # DEBUG ONLY
     elif command == "<FWD>":
         state = looking
     elif command == "<BCK>":
