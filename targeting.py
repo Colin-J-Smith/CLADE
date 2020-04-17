@@ -17,14 +17,13 @@ import numpy as np
 from datetime import datetime
 
 import luxonis_resources.depthai as depthai
-from camera_init import camera_init
+from camera_init import camera_init, get_image
 
 # --------------------------
 # GLOBALS
 # --------------------------
 
 global target_write
-target_msg_size = 50
 
 # commands
 fire    = "<FIR>"
@@ -59,43 +58,24 @@ def target(target_write_input):
     global target_write
     i = 0
     target_write = target_write_input
-    pipeline = camera_init()
-    while True:
-        # retreive data from the device (data is stored in packets)
-        data_packets = pipeline.get_available_data_packets()
-
-        # get image data from the left and right cameras
-        for packet in data_packets:
-            if packet.stream_name == 'previewout':
-                data = packet.getData() # [Height, Width, Channel]
-                data0 = data[0,:,:]
-                data1 = data[1,:,:]
-                data2 = data[2,:,:]
-                frame_bgr = cv2.merge([data0, data1, data2])
-                frame_bgr = cv2.flip(frame_bgr, 0)
-                processed_frame = process_image(frame_bgr)
-                cv2.imshow(packet.stream_name, processed_frame)
-
+    camera = camera_init()
+    
+    is_aiming = True
+    while is_aiming:
+        frame = get_image(camera)
+        processed_frame, is_aiming = process_image(frame)
+        cv2.imshow(packet.stream_name, processed_frame)
         if cv2.waitKey(1) == ord('q'):
             break
-    del pipeline
 
 
 def send_msg(command):
-    global target_write, target_msg_size
-    time = datetime.now().strftime('%S.%f')
-    command += " " + str(time)
-    msg = command.ljust(target_msg_size)
-    
-    try:
-        target_write.write(msg)
-        import time
-        time.sleep(0.05)
-    except:
-        sys.exit(0)
-
+    global target_write
     if target_write == sys.stdout:
-        print("")
+        print(command)
+    else
+        target_write.write(command.encode('utf-8'))
+        target_write.flush()
 
 
 def command_from_target_location(dx, dy):
@@ -212,7 +192,7 @@ def draw_no_target(frame):
 
 
 def process_image(frame):
-
+    
     # get all red and green contours from the image
     bad_guy_contours, good_guy_contours = process_targets(frame)
 
@@ -224,19 +204,23 @@ def process_image(frame):
     if bad_size < target_threshold and good_size < target_threshold:
         contour_img = draw_no_target(frame)
         send_msg(home)
+        is_aiming = False
         
     # if the red contour is larger, assume a bad guy has been found
     elif bad_size > good_size:
         contour_img, dx, dy  = draw_contours(frame, largest_contour_bad, 'Bad guy')
         command_from_target_location(dx, dy)
+        is_aiming = True
         
     # if the green contour is larger, assume a good guy has been found
     else:
         contour_img, _, _ = draw_contours(frame, largest_contour_good, 'Good guy')
         send_msg(home)
+        is_aiming = False
     
-    return contour_img
+    return contour_img, is_aiming
 
 
 if __name__=="__main__":
-    target(sys.stdout)
+    while True:
+        target(sys.stdout)

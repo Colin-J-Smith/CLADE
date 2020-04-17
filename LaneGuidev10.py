@@ -24,8 +24,7 @@ global delay
 intersection_state = 0
 state1 = 0
 int_count = 0
-nav_write = sys.stdout
-nav_msg_size = 50
+
 right_int_count = 0
 left_int_count = 0
 
@@ -36,38 +35,21 @@ delay_0 = 1
 
 
 def nav(nav_write_input):
-    global nav_msg_size
     global nav_write
-
     nav_write = nav_write_input
-    while (True):
-        msg("<STP>")
+    # # Uncomment to diable nav with testing turret
+    #while (True):
+    #    msg("<STP>")
     main()
 
 
 def msg(command):
-    global nav_msg_size
     global nav_write
-
-    # append the time
-    time_now = datetime.now().strftime('%S.%f')
-    command += " " + str(time_now)
-
-    # format the command to be read by the driver by adding spaces to the end
-    #    of the command until it is the length `nav_msg_size` so the correct
-    #    number of characters is read by the driver every time
-    message = command.ljust(nav_msg_size)
-
-    # output the message
-    try:
-        nav_write.write(message)
-        nav_write.flush()
-    except:
-        sys.exit(0)  # broken pipe (driver has closed)
-
-    # prints a newline if outputting to the console for debugging
     if nav_write == sys.stdout:
-        print("")
+        print(command)
+    else
+        nav_write.write(command.encode('utf-8'))
+        nav_write.flush()
 
 
 def lane_roi(frame):
@@ -660,6 +642,7 @@ def main():
 
 
 if __name__=="__main__":
-    nav(sys.stdout)
+    while True:
+        nav(sys.stdout)
 
 cv2.waitKey()
