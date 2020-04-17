@@ -55,8 +55,6 @@ def driver():
     # won't return until it is complete. If targeting is aiming, it won't
     # return until it is complete.
     while True:
-        nav_cmds = []
-        target_cmds = []
         nav(mtr_write)
         target(tur_write)
 
