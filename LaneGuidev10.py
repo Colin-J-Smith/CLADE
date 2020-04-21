@@ -28,10 +28,15 @@ global delay
 " State values modify which if statements the program runs through as it makes decisions"
 intersection_state = 0
 state1 = 0
+<<<<<<< HEAD
 int_count = 1  # starts at one for purposes of the "starting area"
 fail_safe_count = 0
 nav_write = sys.stdout
 nav_msg_size = 50
+=======
+int_count = 0
+
+>>>>>>> fc62a6d007b06b3a4d052a732cdcbd37966a8892
 right_int_count = 0
 left_int_count = 0
 
@@ -42,38 +47,21 @@ delay_0 = 1
 
 
 def nav(nav_write_input):
-    global nav_msg_size
     global nav_write
-
     nav_write = nav_write_input
-    while (True):
-        msg("<STP>")
+    # # Uncomment to diable nav with testing turret
+    #while (True):
+    #    msg("<STP>")
     main()
 
 
 def msg(command):
-    global nav_msg_size
     global nav_write
-
-    # append the time
-    time_now = datetime.now().strftime('%S.%f')
-    command += " " + str(time_now)
-
-    # format the command to be read by the driver by adding spaces to the end
-    #    of the command until it is the length `nav_msg_size` so the correct
-    #    number of characters is read by the driver every time
-    message = command.ljust(nav_msg_size)
-
-    # output the message
-    try:
-        nav_write.write(message)
-        nav_write.flush()
-    except:
-        sys.exit(0)  # broken pipe (driver has closed)
-
-    # prints a newline if outputting to the console for debugging
     if nav_write == sys.stdout:
-        print("")
+        print(command)
+    else
+        nav_write.write(command.encode('utf-8'))
+        nav_write.flush()
 
 
 def lane_roi(frame):
@@ -600,7 +588,7 @@ def main():
     d = np.array([-2.67227451e-01, 6.92939876e-02, 2.32058609e-03, 2.62454856e-05, -7.75020091e-03])
 
     # capture frames from the camera
-    for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+    for f in camera.capture(rawCapture, format="bgr", use_video_port=True):
 
         # convert to numpy array for use by cv2
         raw_frame = f.array
@@ -666,6 +654,7 @@ def main():
 
 
 if __name__=="__main__":
-    nav(sys.stdout)
+    while True:
+        nav(sys.stdout)
 
 cv2.waitKey()

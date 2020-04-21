@@ -13,23 +13,23 @@ def generate_cmds(n):
         if i < n/10:
             samples += [["STP", "FWD"]]
         elif i < 2*n/10:
-            samples += [["STP", "LLL"]]
+            samples += [["STP", "FWD"]]
         elif i < 3*n/10:
             samples += [["STP", "FWD"]]
         elif i < 4*n/10:
-            samples += [["STP", "RRR"]]
+            samples += [["STP", "FWD"]]
         elif i < 5*n/10:
-            samples += [["STP", "STP"]]
+            samples += [["STP", "LFT"]]
         elif i < 6*n/10:
-            samples += [["LFT", "STP"]]
+            samples += [["STP", "LFT"]]
         elif i < 7*n/10:
-            samples += [["LFT", "STP"]]
+            samples += [["STP", "LFT"]]
         elif i < 8*n/10:
-            samples += [["RGT", "STP"]]
+            samples += [["STP", "LLL"]]
         elif i < 9*n/10:
-            samples += [["STP", "STP"]]
+            samples += [["STP", "LLL"]]
         else:
-            samples += [["STP", "STP"]]
+            samples += [["STP", "LLL"]]
     samples+= [["FIR", "STP"]]
 
     return samples
