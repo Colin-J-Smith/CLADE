@@ -1,7 +1,12 @@
 # LaneGuidance Software
 # Version: 10!
 # Date Created: 2 Mar 2020
-# Last Modified:  6 April 2020
+# Last Modified: 21 April 2020
+# Updates this version: 
+# Navigation is ON through the intersection. 
+# Dead end logic is ON. 
+# Opening logic adjusted (starts at int_count =1). 
+# Intersection logic updated to allow for tight intersection areas
 
 
 # setup
@@ -23,7 +28,8 @@ global delay
 " State values modify which if statements the program runs through as it makes decisions"
 intersection_state = 0
 state1 = 0
-int_count = 0
+int_count = 1  # starts at one for purposes of the "starting area"
+fail_safe_count = 0
 nav_write = sys.stdout
 nav_msg_size = 50
 right_int_count = 0
