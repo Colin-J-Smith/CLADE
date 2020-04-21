@@ -28,15 +28,11 @@ global delay
 " State values modify which if statements the program runs through as it makes decisions"
 intersection_state = 0
 state1 = 0
-<<<<<<< HEAD
 int_count = 1  # starts at one for purposes of the "starting area"
 fail_safe_count = 0
 nav_write = sys.stdout
 nav_msg_size = 50
-=======
-int_count = 0
 
->>>>>>> fc62a6d007b06b3a4d052a732cdcbd37966a8892
 right_int_count = 0
 left_int_count = 0
 
@@ -59,7 +55,7 @@ def msg(command):
     global nav_write
     if nav_write == sys.stdout:
         print(command)
-    else
+    else:
         nav_write.write(command.encode('utf-8'))
         nav_write.flush()
 
@@ -252,7 +248,8 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
     nav_point_x = mid
 
     # if no intersections are visible and there is a right, left, and center lane command a turn around (dead end)
-    if state1 == 10 and len(center_line) > 50 and center_line[0] > 300 and len(right_line) > 0 and len(left_line) > 0:
+    if state1 == 0 and len(center_line) > 50 and (int(center_line[1]) + int(center_line[3])) / 2 > 300 and \
+            len(right_line) > 0 and len(left_line) > 0:
         left_x2 = left_line[2]
         right_x2 = right_line[0]
         nav_point_x = int((left_x2 + right_x2) / 2)
@@ -383,6 +380,7 @@ def create_intersection(intersection_edges, frame):
     global int_count
     global left_int_count
     global right_int_count
+    global fail_safe_count
 
     # Hough Lines for intersection
     lines = cv2.HoughLinesP(intersection_edges, rho=1, theta=np.pi / 360, threshold=50, minLineLength=30, maxLineGap=70)
@@ -497,9 +495,17 @@ def create_intersection(intersection_edges, frame):
         if intersection_state == 1:
             if AbsDistance <= 20 and avg_y > detection_lane:
                 int_count += 1
+                fail_safe_count += 1
             with open(logfile, "a") as f:
                 print("intersection counter is ON! - Abs Distance =", AbsDistance, "center_line =", avg_y, file=f)
 
+    #  Fail safe counter for tight intersections. If it misses the quad three this will back it up
+    elif len(quad4_int) > 0 and fail_safe_count == 0:
+        avg_y = (int(quad4_int[1]) + int(quad4_int[3]))/2
+        AbsDistance = abs(avg_y - detection_lane)
+        if intersection_state == 1:
+            if (AbsDistance <= 15) and (avg_y > 420):
+                int_count += 1
     with open(logfile, "a") as f:
         print("left_int:", left_int, "right_int:", right_int, "quad3int:", quad3_int, file=f)
 
@@ -519,11 +525,11 @@ def create_intersection(intersection_edges, frame):
         if int_count == 2:
             intersection_state = 2
     elif lines is not None:
-        if len(left_int) > 0 and 200 < left_int[1] < 400:
+        if len(left_int) > 0 and left_int[1] > 200:
             state1 = 1
-        elif len(quad3_int) > 0 and quad3_int[1] > 320:
+        elif len(quad3_int) > 0 and quad3_int[1] > 300:
             state1 = 1
-        elif len(right_int) > 0 and 200 < right_int[3] < 400:
+        elif len(right_int) > 0 and right_int[3] > 200:
             state1 = 1
 
     return slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int
@@ -567,6 +573,7 @@ def main():
     global intersection_state
     global int_count
     global logfile
+    global fail_safe_count
 
     # initialize the camera and grab a reference to the raw camera capture
     camera = PiCamera()
@@ -620,7 +627,7 @@ def main():
             lane_image, command = navigation(frame, center_line, right_line, left_line, lane_image)
             msg(command)
         elif intersection_state == 1:
-            command = "<FWD>"
+            lane_image, command = navigation(frame, center_line, right_line, left_line, lane_image)
             msg(command)
             with open(logfile, "a") as q:
                 print("drive", command, file=q)
@@ -637,6 +644,7 @@ def main():
             state1 = 0
             intersection_state = 0
             int_count = 0
+            fail_safe_count = 0
 
         with open(logfile, "a") as q:
             print("intersection_state=", intersection_state, "state1=", state1,  file=q)
