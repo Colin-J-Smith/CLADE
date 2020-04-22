@@ -60,6 +60,7 @@ def target(target_write_input):
 
     if not initialized:
         camera = camera_init()
+        initialized = True
         
     target_write = target_write_input
     
