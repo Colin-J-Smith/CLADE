@@ -118,10 +118,12 @@ def command_from_target_location(dx, dy):
     elif shoot == True:
         send_msg(fire)
         print("FIRING!!!!!!!!!")
-        while int(time.time() - start_turn) < 1.5:
+        start = time.time()
+        while int(time.time() - start) < 1.5:
             pass
 
-    while int(time.time() - start_turn) < 0.5:
+    start = time.time()
+    while int(time.time() - start) < 0.5:
         pass
     
 
