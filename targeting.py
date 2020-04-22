@@ -65,8 +65,13 @@ def target(target_write_input):
         
     target_write = target_write_input
     
+    packet_count = 0
     is_aiming = True
     while is_aiming:
+
+        packet_count+=1
+        if not packet_count%5 == 0:
+
 
         data_packets = camera.get_available_data_packets()
         for packet in data_packets:
