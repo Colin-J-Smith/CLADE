@@ -106,6 +106,7 @@ def command_from_target_location(dx, dy):
     print("Found target at ({}, {}), shooting at ({}+-{}, {}+-{})"
             .format(dx, dy, offsetX, tolX, offsetY, tolY))
 
+    '''
     if dx - offsetX > tolX:
         send_msg(left)
         print("left")
@@ -114,6 +115,8 @@ def command_from_target_location(dx, dy):
         print("right")
     else:
         shoot = True
+    '''
+    shoot = True
     
     if dy - offsetY > tolY:
         send_msg(down)
@@ -131,7 +134,6 @@ def command_from_target_location(dx, dy):
     start = time.time()
     while int(time.time() - start) < 0.5:
         pass
-    
 
         
 # --------------------------
