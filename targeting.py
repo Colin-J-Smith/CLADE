@@ -65,9 +65,18 @@ def target(target_write_input):
     
     is_aiming = True
     while is_aiming:
-        frame = get_image(camera)
-        print(frame)
 
+        data_packets = camera.get_available_data_packets()
+        for packet in data_packets:
+            if packet.stream_name == 'previewout':
+                data = packet.getData() # [Height, Width, Channel]
+                data0 = data[0,:,:]
+                data1 = data[1,:,:]
+                data2 = data[2,:,:]
+                frame_bgr = cv2.merge([data0, data1, data2])
+                frame_bgr = cv2.flip(frame_bgr, 0)
+                break
+        
         processed_frame, is_aiming = process_image(frame)
         cv2.imshow("targeting", processed_frame)
         if cv2.waitKey(1) == ord('q'):
@@ -108,7 +117,7 @@ def command_from_target_location(dx, dy):
         send_msg(fire)
         print("FIRING!!!!!!!!!")
 
-
+        
 # --------------------------
 # IMAGE PROCESSING FUNCTIONS
 # --------------------------
