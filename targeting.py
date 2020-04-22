@@ -91,6 +91,8 @@ def send_msg(command):
     else:
         target_write.write(command.encode('utf-8'))
         target_write.flush()
+        import time
+        time.sleep(0.01)
 
 
 def command_from_target_location(dx, dy):
