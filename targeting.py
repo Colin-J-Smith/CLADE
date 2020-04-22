@@ -75,10 +75,10 @@ def target(target_write_input):
                 data2 = data[2,:,:]
                 frame_bgr = cv2.merge([data0, data1, data2])
                 frame_bgr = cv2.flip(frame_bgr, 0)
+                processed_frame, is_aiming = process_image(frame_bgr)
+                cv2.imshow("targeting", processed_frame)
                 break
         
-        processed_frame, is_aiming = process_image(frame_bgr)
-        cv2.imshow("targeting", processed_frame)
         if cv2.waitKey(1) == ord('q'):
             break
 
