@@ -121,6 +121,7 @@ def command_from_target_location(dx, dy):
         print("FIRING!!!!!!!!!")
 
     target_write.flush()
+    time.sleep(0.1)
     
 
         
