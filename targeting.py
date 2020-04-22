@@ -66,6 +66,8 @@ def target(target_write_input):
     is_aiming = True
     while is_aiming:
         frame = get_image(camera)
+        print(frame)
+
         processed_frame, is_aiming = process_image(frame)
         cv2.imshow("targeting", processed_frame)
         if cv2.waitKey(1) == ord('q'):
