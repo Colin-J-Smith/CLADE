@@ -595,10 +595,7 @@ def main():
     d = np.array([-2.67227451e-01, 6.92939876e-02, 2.32058609e-03, 2.62454856e-05, -7.75020091e-03])
 
     # capture frames from the camera
-    camera.capture(rawCapture, format="bgr", use_video_port=True)
-    f = rawCapture
-    for x in range(0, 1):
-
+    for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         # convert to numpy array for use by cv2
         raw_frame = f.array
 
