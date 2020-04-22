@@ -97,7 +97,8 @@ def command_from_target_location(dx, dy):
     shoot = False
     send_msg(stop) # command wheels to stop if target is found
     
-    print("Found target at ({}, {})".format(dx, dy))
+    print("Found target at ({}, {}), shooting at ({}+-{}, {}+-{})"
+            .format(dx, dy, offsetX, tolX, offsetY, tolY))
 
     if dx + offsetX > tolX:
         send_msg(left)
@@ -117,6 +118,9 @@ def command_from_target_location(dx, dy):
     elif shoot == True:
         send_msg(fire)
         print("FIRING!!!!!!!!!")
+    
+    import time
+    time.sleep(0.01)
 
         
 # --------------------------
