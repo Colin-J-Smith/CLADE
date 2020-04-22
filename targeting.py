@@ -67,7 +67,7 @@ def target(target_write_input):
     
     t_end = time.time() + 2
     while time.time() < t_end:
-        tur_write.write(up.encode('utf-8'))
+        target_write.write(up.encode('utf-8'))
 
     t_end = time.time() + 2
     while time.time() < t_end:
