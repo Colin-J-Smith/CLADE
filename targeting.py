@@ -47,8 +47,8 @@ upper_green = np.array([90, 255, 255], dtype=int)
 target_threshold = 5000
 tolX = 5       # tolerance for x "center" of image, in pixels
 tolY = 5       # tolerance for y "center" of image, in pixels
-offsetX = -5   # x-offset of center of image from center of robot, in pixels
-offsetY = -40  # y-offset of center of image from center of robot, in pixels
+offsetX = -25   # x-offset of center of image from center of robot, in pixels
+offsetY = -30  # y-offset of center of image from center of robot, in pixels
 
 
 # --------------------------
@@ -237,8 +237,5 @@ def process_image(frame):
 
 
 if __name__=="__main__":
-    i = 0
     while True:
         target(sys.stdout)
-        print("loop number", i)
-        i=i+1
