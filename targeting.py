@@ -77,7 +77,7 @@ def target(target_write_input):
                 frame_bgr = cv2.flip(frame_bgr, 0)
                 break
         
-        processed_frame, is_aiming = process_image(frame)
+        processed_frame, is_aiming = process_image(frame_bgr)
         cv2.imshow("targeting", processed_frame)
         if cv2.waitKey(1) == ord('q'):
             break
