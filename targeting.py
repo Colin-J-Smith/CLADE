@@ -73,7 +73,7 @@ def send_msg(command):
     global target_write
     if target_write == sys.stdout:
         print(command)
-    else
+    else:
         target_write.write(command.encode('utf-8'))
         target_write.flush()
 
