@@ -117,11 +117,12 @@ def command_from_target_location(dx, dy):
         print("up")
     elif shoot == True:
         send_msg(fire)
-        time.sleep(1)
         print("FIRING!!!!!!!!!")
+        while int(time.time() - start_turn) < 1.5:
+            pass
 
-    target_write.flush()
-    time.sleep(0.1)
+    while int(time.time() - start_turn) < 0.5:
+        pass
     
 
         
