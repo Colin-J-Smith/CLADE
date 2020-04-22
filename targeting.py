@@ -91,7 +91,6 @@ def send_msg(command):
         print(command)
     else:
         target_write.write(command.encode('utf-8'))
-        target_write.flush()
 
 
 def command_from_target_location(dx, dy):
@@ -120,6 +119,9 @@ def command_from_target_location(dx, dy):
         send_msg(fire)
         time.sleep(1)
         print("FIRING!!!!!!!!!")
+
+    target_write.flush()
+    
 
         
 # --------------------------
