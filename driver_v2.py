@@ -32,7 +32,7 @@ arduino_port_mtr = "/dev/ttyUSB0"
 arduino_baudrate_mtr = 9600
 
 # testing variable
-testing_pi_driver = True
+testing_pi_driver = False
 
 # ----------------
 # Driver Function
