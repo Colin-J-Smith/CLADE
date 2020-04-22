@@ -81,12 +81,14 @@ def get_image(pipeline):
 
     # get image data from the left and right cameras
     for packet in data_packets:
+        print("reading packets!")
         if packet.stream_name == 'previewout':
+            print("seeing preview out!")
             data = packet.getData() # [Height, Width, Channel]
             data0 = data[0,:,:]
             data1 = data[1,:,:]
             data2 = data[2,:,:]
             frame_bgr = cv2.merge([data0, data1, data2])
             frame_bgr = cv2.flip(frame_bgr, 0)
-            cv2.imshow(packet.stream_name, processed_frame)
+            cv2.imshow(packet.stream_name, frame_bgr)
             return frame_bgr
