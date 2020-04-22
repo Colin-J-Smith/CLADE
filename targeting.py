@@ -23,7 +23,8 @@ from camera_init import camera_init, get_image
 # GLOBALS
 # --------------------------
 
-global target_write
+global target_write, camera, initialized
+initialized = False
 
 # commands
 fire    = "<FIR>"
@@ -55,16 +56,18 @@ offsetY = -40  # y-offset of center of image from center of robot, in pixels
 # --------------------------
 
 def target(target_write_input):
-    global target_write
-    i = 0
+    global target_write, initialized
+
+    if not initialized:
+        camera = camera_init()
+        
     target_write = target_write_input
-    camera = camera_init()
     
     is_aiming = True
     while is_aiming:
         frame = get_image(camera)
         processed_frame, is_aiming = process_image(frame)
-        cv2.imshow(packet.stream_name, processed_frame)
+        cv2.imshow("targeting", processed_frame)
         if cv2.waitKey(1) == ord('q'):
             break
 
