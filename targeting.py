@@ -46,8 +46,8 @@ upper_green = np.array([90, 255, 255], dtype=int)
 
 # targeting callibration
 target_threshold = 5000
-tolX = 20       # tolerance for x "center" of image, in pixels
-tolY = 20       # tolerance for y "center" of image, in pixels
+tolX = 10       # tolerance for x "center" of image, in pixels
+tolY = 10       # tolerance for y "center" of image, in pixels
 offsetX = 25   # x-offset of center of image from center of robot, in pixels
 offsetY = 30  # y-offset of center of image from center of robot, in pixels
 
