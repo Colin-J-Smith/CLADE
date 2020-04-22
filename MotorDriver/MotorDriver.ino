@@ -17,17 +17,20 @@ long cmd_issued = 0; // time command was recieved
 //PIN VARIABLES
 //the motor will be controlled by the motor A pins on the motor driver
 #define AIN1 2 //control pin 1 on the motor driver for the left motor
-#define AIN2 3 //control pin 2 on the motor driver for the left motor
-#define BIN1 8 //control pin 1 on the motor driver for the front motor
-#define BIN2 9 //control pin 2 on the motor driver for the front motor
-#define CIN1 7 //control pin 1 on the motor driver for the right motor
-#define CIN2 6 //control pin 2 on the motor driver for the right motor
-#define DIN1 13 //control pin 1 on the motor driver for the back motor
-#define DIN2 12 //control pin 2 on the motor driver for the back motor
-#define PWMA 4 //speed control pin on the motor driver for the left motor
-#define PWMB 10 //speed control pin on the motor driver for the front motor
-#define PWMC 5 //speed control pin on the motor driver for the right motor
-#define PWMD 11 //speed control pin on the motor driver for the back motor
+#define AIN2 4 //control pin 2 on the motor driver for the left motor
+#define PWMA 5 //speed control pin on the motor driver for the left motor
+
+#define CIN1 6 //control pin 1 on the motor driver for the right motor
+#define CIN2 7 //control pin 2 on the motor driver for the right motor
+#define PWMC 3 //speed control pin on the motor driver for the right motor
+
+#define BIN1 13 //control pin 1 on the motor driver for the front motor
+#define BIN2 12 //control pin 2 on the motor driver for the front motor
+#define PWMB 11 //speed control pin on the motor driver for the front motor
+
+#define DIN1 8 //control pin 1 on the motor driver for the back motor
+#define DIN2 9 //control pin 2 on the motor driver for the back motor
+#define PWMD 10 //speed control pin on the motor driver for the back motor
 
 // MOTOR SPEED
 #define SPD 120 // duty cycle for the pwm signal 0-255
@@ -181,7 +184,7 @@ void goBack() {
   //  Serial.println("Forward");
 }
 
-void goLeft() {
+void goRight() {
   //front wheel
   digitalWrite(BIN1, HIGH);
   digitalWrite(BIN2, LOW);
@@ -198,10 +201,10 @@ void goLeft() {
   analogWrite(PWMB, SPD);
   analogWrite(PWMD, SPD);
 
-  //  Serial.println("Left");
+  //  Serial.println("Right");
 }
 
-void goRight() {
+void goLeft() {
   //front wheel
   digitalWrite(BIN1, LOW);
   digitalWrite(BIN2, HIGH);
@@ -218,7 +221,7 @@ void goRight() {
   analogWrite(PWMB, SPD);
   analogWrite(PWMD, SPD);
 
-  //  Serial.println("Right");
+  //  Serial.println("Left");
 }
 
 void rotLeft() {
