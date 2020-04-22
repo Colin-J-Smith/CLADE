@@ -17,9 +17,7 @@ home    = "<HOM>" # send HOM when target has been hit/no bad target in sight
 arduino_port_tur = "/dev/ttyACM0"
 arduino_baudrate_tur = 9600
 
-#tur_write = serial.Serial(port=arduino_port_tur, baudrate=arduino_baudrate_tur)
-tur_write = sys.stdout
-
+tur_write = serial.Serial(port=arduino_port_tur, baudrate=arduino_baudrate_tur)
 
 t_end = time.time() + 2
 while time.time() < t_end:
