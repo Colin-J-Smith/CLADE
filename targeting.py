@@ -64,16 +64,7 @@ def target(target_write_input):
         initialized = True
         
     target_write = target_write_input
-    
-    t_end = time.time() + 2
-    while time.time() < t_end:
-        target_write.write(up.encode('utf-8'))
 
-    t_end = time.time() + 2
-    while time.time() < t_end:
-        target_write.write(down.encode('utf-8'))
-
-    '''
     packet_count = 0
     is_aiming = True
     while is_aiming:
@@ -98,7 +89,6 @@ def target(target_write_input):
         
         if cv2.waitKey(1) == ord('q'):
             break
-    '''
 
 
 def send_msg(command):
@@ -116,7 +106,6 @@ def command_from_target_location(dx, dy):
     print("Found target at ({}, {}), shooting at ({}+-{}, {}+-{})"
             .format(dx, dy, offsetX, tolX, offsetY, tolY))
 
-    '''
     if dx - offsetX > tolX:
         send_msg(left)
         print("left")
@@ -125,8 +114,6 @@ def command_from_target_location(dx, dy):
         print("right")
     else:
         shoot = True
-    '''
-    shoot = True
     
     if dy - offsetY > tolY:
         send_msg(down)
