@@ -236,5 +236,8 @@ def process_image(frame):
 
 
 if __name__=="__main__":
+    i = 0
     while True:
         target(sys.stdout)
+        print("loop number", i)
+        i=i+=1
