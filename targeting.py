@@ -47,8 +47,8 @@ upper_green = np.array([90, 255, 255], dtype=int)
 target_threshold = 5000
 tolX = 10       # tolerance for x "center" of image, in pixels
 tolY = 10       # tolerance for y "center" of image, in pixels
-offsetX = -25   # x-offset of center of image from center of robot, in pixels
-offsetY = -30  # y-offset of center of image from center of robot, in pixels
+offsetX = 25   # x-offset of center of image from center of robot, in pixels
+offsetY = 30  # y-offset of center of image from center of robot, in pixels
 
 
 # --------------------------
@@ -100,19 +100,19 @@ def command_from_target_location(dx, dy):
     print("Found target at ({}, {}), shooting at ({}+-{}, {}+-{})"
             .format(dx, dy, offsetX, tolX, offsetY, tolY))
 
-    if dx + offsetX > tolX:
+    if dx - offsetX > tolX:
         send_msg(left)
         print("left")
-    elif dx + offsetX < -tolX:
+    elif dx - offsetX < -tolX:
         send_msg(right)
         print("right")
     else:
         shoot = True
     
-    if dy + offsetY > tolY:
+    if dy - offsetY > tolY:
         send_msg(down)
         print("down")
-    elif dy + offsetY < -tolY:
+    elif dy - offsetY < -tolY:
         send_msg(up)
         print("up")
     elif shoot == True:
@@ -120,7 +120,7 @@ def command_from_target_location(dx, dy):
         print("FIRING!!!!!!!!!")
     
     import time
-    time.sleep(0.01)
+    time.sleep(0.1)
 
         
 # --------------------------
