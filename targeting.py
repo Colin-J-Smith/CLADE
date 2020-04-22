@@ -12,6 +12,7 @@
 
 import sys
 import cv2
+import time
 import imutils
 import numpy as np
 from datetime import datetime
@@ -117,6 +118,7 @@ def command_from_target_location(dx, dy):
         print("up")
     elif shoot == True:
         send_msg(fire)
+        time.sleep(1)
         print("FIRING!!!!!!!!!")
 
         
