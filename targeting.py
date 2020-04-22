@@ -69,11 +69,12 @@ def target(target_write_input):
     is_aiming = True
     while is_aiming:
 
+        data_packets = camera.get_available_data_packets()
+        
         packet_count+=1
         if not packet_count%20 == 0:
             continue
 
-        data_packets = camera.get_available_data_packets()
         for packet in data_packets:
             if packet.stream_name == 'previewout':
                 data = packet.getData() # [Height, Width, Channel]
