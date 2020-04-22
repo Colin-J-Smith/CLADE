@@ -89,6 +89,3 @@ def get_image(pipeline):
             frame_bgr = cv2.merge([data0, data1, data2])
             frame_bgr = cv2.flip(frame_bgr, 0)
             return frame_bgr
-                processed_frame = process_image(frame_bgr)
-                cv2.imshow(packet.stream_name, processed_frame)
-
