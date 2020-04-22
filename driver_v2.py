@@ -13,8 +13,8 @@ import serial
 import threading
 from datetime import datetime
 
-from LaneGuidev10 import nav, nav_msg_size
-from targeting import target, target_msg_size
+from LaneGuidev10 import nav
+from targeting import target 
 
 # ----------------
 # Setup
