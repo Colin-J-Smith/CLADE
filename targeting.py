@@ -109,11 +109,11 @@ def command_from_target_location(dx, dy):
         shoot = True
     
     if dy + offsetY > tolY:
-        send_msg(up)
-        print("up")
-    elif dy + offsetY < -tolY:
         send_msg(down)
         print("down")
+    elif dy + offsetY < -tolY:
+        send_msg(up)
+        print("up")
     elif shoot == True:
         send_msg(fire)
         print("FIRING!!!!!!!!!")
