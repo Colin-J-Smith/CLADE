@@ -120,7 +120,7 @@ def command_from_target_location(dx, dy):
         print("FIRING!!!!!!!!!")
     
     import time
-    time.sleep(0.1)
+    time.sleep(0.5)
 
         
 # --------------------------
