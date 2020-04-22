@@ -65,6 +65,15 @@ def target(target_write_input):
         
     target_write = target_write_input
     
+    t_end = time.time() + 2
+    while time.time() < t_end:
+        tur_write.write(up.encode('utf-8'))
+
+    t_end = time.time() + 2
+    while time.time() < t_end:
+        tur_write.write(down.encode('utf-8'))
+
+    '''
     packet_count = 0
     is_aiming = True
     while is_aiming:
@@ -89,6 +98,7 @@ def target(target_write_input):
         
         if cv2.waitKey(1) == ord('q'):
             break
+    '''
 
 
 def send_msg(command):
