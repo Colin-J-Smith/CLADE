@@ -589,7 +589,7 @@ def main():
     camera.rotation = 180
     camera.framerate = 16
     rawCapture = PiRGBArray(camera, size=(640, 480))
-    camera.capture(rawCapture, format="bgr")
+    camera.capture_continuous(rawCapture, format="bgr")
 
     # convert to numpy array for use by cv2
     raw_frame = rawCapture.array
