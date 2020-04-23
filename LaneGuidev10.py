@@ -583,7 +583,7 @@ def main():
     # initialize the camera and grab a reference to the raw camera capture
 
     # allow the camera to warmup
-    if camera_init = 0:
+    if camera_init == 0:
         # camera distortion corrections
         k = np.array([[243.48186479, 0., 305.08168044],
                       [0., 244.0802712, 226.73721762],
