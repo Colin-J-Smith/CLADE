@@ -653,11 +653,11 @@ def main():
     key_pressed = cv2.waitKey(1) & 0xFF          # Delay for key press to quit and frame rate (1 ms)
     if key_pressed == ord('q'):
 
-    # clear the stream in preparation for the next frame
-    rawCapture.truncate(0)
-
-    # cleanup
-    cv2.destroyAllWindows()
+        # clear the stream in preparation for the next frame
+        rawCapture.truncate(0)
+    
+        # cleanup
+        cv2.destroyAllWindows()
 
 
 if __name__=="__main__":
