@@ -24,7 +24,10 @@ from camera_init import camera_init
 # GLOBALS
 # --------------------------
 
-global target_write, camera, initialized, call_count
+global target_write, camera, initialized, target_last_seen
+target_delay = 1.5 # seconds
+cmd_delay = 0.1 # sec
+fire_delay = 1.5 # sec
 initialized = False
 call_count = 0
 
@@ -97,8 +100,6 @@ def send_msg(command, delay):
 
 def command_from_target_location(dx, dy):
     shoot = False
-    cmd_delay = 0.25 # sec
-    fire_delay = 1.5 # sec
 
     print("Found target at ({}, {}), shooting at ({}+-{}, {}+-{})"
             .format(dx, dy, offsetX, tolX, offsetY, tolY))
@@ -212,6 +213,7 @@ def draw_no_target(frame):
 
 
 def process_image(frame):
+    global target_last_seen
     
     # get all red and green contours from the image
     bad_guy_contours, good_guy_contours = process_targets(frame)
@@ -223,20 +225,21 @@ def process_image(frame):
     # if the largest contours are too small, assume no target has been found
     if bad_size < target_threshold and good_size < target_threshold:
         contour_img = draw_no_target(frame)
-        send_msg(home, -1)
-        is_aiming = False
         
     # if the red contour is larger, assume a bad guy has been found
     elif bad_size > good_size:
         contour_img, dx, dy  = draw_contours(frame, largest_contour_bad, 'Bad guy')
         command_from_target_location(dx, dy)
-        is_aiming = True
+        target_last_seen = time.time()
         
     # if the green contour is larger, assume a good guy has been found
     else:
         contour_img, _, _ = draw_contours(frame, largest_contour_good, 'Good guy')
-        send_msg(home, -1)
+
+    is_aiming = True
+    if int(target_last_seen - target_last_seen) > target_delay:
         is_aiming = False
+        send_msg(home, -1)
     
     return contour_img, is_aiming
 
