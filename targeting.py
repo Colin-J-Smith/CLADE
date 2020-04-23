@@ -68,7 +68,7 @@ def target(target_write_input):
 
     if call_count != 10:
         call_count+=1
-        while packet_count < 100:
+        while packet_count < 500:
             data_packets = camera.get_available_data_packets()
             packet_count+=1
         return
@@ -79,7 +79,7 @@ def target(target_write_input):
         data_packets = camera.get_available_data_packets()
         
         packet_count+=1
-        if packet_count != 20:
+        if packet_count != 50:
             continue
         
         packet_count = 0
