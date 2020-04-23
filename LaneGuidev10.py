@@ -644,8 +644,6 @@ def main():
         int_count = 0
         fail_safe_count = 0
 
-    camera.close()
-
     with open(logfile, "a") as q:
         print("intersection_state=", intersection_state, "state1=", state1,  file=q)
     # show_test(lane_image)
