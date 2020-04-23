@@ -127,6 +127,7 @@ def command_from_target_location(dx, dy):
         print("up")
         send_msg(up, cmd_delay)
     elif shoot == True:
+        print("firing")
         send_msg(fire, -1)
         shoot_start = time.time()
 
