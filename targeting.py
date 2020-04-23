@@ -18,7 +18,7 @@ import numpy as np
 from datetime import datetime
 
 import luxonis_resources.depthai as depthai
-from camera_init import camera_init, get_image
+from camera_init import camera_init 
 
 # --------------------------
 # GLOBALS
