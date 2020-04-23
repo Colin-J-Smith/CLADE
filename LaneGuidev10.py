@@ -21,9 +21,6 @@ from picamera import PiCamera
 global turn
 global delay
 
-# global nav_msg_size #dont think this is needed
-# global nav_write #don't think this is needed
-
 # set initial state machine
 " State values modify which if statements the program runs through as it makes decisions"
 intersection_state = 0
@@ -578,26 +575,20 @@ def main():
     global int_count
     global logfile
     global fail_safe_count
-    global camera_init
+
+    # camera distortion corrections
+    k = np.array([[243.48186479, 0., 305.08168044],
+                  [0., 244.0802712, 226.73721762],
+                  [0., 0., 1.]])
+
+    d = np.array([-2.67227451e-01, 6.92939876e-02, 2.32058609e-03, 2.62454856e-05, -7.75020091e-03])
 
     # initialize the camera and grab a reference to the raw camera capture
-
-    # allow the camera to warmup
-    if camera_init == 0:
-        # camera distortion corrections
-        k = np.array([[243.48186479, 0., 305.08168044],
-                      [0., 244.0802712, 226.73721762],
-                      [0., 0., 1.]])
-
-        d = np.array([-2.67227451e-01, 6.92939876e-02, 2.32058609e-03, 2.62454856e-05, -7.75020091e-03])
-
-        # capture frames from the camera
-        camera = PiCamera()
-        camera.resolution = (640, 480)
-        camera.rotation = 180
-        rawCapture = PiRGBArray(camera, size=(640, 480))
-        camera_init = 1
-
+    camera = PiCamera()
+    camera.resolution = (640, 480)
+    camera.rotation = 180
+    camera.framerate = 16
+    rawCapture = PiRGBArray(camera, size=(640, 480))
     camera.capture(rawCapture, format="bgr")
 
     # convert to numpy array for use by cv2
@@ -649,8 +640,6 @@ def main():
         int_count = 0
         fail_safe_count = 0
 
-    camera.close()
-
     with open(logfile, "a") as q:
         print("intersection_state=", intersection_state, "state1=", state1,  file=q)
     # show_test(lane_image)
@@ -664,6 +653,7 @@ def main():
         # cleanup
         cv2.destroyAllWindows()
 
+    camera.close()
 
 if __name__=="__main__":
     while True:
