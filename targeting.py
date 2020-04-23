@@ -97,7 +97,7 @@ def send_msg(command, delay):
 
 def command_from_target_location(dx, dy):
     shoot = False
-    cmd_delay = 1 # sec
+    cmd_delay = 0.25 # sec
     fire_delay = 1.5 # sec
 
     print("Found target at ({}, {}), shooting at ({}+-{}, {}+-{})"
