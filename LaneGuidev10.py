@@ -578,23 +578,26 @@ def main():
     global int_count
     global logfile
     global fail_safe_count
+    global camera_init
 
     # initialize the camera and grab a reference to the raw camera capture
 
     # allow the camera to warmup
+    if camera_init = 0:
+        # camera distortion corrections
+        k = np.array([[243.48186479, 0., 305.08168044],
+                      [0., 244.0802712, 226.73721762],
+                      [0., 0., 1.]])
 
-    # camera distortion corrections
-    k = np.array([[243.48186479, 0., 305.08168044],
-                  [0., 244.0802712, 226.73721762],
-                  [0., 0., 1.]])
+        d = np.array([-2.67227451e-01, 6.92939876e-02, 2.32058609e-03, 2.62454856e-05, -7.75020091e-03])
 
-    d = np.array([-2.67227451e-01, 6.92939876e-02, 2.32058609e-03, 2.62454856e-05, -7.75020091e-03])
+        # capture frames from the camera
+        camera = PiCamera()
+        camera.resolution = (640, 480)
+        camera.rotation = 180
+        rawCapture = PiRGBArray(camera, size=(640, 480))
+        camera_init = 1
 
-    # capture frames from the camera
-    camera = PiCamera()
-    camera.resolution = (640, 480)
-    camera.rotation = 180
-    rawCapture = PiRGBArray(camera, size=(640, 480))
     camera.capture(rawCapture, format="bgr")
 
     # convert to numpy array for use by cv2
