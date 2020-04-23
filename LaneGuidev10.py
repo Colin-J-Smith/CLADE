@@ -21,8 +21,8 @@ from picamera import PiCamera
 global turn
 global delay
 
-# camera intialization gloabl
-global initialized
+# camera intialization global
+global initialized, camera
 initialized = False
 
 # set initial state machine
@@ -49,8 +49,16 @@ logfile = str("log") + str(now) + str(".txt")
 
 
 def nav(nav_write_input):
-    global nav_write
+    global nav_write, camera, initialized
     nav_write = nav_write_input
+    
+    # initialize the camera
+    if not initialized:
+        camera = PiCamera()
+        camera.resolution = (640, 480)
+        camera.rotation = 180
+        initialized = True
+
     # # Uncomment to diable nav with testing turret
     # msg("<STP>")
     main()
@@ -579,7 +587,7 @@ def main():
     global int_count
     global logfile
     global fail_safe_count
-    global initialized
+    global camera
 
     # camera distortion corrections
     k = np.array([[243.48186479, 0., 305.08168044],
@@ -587,13 +595,6 @@ def main():
                   [0., 0., 1.]])
 
     d = np.array([-2.67227451e-01, 6.92939876e-02, 2.32058609e-03, 2.62454856e-05, -7.75020091e-03])
-
-    # initialize the camera
-    if not initialized:
-        camera = PiCamera()
-        camera.resolution = (640, 480)
-        camera.rotation = 180
-        initialized = True
     
     # grab a reference to the raw camera capture
     rawCapture = PiRGBArray(camera, size=(640, 480))
