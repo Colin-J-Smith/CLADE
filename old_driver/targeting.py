@@ -59,10 +59,15 @@ def target(target_write_input):
     global target_write
     target_write = target_write_input
     
+    count = 0
     pipeline = camera_init()
     while True:
         # retreive data from the device (data is stored in packets)
         data_packets = pipeline.get_available_data_packets()
+        count += 1
+
+        if not count % 10 == 0:
+            continue
 
         # get image data from the left and right cameras
         for packet in data_packets:
