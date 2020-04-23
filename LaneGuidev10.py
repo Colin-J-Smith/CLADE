@@ -42,6 +42,10 @@ delay_90 = 2
 delay_180 = 4
 delay_0 = 1
 
+# create log file
+now = datetime.now()
+logfile = str("log") + str(now) + str(".txt")
+
 
 def nav(nav_write_input):
     global nav_write
@@ -577,8 +581,6 @@ def main():
 
     # initialize the camera and grab a reference to the raw camera capture
 
-    now = datetime.now()
-    logfile = str("log") + str(now) + str(".txt")
     # allow the camera to warmup
     time.sleep(0.1)
 
