@@ -58,6 +58,7 @@ offsetY = 30  # y-offset of center of image from center of robot, in pixels
 
 def target(target_write_input):
     global target_write, initialized, camera
+    target_write = target_write_input
     send_msg(home)
     return
     
@@ -66,7 +67,6 @@ def target(target_write_input):
         camera = camera_init()
         initialized = True
         
-    target_write = target_write_input
 
     packet_count = 0
     is_aiming = True
