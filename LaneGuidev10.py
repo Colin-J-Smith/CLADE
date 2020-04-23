@@ -21,6 +21,10 @@ from picamera import PiCamera
 global turn
 global delay
 
+# camera intialization gloabl
+global initialized
+initialized = False
+
 # set initial state machine
 " State values modify which if statements the program runs through as it makes decisions"
 intersection_state = 0
@@ -575,6 +579,7 @@ def main():
     global int_count
     global logfile
     global fail_safe_count
+    global initialized
 
     # camera distortion corrections
     k = np.array([[243.48186479, 0., 305.08168044],
@@ -583,10 +588,14 @@ def main():
 
     d = np.array([-2.67227451e-01, 6.92939876e-02, 2.32058609e-03, 2.62454856e-05, -7.75020091e-03])
 
-    # initialize the camera and grab a reference to the raw camera capture
-    camera = PiCamera()
-    camera.resolution = (640, 480)
-    camera.rotation = 180
+    # initialize the camera
+    if not initialized:
+        camera = PiCamera()
+        camera.resolution = (640, 480)
+        camera.rotation = 180
+        initialized = True
+    
+    # grab a reference to the raw camera capture
     rawCapture = PiRGBArray(camera, size=(640, 480))
     camera.capture(rawCapture, format="bgr")
 
@@ -652,7 +661,6 @@ def main():
         # cleanup
         cv2.destroyAllWindows()
 
-    camera.close()
 
 if __name__=="__main__":
     while True:
