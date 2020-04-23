@@ -223,7 +223,7 @@ def process_image(frame):
     # if the largest contours are too small, assume no target has been found
     if bad_size < target_threshold and good_size < target_threshold:
         contour_img = draw_no_target(frame)
-        send_msg(home)
+        send_msg(home, -1)
         is_aiming = False
         
     # if the red contour is larger, assume a bad guy has been found
@@ -235,7 +235,7 @@ def process_image(frame):
     # if the green contour is larger, assume a good guy has been found
     else:
         contour_img, _, _ = draw_contours(frame, largest_contour_good, 'Good guy')
-        send_msg(home)
+        send_msg(home, -1)
         is_aiming = False
     
     return contour_img, is_aiming
