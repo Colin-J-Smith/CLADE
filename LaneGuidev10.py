@@ -47,9 +47,9 @@ def nav(nav_write_input):
     global nav_write
     nav_write = nav_write_input
     # # Uncomment to diable nav with testing turret
-    msg("<STP>")
+    # msg("<STP>")
     return
-    #main()
+    # main()
 
 
 def msg(command):
@@ -655,7 +655,7 @@ def main():
 
         # clear the stream in preparation for the next frame
         rawCapture.truncate(0)
-    
+
         # cleanup
         cv2.destroyAllWindows()
 
