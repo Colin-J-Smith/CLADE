@@ -66,6 +66,7 @@ def target(target_write_input):
     
     if not initialized:
         camera = camera_init()
+        target_last_seen = time.time()
         initialized = True
 
     is_aiming = True
@@ -237,7 +238,7 @@ def process_image(frame):
         contour_img, _, _ = draw_contours(frame, largest_contour_good, 'Good guy')
 
     is_aiming = True
-    if int(target_last_seen - target_last_seen) > target_delay:
+    if int(time.time() - target_last_seen) > target_delay:
         is_aiming = False
         send_msg(home, -1)
     
