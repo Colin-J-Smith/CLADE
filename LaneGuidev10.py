@@ -35,6 +35,7 @@ nav_msg_size = 50
 
 right_int_count = 0
 left_int_count = 0
+camera_init = 0
 
 # delay timers
 delay_90 = 2
@@ -576,11 +577,6 @@ def main():
     global fail_safe_count
 
     # initialize the camera and grab a reference to the raw camera capture
-    camera = PiCamera()
-    camera.resolution = (640, 480)
-    camera.rotation = 180
-    camera.framerate = 16
-    rawCapture = PiRGBArray(camera, size=(640, 480))
 
     now = datetime.now()
     logfile = str("log") + str(now) + str(".txt")
@@ -595,68 +591,71 @@ def main():
     d = np.array([-2.67227451e-01, 6.92939876e-02, 2.32058609e-03, 2.62454856e-05, -7.75020091e-03])
 
     # capture frames from the camera
-    for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-        # convert to numpy array for use by cv2
-        raw_frame = f.array
+    camera = PiCamera()
+    camera.resolution = (640, 480)
+    camera.rotation = 180
+    rawCapture = PiRGBArray(camera, size=(640, 480))
+    camera.capture(rawCapture, format="bgr")
 
-        # un-distort image
-        h, w = raw_frame.shape[:2]
-        new_camera_matrix, roi = cv2.getOptimalNewCameraMatrix(k, d, (w, h), 0)
-        map_x, map_y = cv2.initUndistortRectifyMap(k, d, None, new_camera_matrix, (w, h), 5)
+    # convert to numpy array for use by cv2
+    raw_frame = rawCapture.array
 
-        frame = cv2.remap(raw_frame, map_x, map_y, cv2.INTER_LINEAR)
+    # un-distort image
+    h, w = raw_frame.shape[:2]
+    new_camera_matrix, roi = cv2.getOptimalNewCameraMatrix(k, d, (w, h), 0)
+    map_x, map_y = cv2.initUndistortRectifyMap(k, d, None, new_camera_matrix, (w, h), 5)
 
-        lane_vertices = lane_roi(frame)
-        lane_edges = process_lanes(frame, lane_vertices)
-        right_line, left_line, center_line = create_lanes(lane_edges, frame)
-        intersection_vertices = intersection_roi(frame)
-        intersection_edges = process_intersection(frame, intersection_vertices)
-        slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int = create_intersection(intersection_edges,
-                                                                                                     frame)
-        lane_image = draw_lanes(frame, right_line, left_line, center_line, left_int, right_int, quad1_int, quad2_int,
-                                quad3_int, quad4_int)
-        if state1 == 1:
-            # make a guidance decision
-            guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int)
-            lane_image, command = navigation(frame, center_line, right_line, left_line, lane_image)
-            msg(command)
-            state1 = 2
-        elif intersection_state == 0:
-            # Navigate yellow lines
-            lane_image, command = navigation(frame, center_line, right_line, left_line, lane_image)
-            msg(command)
-        elif intersection_state == 1:
-            lane_image, command = navigation(frame, center_line, right_line, left_line, lane_image)
-            msg(command)
-            with open(logfile, "a") as q:
-                print("drive", command, file=q)
-                print("int count is:", int_count, file=q)
-        elif intersection_state == 2:
-            # execute decision and reset all states
-            with open(logfile, "a") as q:
-                print("Go", turn)
-            # pause execution of decisions until turn has been completed
-            start_turn = time.time()
-            while int(time.time() - start_turn) < delay:
-                command = turn
-                msg(command)
-            state1 = 0
-            intersection_state = 0
-            int_count = 0
-            fail_safe_count = 0
+    frame = cv2.remap(raw_frame, map_x, map_y, cv2.INTER_LINEAR)
 
+    lane_vertices = lane_roi(frame)
+    lane_edges = process_lanes(frame, lane_vertices)
+    right_line, left_line, center_line = create_lanes(lane_edges, frame)
+    intersection_vertices = intersection_roi(frame)
+    intersection_edges = process_intersection(frame, intersection_vertices)
+    slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int = create_intersection(intersection_edges,
+                                                                                                 frame)
+    lane_image = draw_lanes(frame, right_line, left_line, center_line, left_int, right_int, quad1_int, quad2_int,
+                            quad3_int, quad4_int)
+    if state1 == 1:
+        # make a guidance decision
+        guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int)
+        lane_image, command = navigation(frame, center_line, right_line, left_line, lane_image)
+        msg(command)
+        state1 = 2
+    elif intersection_state == 0:
+        # Navigate yellow lines
+        lane_image, command = navigation(frame, center_line, right_line, left_line, lane_image)
+        msg(command)
+    elif intersection_state == 1:
+        lane_image, command = navigation(frame, center_line, right_line, left_line, lane_image)
+        msg(command)
         with open(logfile, "a") as q:
-            print("intersection_state=", intersection_state, "state1=", state1,  file=q)
-        # show_test(lane_image)
+            print("drive", command, file=q)
+            print("int count is:", int_count, file=q)
+    elif intersection_state == 2:
+        # execute decision and reset all states
+        with open(logfile, "a") as q:
+            print("Go", turn)
+        # pause execution of decisions until turn has been completed
+        start_turn = time.time()
+        while int(time.time() - start_turn) < delay:
+            command = turn
+            msg(command)
+        state1 = 0
+        intersection_state = 0
+        int_count = 0
+        fail_safe_count = 0
 
-        key_pressed = cv2.waitKey(1) & 0xFF          # Delay for key press to quit and frame rate (1 ms)
-        if key_pressed == ord('q'):
-            break
+    with open(logfile, "a") as q:
+        print("intersection_state=", intersection_state, "state1=", state1,  file=q)
+    # show_test(lane_image)
 
-        # clear the stream in preparation for the next frame
-        rawCapture.truncate(0)
-        
-        return
+    key_pressed = cv2.waitKey(1) & 0xFF          # Delay for key press to quit and frame rate (1 ms)
+    if key_pressed == ord('q'):
+        break
+
+    # clear the stream in preparation for the next frame
+    rawCapture.truncate(0)
 
     # cleanup
     cv2.destroyAllWindows()
