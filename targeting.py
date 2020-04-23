@@ -58,7 +58,10 @@ offsetY = 30  # y-offset of center of image from center of robot, in pixels
 
 def target(target_write_input):
     global target_write, initialized, camera
-
+    send_msg(home)
+    return
+    
+    '''
     if not initialized:
         camera = camera_init()
         initialized = True
@@ -89,6 +92,7 @@ def target(target_write_input):
         
         if cv2.waitKey(1) == ord('q'):
             break
+    '''
 
 
 def send_msg(command):
@@ -114,13 +118,17 @@ def command_from_target_location(dx, dy):
         print("right")
     else:
         shoot = True
-    
+   
     if dy - offsetY > tolY:
-        send_msg(down)
+        start = time.time()
         print("down")
+        while int(time.time() - start) < 0.5:
+            send_msg(down)
     elif dy - offsetY < -tolY:
-        send_msg(up)
+        start = time.time()
         print("up")
+        while int(time.time() - start) < 0.5:
+            send_msg(up)
     elif shoot == True:
         send_msg(fire)
         print("FIRING!!!!!!!!!")
