@@ -651,7 +651,7 @@ def main():
 
     with open(logfile, "a") as q:
         print("intersection_state=", intersection_state, "state1=", state1,  file=q)
-    show_test(lane_image)
+    # show_test(lane_image)
 
     key_pressed = cv2.waitKey(1) & 0xFF          # Delay for key press to quit and frame rate (1 ms)
     if key_pressed == ord('q'):
