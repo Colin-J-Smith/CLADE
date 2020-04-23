@@ -587,9 +587,8 @@ def main():
     camera = PiCamera()
     camera.resolution = (640, 480)
     camera.rotation = 180
-    camera.framerate = 16
     rawCapture = PiRGBArray(camera, size=(640, 480))
-    camera.capture_continuous(rawCapture, format="bgr")
+    camera.capture(rawCapture, format="bgr")
 
     # convert to numpy array for use by cv2
     raw_frame = rawCapture.array
