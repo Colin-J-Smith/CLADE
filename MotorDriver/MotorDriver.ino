@@ -238,10 +238,10 @@ void rotLeft() {
   digitalWrite(DIN1, HIGH);
   digitalWrite(DIN2, LOW);
 
-  analogWrite(PWMA, SPD*.5);
-  analogWrite(PWMC, SPD*.5);
-  analogWrite(PWMB, SPD*.5);
-  analogWrite(PWMD, SPD*.5);
+  analogWrite(PWMA, SPD*.75);
+  analogWrite(PWMC, SPD*.75);
+  analogWrite(PWMB, SPD*.75);
+  analogWrite(PWMD, SPD*.75);
 
   //  Serial.println("Rot Left");
 }
@@ -260,10 +260,10 @@ void rotRight() {
   digitalWrite(DIN1, LOW);
   digitalWrite(DIN2, HIGH);
 
-  analogWrite(PWMA, SPD*.5);
-  analogWrite(PWMC, SPD*.5);
-  analogWrite(PWMB, SPD*.5);
-  analogWrite(PWMD, SPD*.5);
+  analogWrite(PWMA, SPD*.75);
+  analogWrite(PWMC, SPD*.75);
+  analogWrite(PWMB, SPD*.75);
+  analogWrite(PWMD, SPD*.75);
 
   //  Serial.println("Rot Right");
 }
