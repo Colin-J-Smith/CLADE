@@ -33,7 +33,7 @@ long cmd_issued = 0; // time command was recieved
 #define PWMD 10 //speed control pin on the motor driver for the back motor
 
 // MOTOR SPEED
-#define SPD 120 // duty cycle for the pwm signal 0-255
+#define SPD 80 // duty cycle for the pwm signal 0-255
 
 /********************************************************************************/
 
