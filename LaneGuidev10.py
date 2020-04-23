@@ -49,7 +49,7 @@ def nav(nav_write_input):
     nav_write = nav_write_input
     # # Uncomment to diable nav with testing turret
     # msg("<STP>")
-    main()
+    # main()
 
 
 def msg(command):
