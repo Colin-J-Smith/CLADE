@@ -10,7 +10,7 @@
 # IMPORTS
 # --------------------------
 
-#import luxonis_resources.depthai as depthai
+import luxonis_resources.depthai as depthai
 from luxonis_resources import utils
 
 import os
