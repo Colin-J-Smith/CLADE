@@ -24,8 +24,9 @@ from camera_init import camera_init
 # GLOBALS
 # --------------------------
 
-global target_write, camera, initialized
+global target_write, camera, initialized, call_count
 initialized = False
+call_count = 0
 
 # commands
 fire    = "<FIR>"
@@ -57,27 +58,31 @@ offsetY = 30  # y-offset of center of image from center of robot, in pixels
 # --------------------------
 
 def target(target_write_input):
-    global target_write, initialized, camera
+    global target_write, initialized, camera, call_count
     target_write = target_write_input
-    send_msg(home)
-    return
-    
-    '''
+    packet_count = 0
+
     if not initialized:
         camera = camera_init()
         initialized = True
+
+    if call_count != 10:
+        while packet_count < 100:
+            data_packets = camera.get_available_data_packets()
+            packet_count+=1
+        return
+
         
 
-    packet_count = 0
     is_aiming = True
     while is_aiming:
-
         data_packets = camera.get_available_data_packets()
         
         packet_count+=1
-        if not packet_count%20 == 0:
+        if packet_count != 20:
             continue
-
+        
+        packet_count = 0
         for packet in data_packets:
             if packet.stream_name == 'previewout':
                 data = packet.getData() # [Height, Width, Channel]
@@ -92,7 +97,6 @@ def target(target_write_input):
         
         if cv2.waitKey(1) == ord('q'):
             break
-    '''
 
 
 def send_msg(command):
