@@ -67,12 +67,12 @@ def target(target_write_input):
         initialized = True
 
     if call_count != 10:
+        call_count+=1
         while packet_count < 100:
             data_packets = camera.get_available_data_packets()
             packet_count+=1
         return
-
-        
+    call_count = 0
 
     is_aiming = True
     while is_aiming:
