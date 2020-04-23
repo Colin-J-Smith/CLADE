@@ -49,7 +49,7 @@ def nav(nav_write_input):
     nav_write = nav_write_input
     # # Uncomment to diable nav with testing turret
     # msg("<STP>")
-    # main()
+    main()
 
 
 def msg(command):
@@ -589,7 +589,7 @@ def main():
     camera.rotation = 180
     camera.framerate = 16
     rawCapture = PiRGBArray(camera, size=(640, 480))
-    camera.capture(rawCapture, format="bgr")
+    camera.capture_continuous(rawCapture, format="bgr")
 
     # convert to numpy array for use by cv2
     raw_frame = rawCapture.array
