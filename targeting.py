@@ -24,7 +24,10 @@ from camera_init import camera_init
 # GLOBALS
 # --------------------------
 
-global target_write, camera, initialized, call_count
+global target_write, camera, initialized, target_last_seen, shoot_start
+target_delay = 1.5 # seconds
+cmd_delay = -1 # sec
+fire_delay = 1.5 # sec
 initialized = False
 call_count = 0
 
@@ -58,16 +61,22 @@ offsetY = 30  # y-offset of center of image from center of robot, in pixels
 # --------------------------
 
 def target(target_write_input):
-    global target_write, initialized, camera, call_count
+    global target_write, initialized, camera, call_count, target_last_seen, shoot_start
     target_write = target_write_input
     
     if not initialized:
         camera = camera_init()
+        target_last_seen = time.time()
+        shoot_start = time.time()
         initialized = True
 
     is_aiming = True
     while is_aiming:
-        data_packets = camera.get_available_data_packets()        
+        data_packets = camera.get_available_data_packets()
+
+        if int(time.time() - shoot_start) < fire_delay:
+            continue
+
         for packet in data_packets:
             if packet.stream_name == 'previewout':
                 data = packet.getData() # [Height, Width, Channel]
@@ -84,52 +93,44 @@ def target(target_write_input):
             break
 
 
-def send_msg(command):
+def send_msg(command, delay):
     global target_write
     if target_write == sys.stdout:
         print(command)
     else:
         target_write.write(command.encode('utf-8'))
+        start = time.time()
+        while delay > 0 and int(time.time() - start) < delay:
+            target_write.write(command.encode('utf-8'))
 
 
 def command_from_target_location(dx, dy):
+    global shoot_start
     shoot = False
-    send_msg(stop) # command wheels to stop if target is found
-    
+
     print("Found target at ({}, {}), shooting at ({}+-{}, {}+-{})"
             .format(dx, dy, offsetX, tolX, offsetY, tolY))
 
     if dx - offsetX > tolX:
-        send_msg(left)
         print("left")
+        send_msg(left, cmd_delay)
     elif dx - offsetX < -tolX:
-        send_msg(right)
         print("right")
+        send_msg(right, cmd_delay)
     else:
         shoot = True
    
     if dy - offsetY > tolY:
-        start = time.time()
         print("down")
-        while int(time.time() - start) < 1:
-            send_msg(down)
+        send_msg(down, cmd_delay)
     elif dy - offsetY < -tolY:
-        start = time.time()
         print("up")
-        while int(time.time() - start) < 1:
-            send_msg(up)
+        send_msg(up, cmd_delay)
     elif shoot == True:
-        send_msg(fire)
-        print("FIRING!!!!!!!!!")
-        start = time.time()
-        while int(time.time() - start) < 1.5:
-            pass
+        send_msg(fire, -1)
+        shoot_start = time.time()
 
-    start = time.time()
-    while int(time.time() - start) < 0.5:
-        pass
 
-        
 # --------------------------
 # IMAGE PROCESSING FUNCTIONS
 # --------------------------
@@ -218,6 +219,7 @@ def draw_no_target(frame):
 
 
 def process_image(frame):
+    global target_last_seen
     
     # get all red and green contours from the image
     bad_guy_contours, good_guy_contours = process_targets(frame)
@@ -229,20 +231,21 @@ def process_image(frame):
     # if the largest contours are too small, assume no target has been found
     if bad_size < target_threshold and good_size < target_threshold:
         contour_img = draw_no_target(frame)
-        send_msg(home)
-        is_aiming = False
         
     # if the red contour is larger, assume a bad guy has been found
     elif bad_size > good_size:
         contour_img, dx, dy  = draw_contours(frame, largest_contour_bad, 'Bad guy')
         command_from_target_location(dx, dy)
-        is_aiming = True
+        target_last_seen = time.time()
         
     # if the green contour is larger, assume a good guy has been found
     else:
         contour_img, _, _ = draw_contours(frame, largest_contour_good, 'Good guy')
-        send_msg(home)
+
+    is_aiming = True
+    if int(time.time() - target_last_seen) > target_delay:
         is_aiming = False
+        send_msg(home, -1)
     
     return contour_img, is_aiming
 
