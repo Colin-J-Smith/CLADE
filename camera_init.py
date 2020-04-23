@@ -70,25 +70,3 @@ def camera_init(streams=None, configs=None):
         exit(2)
 
     return pipeline
-
-# --------------------------
-# GET_IMAGE
-# --------------------------
-
-def get_image(pipeline):
-    # retreive data from the device (data is stored in packets)
-    data_packets = pipeline.get_available_data_packets()
-
-    # get image data from the left and right cameras
-    for packet in data_packets:
-        print("reading packets!")
-        if packet.stream_name == 'previewout':
-            print("seeing preview out!")
-            data = packet.getData() # [Height, Width, Channel]
-            data0 = data[0,:,:]
-            data1 = data[1,:,:]
-            data2 = data[2,:,:]
-            frame_bgr = cv2.merge([data0, data1, data2])
-            frame_bgr = cv2.flip(frame_bgr, 0)
-            cv2.imshow(packet.stream_name, frame_bgr)
-            return frame_bgr
