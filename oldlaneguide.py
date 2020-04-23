@@ -654,8 +654,6 @@ def main():
 
         # clear the stream in preparation for the next frame
         rawCapture.truncate(0)
-        
-        return
 
     # cleanup
     cv2.destroyAllWindows()
