@@ -56,10 +56,6 @@ def camera_init():
     }
     config = utils.merge(streams, default_config)
 
-    if True:
-        print(config)
-        return
-
     # camera init
     if not depthai.init_device(device_cmd_file):
         print("Error initializing device. Try to reset it.")
