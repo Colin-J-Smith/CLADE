@@ -39,7 +39,7 @@ def camera_init():
     streams = json.loads('{"streams": [{"name": "previewout", "max_fps": 12.0}]}')
 
     default_config = {
-        'streams': [],
+        'streams': ['previewout'],
         'depth': {
             'calibration_file': '',
             'padding_factor': 0.3
