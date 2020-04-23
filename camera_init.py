@@ -10,7 +10,9 @@
 # IMPORTS
 # --------------------------
 
-import luxonis_resources.depthai as depthai
+#import luxonis_resources.depthai as depthai
+from luxonis_resources import utils
+
 import os
 import json
 from os import path
@@ -28,21 +30,23 @@ def relative_to_abs_path(relative_path):
 device_cmd_file    = relative_to_abs_path('luxonis_resources/depthai.cmd')
 blob_file          = relative_to_abs_path('luxonis_resources/mobilenet_ssd.blob')
 
-
 # --------------------------
 # INIT
 # --------------------------
 
 def camera_init():
-    configs = {
-        'streams': [{'name': 'previewout', "max_fps": 12.0},],
+    calc_dist_to_bb = False
+    streams = json.loads('{"streams": [{"name": "previewout", "max_fps": 12.0}]}')
+
+    default_config = {
+        'streams': [],
         'depth': {
-            'calibration_file': '', # we're going to do our own calibration since we're not using their AI
+            'calibration_file': '',
             'padding_factor': 0.3
         },
         'ai': { 
             'blob_file': blob_file,
-            'calc_dist_to_bb': False                # I think this will decrease processing time
+            'calc_dist_to_bb': calc_dist_to_bb
         },
         'board_config': {
             'swap_left_and_right_cameras': True,    # True for 1097 (RPi Compute) and 1098OBC (USB w/onboard cameras)
@@ -50,6 +54,11 @@ def camera_init():
             'left_to_right_distance_cm': 7.5,       # Distance between stereo cameras
         }
     }
+    config = utils.merge(streams, default_config)
+
+    if True:
+        print(config)
+        return
 
     # camera init
     if not depthai.init_device(device_cmd_file):
@@ -57,7 +66,7 @@ def camera_init():
         exit(1)
 
     # create the pipeline, here is the first connection with the device
-    pipeline = depthai.create_pipeline(config=configs)
+    pipeline = depthai.create_pipeline(config=config)
     if pipeline is None:
         print('Pipeline is not created.')
         exit(2)
