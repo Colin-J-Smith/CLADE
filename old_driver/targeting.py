@@ -11,10 +11,6 @@
 # --------------------------
 
 import sys
-import os
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(".."))))
-
 import cv2
 import imutils
 import numpy as np
