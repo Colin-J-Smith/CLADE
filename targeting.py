@@ -61,7 +61,7 @@ offsetY = 30  # y-offset of center of image from center of robot, in pixels
 # --------------------------
 
 def target(target_write_input):
-    global target_write, initialized, camera, call_count
+    global target_write, initialized, camera, call_count, target_last_seen
     target_write = target_write_input
     
     if not initialized:
