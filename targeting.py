@@ -65,16 +65,6 @@ def target(target_write_input):
         camera = camera_init()
         initialized = True
 
-    '''
-    if call_count != 10:
-        call_count+=1
-        while packet_count < 500:
-            data_packets = camera.get_available_data_packets()
-            packet_count+=1
-        return
-    call_count = 0
-    '''
-
     is_aiming = True
     while is_aiming:
         data_packets = camera.get_available_data_packets()        
@@ -121,12 +111,12 @@ def command_from_target_location(dx, dy):
     if dy - offsetY > tolY:
         start = time.time()
         print("down")
-        while int(time.time() - start) < 0.5:
+        while int(time.time() - start) < 1:
             send_msg(down)
     elif dy - offsetY < -tolY:
         start = time.time()
         print("up")
-        while int(time.time() - start) < 0.5:
+        while int(time.time() - start) < 1:
             send_msg(up)
     elif shoot == True:
         send_msg(fire)
