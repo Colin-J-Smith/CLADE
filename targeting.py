@@ -60,12 +60,12 @@ offsetY = 30  # y-offset of center of image from center of robot, in pixels
 def target(target_write_input):
     global target_write, initialized, camera, call_count
     target_write = target_write_input
-    packet_count = 0
 
     if not initialized:
         camera = camera_init()
         initialized = True
 
+    '''
     if call_count != 10:
         call_count+=1
         while packet_count < 500:
@@ -73,16 +73,11 @@ def target(target_write_input):
             packet_count+=1
         return
     call_count = 0
+    '''
 
     is_aiming = True
     while is_aiming:
-        data_packets = camera.get_available_data_packets()
-        
-        packet_count+=1
-        if packet_count != 50:
-            continue
-        
-        packet_count = 0
+        data_packets = camera.get_available_data_packets()        
         for packet in data_packets:
             if packet.stream_name == 'previewout':
                 data = packet.getData() # [Height, Width, Channel]
