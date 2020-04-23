@@ -24,9 +24,9 @@ from camera_init import camera_init
 # GLOBALS
 # --------------------------
 
-global target_write, camera, initialized, target_last_seen
+global target_write, camera, initialized, target_last_seen, shoot_start
 target_delay = 1.5 # seconds
-cmd_delay = 0.1 # sec
+cmd_delay = -1 # sec
 fire_delay = 1.5 # sec
 initialized = False
 call_count = 0
@@ -61,17 +61,22 @@ offsetY = 30  # y-offset of center of image from center of robot, in pixels
 # --------------------------
 
 def target(target_write_input):
-    global target_write, initialized, camera, call_count, target_last_seen
+    global target_write, initialized, camera, call_count, target_last_seen, shoot_start
     target_write = target_write_input
     
     if not initialized:
         camera = camera_init()
         target_last_seen = time.time()
+        shoot_start = time.time()
         initialized = True
 
     is_aiming = True
     while is_aiming:
-        data_packets = camera.get_available_data_packets()        
+        data_packets = camera.get_available_data_packets()
+
+        if int(time.time() - shoot_start) < fire_delay:
+            continue
+
         for packet in data_packets:
             if packet.stream_name == 'previewout':
                 data = packet.getData() # [Height, Width, Channel]
@@ -100,6 +105,7 @@ def send_msg(command, delay):
 
 
 def command_from_target_location(dx, dy):
+    global shoot_start
     shoot = False
 
     print("Found target at ({}, {}), shooting at ({}+-{}, {}+-{})"
@@ -122,8 +128,7 @@ def command_from_target_location(dx, dy):
         send_msg(up, cmd_delay)
     elif shoot == True:
         send_msg(fire, -1)
-        while int(time.time() - start) < fire_delay:
-            pass
+        shoot_start = time.time()
 
 
 # --------------------------
