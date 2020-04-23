@@ -84,52 +84,46 @@ def target(target_write_input):
             break
 
 
-def send_msg(command):
+def send_msg(command, delay):
     global target_write
     if target_write == sys.stdout:
         print(command)
     else:
         target_write.write(command.encode('utf-8'))
+        start = time.time()
+        while delay > 0 and int(time.time() - start) < delay:
+            target_write.write(command.encode('utf-8'))
 
 
 def command_from_target_location(dx, dy):
     shoot = False
-    send_msg(stop) # command wheels to stop if target is found
-    
+    cmd_delay = 1 # sec
+    fire_delay = 1.5 # sec
+
     print("Found target at ({}, {}), shooting at ({}+-{}, {}+-{})"
             .format(dx, dy, offsetX, tolX, offsetY, tolY))
 
     if dx - offsetX > tolX:
-        send_msg(left)
         print("left")
+        send_msg(left, cmd_delay)
     elif dx - offsetX < -tolX:
-        send_msg(right)
         print("right")
+        send_msg(right, cmd_delay)
     else:
         shoot = True
    
     if dy - offsetY > tolY:
-        start = time.time()
         print("down")
-        while int(time.time() - start) < 1:
-            send_msg(down)
+        send_msg(down, cmd_delay)
     elif dy - offsetY < -tolY:
-        start = time.time()
         print("up")
-        while int(time.time() - start) < 1:
-            send_msg(up)
+        send_msg(up, cmd_delay)
     elif shoot == True:
-        send_msg(fire)
-        print("FIRING!!!!!!!!!")
-        start = time.time()
-        while int(time.time() - start) < 1.5:
+        send_msg(fire, -1)
+        while int(time.time() - start) < fire_delay:
             pass
 
-    start = time.time()
-    while int(time.time() - start) < 0.5:
-        pass
 
-        
 # --------------------------
 # IMAGE PROCESSING FUNCTIONS
 # --------------------------
