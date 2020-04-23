@@ -15,9 +15,6 @@ from datetime import datetime
 from LaneGuidev10 import nav, nav_msg_size
 from targeting import target, target_msg_size
 
-import luxonis_resources.depthai as depthai
-from camera_init import camera_init
-
 # states
 initializing = 0
 looking = 1
@@ -38,7 +35,7 @@ arduino_port_mtr = "/dev/ttyUSB0"
 arduino_baudrate_mtr = 9600
 
 # testing variables
-testing_pi_driver = False
+testing_pi_driver = True
 
 def driver():
     while True:
@@ -78,8 +75,7 @@ def init():
     if pid == 0: # child
         os.close(r)
         target_write = os.fdopen(w, 'w')
-        pipeline = camera_init()
-        target(target_write, pipeline) # run the targeting
+        target(target_write) # run the targeting
         sys.exit(0)
     os.close(w)
     target_read = os.fdopen(r)
@@ -115,16 +111,18 @@ def shoot(): # if shooting, ignore navigation commands
 
 def send_msg_mtr(msg):
     # forward message to the Arduino (without timestamp)
-    mtr_write.write(msg.encode('utf-8'))
     if mtr_write == sys.stdout:
-        print("")
+        print(msg)
+    else:
+        mtr_write.write(msg.encode('utf-8'))
 
 
 def send_msg_tur(msg):
     # forward message to the Arduino (without timestamp)
-    tur_write.write(msg.encode('utf-8'))
     if tur_write == sys.stdout:
-        print("")
+        print(msg)
+    else:
+        tur_write.write(msg.encode('utf-8'))
 
 
 def process_nav_msg(command):

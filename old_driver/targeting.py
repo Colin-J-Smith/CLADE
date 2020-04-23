@@ -57,8 +57,8 @@ offsetY = -40  # y-offset of center of image from center of robot, in pixels
 
 def target(target_write_input):
     global target_write
-    i = 0
     target_write = target_write_input
+    
     pipeline = camera_init()
     while True:
         # retreive data from the device (data is stored in packets)
@@ -86,11 +86,10 @@ def send_msg(command):
     time = datetime.now().strftime('%S.%f')
     command += " " + str(time)
     msg = command.ljust(target_msg_size)
-    
+
     try:
         target_write.write(msg)
-        import time
-        time.sleep(0.05)
+        target_write.flush()
     except:
         sys.exit(0)
 
