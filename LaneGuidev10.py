@@ -500,7 +500,7 @@ def create_intersection(intersection_edges, frame):
         avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
         if intersection_state == 1:
-            if AbsDistance <= 20 and avg_y > detection_lane:
+            if AbsDistance <= 50 and avg_y > detection_lane:
                 int_count += 1
                 fail_safe_count += 1
                 with open(logfile, "a") as f:
