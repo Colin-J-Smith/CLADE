@@ -1,10 +1,22 @@
-# File:     targeting.py
-# Author:   Lea Chandler
-# Date:     4/6/2020
-# Version:  1
-# Platform: Rasbian Buster with Python3
+# File:        targeting.py
+# Author:      Lea Chandler
+# Date:        4/6/2020
+# Version:     1
+# Platform:    Rasbian Buster with Python3
+# Description: Targeting module for the police academy robot
 #
-# Targeting module for the police academy robot
+# When called, targeting module gets a frame from the camera (see Known
+# Issues). If a continous command is being sent, it sends the command again.
+# Otherwise, if not waiting after sending a command or firing, the image is
+# processed. If no target is found, the module will return control to the
+# driver. If a target is found, the module will keep control and process images
+# for aiming until the target is hit.
+#
+# Known issues:
+# The Luxonis camera outputs data at a constant FSP (currently set to 6), and
+# will fill the data buffer and crash if the data is not read fast enough. Much
+# of the targeting design focuses on reading from this buffer constantly, even
+# if the data will not be used.
 
 # --------------------------
 # IMPORTS
@@ -24,24 +36,28 @@ from camera_init import camera_init
 # GLOBALS
 # --------------------------
 
-global target_write     # object to write commands to
-global camera           # Luxonis camera object
-global target_last_seen # time the target was last seen
-global fire_wait_start  # wait start after firing
-global cmd_wait_start   # wait start after sending commands
-global cmd_start        # time first continuous command sent
-global last_cmd         # last command that was send
+SHOW_PROCESSED_IMAGES = False
 
-cmd_delay = 0.5      # sec, delay before processing next image when targeting
+# constants
+cmd_delay = 0.5      # sec, delay before processing next image when aiming
 fire_delay = 1.5     # sec, delay before processing next image after shooting
 target_persist = 1.5 # sec, how long that seeing a target "persists"
-cmd_timeout = 0      # sec, how long to send continuous command after issue
-initialized = False  # bool, if module has been initialized yet
-sending_cmd = False  # bool, if we are currently sending a command
+cmd_timeout = 0      # sec, how long to send continuous cmd after first issue
+
+# variables
+global target_write     # object, to write commands to
+global camera           # object, Luxonis camera
+global target_last_seen # time, when target was last seen
+global fire_wait_start  # time, wait start after firing
+global cmd_wait_start   # time, wait start after sending command
+global cmd_start        # time, first continuous command sent
+global last_cmd         # value, last command that was sent
+global sending_cmd      # bool, true if currently sending a continuous cmd
+initialized = False     # bool, true if module has been initialized
 
 # commands
 fire    = "<FIR>"
-stop    = "<STP>"
+stop    = "<STP>" # unused
 up      = "<UPP>"
 down    = "<DWN>"
 left    = "<LFT>"
@@ -49,7 +65,7 @@ right   = "<RGT>"
 home    = "<HOM>" # send HOM when target has been hit/no bad target in sight
 
 # image processing masks
-lower_red1 = np.array([0, 100, 120], dtype=int)
+lower_red1 = np.array([0, 100, 120], dtype=int)   # HSV has two red areas
 upper_red1 = np.array([10, 255, 255], dtype=int)
 lower_red2 = np.array([170, 100, 120], dtype=int)
 upper_red2 = np.array([180, 255, 255], dtype=int)
@@ -57,7 +73,7 @@ lower_green = np.array([30, 100, 50], dtype=int)
 upper_green = np.array([90, 255, 255], dtype=int)
 
 # targeting callibration
-target_threshold = 5000 # red area threshold to determine target
+target_threshold = 5000 # red area threshold to determine valid target
 tolX = 10               # tolerance for x "center" of image, in pixels
 tolY = 10               # tolerance for y "center" of image, in pixels
 offsetX = 25            # x-offset of center of image, in pixels
@@ -79,30 +95,37 @@ def target(target_write_input):
     global cmd_start
     global sending_cmd
     
+    # writer initialization
     target_write = target_write_input
+
+    # camera and module initializations
     if not initialized:
         camera = camera_init()
-        target_last_seen = time.time()
-        fire_wait_start = time.time()
-        cmd_wait_start = time.time()
-        cmd_start = time.time()
+        target_last_seen = NOW()
+        fire_wait_start = NOW()
+        cmd_wait_start = NOW()
+        cmd_start = NOW()
         last_cmd = home
+        sending_cmd = False
         initialized = True
 
     is_aiming = True
     while is_aiming:
+
+        # get camera data
         data_packets = camera.get_available_data_packets()
 
-        # timer handling
-        if sending_cmd and int(time.time - cmd_start) < cmd_timeout:
-            send_msg(last_cmd, False)
+        # continous command timer (currently not sending continuous)
+        if sending_cmd and time_since(cmd_start) < cmd_timeout:
+            send_msg(last_cmd)
             continue
         else:
             sending_cmd = False
             
-        if int(time.time() - cmd_wait_start) < cmd_delay:
+        # command/firing wait timer
+        if time_since(cmd_wait_start) < cmd_delay:
             continue
-        elif int(time.time() - fire_wait_start) < fire_delay:
+        elif time_since(fire_wait_start) < fire_delay:
             continue
 
         # image processing
@@ -115,33 +138,45 @@ def target(target_write_input):
                 frame_bgr = cv2.merge([data0, data1, data2])
                 frame_bgr = cv2.flip(frame_bgr, 0)
                 processed_frame, is_aiming = process_image(frame_bgr)
-                #cv2.imshow("targeting", processed_frame)
+                if SHOW_PROCESSED_IMAGES:
+                    cv2.imshow("targeting", processed_frame)
                 break
         
         if cv2.waitKey(1) == ord('q'):
             break
 
 
-def send_msg(command, send_continuous):
-    global cmd_wait_start, cmd_start, last_cmd, sending_cmd
+def send_msg(command, start_continuous=False):
+    global cmd_wait_start
+    global cmd_start
+    global last_cmd
+    global sending_cmd
+    
+    # send command
     if target_write == sys.stdout:
         print(command)
-        return
-    target_write.write(command.encode('utf-8'))
-    cmd_wait_start = time.time()
-    if send_continuous:
+    else:
+        target_write.write(command.encode('utf-8'))
+
+    # start cmd wait timer
+    cmd_wait_start = NOW()
+
+    # start continous commands
+    if start_continuous:
         sending_cmd = True
         last_cmd = cmd
-        cmd_start = time.time()
+        cmd_start = NOW()
 
 
 def command_from_target_location(dx, dy):
     global fire_wait_start
-    fire_ready = False
+    fire_ready = False # bool, true if aligned horizontally
 
+    # status log
     print("Found target at ({}, {}), shooting at ({}+-{}, {}+-{})"
             .format(dx, dy, offsetX, tolX, offsetY, tolY))
 
+    # horizontal axis alignment
     if dx - offsetX > tolX:
         print("left")
         send_msg(left, True)
@@ -151,16 +186,17 @@ def command_from_target_location(dx, dy):
     else:
         fire_ready = True
    
+    # vertical axis aligment
     if dy - offsetY > tolY:
         print("down")
         send_msg(down, True)
     elif dy - offsetY < -tolY:
         print("up")
         send_msg(up, True)
-    elif fire_ready == True:
+    elif fire_ready:
         print("firing")
-        send_msg(fire, False)
-        fire_wait_start = time.time()
+        send_msg(fire)
+        fire_wait_start = NOW() # wait after firing for target to fall
 
 
 # --------------------------
@@ -252,6 +288,7 @@ def draw_no_target(frame):
 
 def process_image(frame):
     global target_last_seen
+    contour_img = frame
     
     # get all red and green contours from the image
     bad_guy_contours, good_guy_contours = process_targets(frame)
@@ -262,26 +299,45 @@ def process_image(frame):
 
     # if the largest contours are too small, assume no target has been found
     if bad_size < target_threshold and good_size < target_threshold:
-        contour_img = draw_no_target(frame)
+        if SHOW_PROCESSED_IMAGES:
+            contour_img = draw_no_target(frame)
         
     # if the red contour is larger, assume a bad guy has been found
     elif bad_size > good_size:
         contour_img, dx, dy  = draw_contours(frame, largest_contour_bad, 'Bad guy')
         command_from_target_location(dx, dy)
-        target_last_seen = time.time()
+        target_last_seen = NOW()
         
     # if the green contour is larger, assume a good guy has been found
     else:
-        contour_img, _, _ = draw_contours(frame, largest_contour_good, 'Good guy')
+        if SHOW_PROCESSED_IMAGES:
+            contour_img, _, _ = draw_contours(frame, largest_contour_good, 'Good guy')
 
+    # If the target was seen recently, assume we still see the it (the camera
+    # takes a sec to refocus when it moves). Otherwise, return turret to home
     is_aiming = True
-    if int(time.time() - target_last_seen) > target_persist:
+    if time_since(target_last_seen) > target_persist:
         is_aiming = False
-        send_msg(home, False)
+        send_msg(home)
     
     return contour_img, is_aiming
 
 
+# --------------------------
+# UTIL FUNCTIONS
+# --------------------------
+
+# time in seconds since given time
+def time_since(given_time):
+    return int(NOW() - given_time)
+
+
+# time right now
+def NOW():
+    return time.time()
+
+
+# print commands to console when debugging as standalone module
 if __name__=="__main__":
     while True:
         target(sys.stdout)
