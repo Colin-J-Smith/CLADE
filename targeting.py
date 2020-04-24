@@ -13,7 +13,7 @@
 # for aiming until the target is hit.
 #
 # Known issues:
-# The Luxonis camera outputs data at a constant FSP (currently set to 6), and
+# The Luxonis camera outputs data at a constant FPS (currently set to 12), and
 # will fill the data buffer and crash if the data is not read fast enough. Much
 # of the targeting design focuses on reading from this buffer constantly, even
 # if the data will not be used.
@@ -37,8 +37,8 @@ from camera_init import camera_init
 # --------------------------
 
 # constants
-cmd_delay = 0.5      # sec, delay before processing next image when aiming
-fire_delay = 2       # sec, delay before processing next image after shooting
+cmd_delay = 0        # sec, delay before processing next image when aiming
+fire_delay = 3       # sec, delay before processing next image after shooting
 target_persist = 1.5 # sec, how long that seeing a target "persists"
 cmd_timeout = 0      # sec, how long to send continuous cmd after first issue
 
