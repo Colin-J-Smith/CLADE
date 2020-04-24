@@ -39,8 +39,8 @@ left_int_count = 0
 camera_init = 0
 
 # delay timers
-delay_90 = 4
-delay_180 = 2
+delay_90 = 6
+delay_180 = 12
 delay_0 = 1
 
 # create log file
