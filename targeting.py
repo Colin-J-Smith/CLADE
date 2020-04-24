@@ -219,7 +219,7 @@ def get_contours(frame):
     
     # find contours
     red_contours = cv2.findContours(processed.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    red_contours = imutils.grab_contours(contours)
+    red_contours = imutils.grab_contours(red_contours)
     return red_contours
 
 
