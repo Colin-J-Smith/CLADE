@@ -261,7 +261,11 @@ def navigation(frame, center_line, right_line, left_line):
     height, width, _ = frame.shape
     mid = int((width / 2)*center_recalibration)
     nav_point_x = mid
-    center_length = abs(center_line[0] - center_line[3])
+
+    if len(center_line) > 0:
+        center_length = abs(center_line[0] - center_line[3])
+    else:
+        center_length = 0
     # if no intersections are visible and there is a right, left, and center lane command a turn around (dead end)
     with open(logfile, "a") as f:
         print("C=", center_line, center_length, "L_l=", left_line, "R_l=", right_line, file=f)
