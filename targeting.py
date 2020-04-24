@@ -241,7 +241,7 @@ def draw_contours(frame, contour):
     dy = cY - y0
     
     # draw the contour and center of the shape on the image
-    text = "Bay Guy: (" + str(dx) + "," + str(dy) + ")"
+    text = "Bad Guy: (" + str(dx) + "," + str(dy) + ")"
     cv2.drawContours(processed_frame, [contour], -1, (0,255,0), 2)
     cv2.circle(processed_frame, (cX, cY), 7, (255, 255, 255), -1)
     cv2.putText(processed_frame, text, (cX - 75, cY - 20),
