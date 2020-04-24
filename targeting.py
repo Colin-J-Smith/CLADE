@@ -159,7 +159,7 @@ def send_msg(command, start_continuous=False):
     # start continous commands
     if start_continuous:
         sending_cmd = True
-        last_cmd = cmd
+        last_cmd = command
         cmd_start = NOW()
 
 
