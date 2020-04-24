@@ -11,8 +11,9 @@
 #define VALUE_SEP ','
 
 //COMMANDS
-long cmd_timeout = 1000; // miliseconds
-long cmd_timeout_r = 500
+long cmd_timeout = 1000;   // milliseconds
+long cmd_timeout_t = 1000; // milliseconds
+long cmd_timeout_r = 500;  // milliseconds
 long cmd_issued = 0; // time command was recieved
 
 //PIN VARIABLES
@@ -105,18 +106,25 @@ void loop() {
 
     // run the command
     if (strcmp(cmdBuffer, "STP") == 0) {
+      cmd_timeout = cmd_timeout_t;
       stopMove();
     } else if (strcmp(cmdBuffer, "FWD") == 0) {
+      cmd_timeout = cmd_timeout_t;
       goFwd();
     } else if (strcmp(cmdBuffer, "BCK") == 0) {
+      cmd_timeout = cmd_timeout_t;
       goBack();
     } else if (strcmp(cmdBuffer, "LFT") == 0) {
+      cmd_timeout = cmd_timeout_t;
       goLeft();
     } else if (strcmp(cmdBuffer, "RGT") == 0) {
+      cmd_timeout = cmd_timeout_t;
       goRight();
     } else if (strcmp(cmdBuffer, "LLL") == 0) {
+      cmd_timeout = cmd_timeout_r;
       rotLeft();
     } else if (strcmp(cmdBuffer, "RRR") == 0) {
+      cmd_timeout = cmd_timeout_r;
       rotRight();
     }
 
