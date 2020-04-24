@@ -69,9 +69,17 @@ offsetY = 30            # y-offset of center of image, in pixels
 # --------------------------
 
 def target(target_write_input):
-    global target_write, initialized, camera, target_last_seen, fire_wait_start, last_cmd, cmd_start, sending_cmd
-    target_write = target_write_input
+    global target_write
+    global initialized
+    global camera
+    global target_last_seen
+    global fire_wait_start
+    global cmd_wait_start
+    global last_cmd
+    global cmd_start
+    global sending_cmd
     
+    target_write = target_write_input
     if not initialized:
         camera = camera_init()
         target_last_seen = time.time()
@@ -107,7 +115,7 @@ def target(target_write_input):
                 frame_bgr = cv2.merge([data0, data1, data2])
                 frame_bgr = cv2.flip(frame_bgr, 0)
                 processed_frame, is_aiming = process_image(frame_bgr)
-                cv2.imshow("targeting", processed_frame)
+                #cv2.imshow("targeting", processed_frame)
                 break
         
         if cv2.waitKey(1) == ord('q'):
