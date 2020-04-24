@@ -231,8 +231,8 @@ def draw_contours(frame, contour):
     cY = int(M["m01"] / M["m00"])
 
     # find image center
-    contour_img = frame
-    height,width = contour_img.shape[:2]
+    processed_frame = frame
+    height,width = processed_frame.shape[:2]
     x0 = width/2
     y0 = height/2
 
@@ -242,11 +242,11 @@ def draw_contours(frame, contour):
     
     # draw the contour and center of the shape on the image
     text = "Bay Guy: (" + str(dx) + "," + str(dy) + ")"
-    cv2.drawContours(contour_img, [contour], -1, (0,255,0), 2)
-    cv2.circle(contour_img, (cX, cY), 7, (255, 255, 255), -1)
-    cv2.putText(contour_img, text, (cX - 75, cY - 20),
+    cv2.drawContours(processed_frame, [contour], -1, (0,255,0), 2)
+    cv2.circle(processed_frame, (cX, cY), 7, (255, 255, 255), -1)
+    cv2.putText(processed_frame, text, (cX - 75, cY - 20),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)   
-    return contour_img, dx, dy
+    return processed_frame, dx, dy
 
 
 def get_largest_contour(contours):
@@ -262,15 +262,15 @@ def get_largest_contour(contours):
 def draw_no_target(frame):
     
     # add "no target" text to the image 
-    contour_img = frame    
-    cv2.putText(contour_img, "No target found", (20, 20),
+    processed_frame = frame    
+    cv2.putText(processed_frame, "No target found", (20, 20),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)   
-    return contour_img
+    return processed_frame
 
 
 def process_image(frame):
     global target_last_seen
-    contour_img = frame
+    processed_frame = frame
     
     # get all red contours from the image
     red_contours = get_contours(frame)
@@ -280,11 +280,11 @@ def process_image(frame):
 
     # if the largest contour is small, assume no target has been found
     if contour_size < target_threshold:
-        contour_img = draw_no_target(frame)
+        processed_frame = draw_no_target(frame)
 
     # otherwise, assume a bad guy has been found
     else:
-        contour_img, dx, dy  = draw_contours(frame, largest_contour)
+        processed_frame, dx, dy  = draw_contours(frame, largest_contour)
         command_from_target_location(dx, dy)
         target_last_seen = NOW()
 
@@ -295,7 +295,7 @@ def process_image(frame):
         is_aiming = False
         send_msg(home)
     
-    return contour_img, is_aiming
+    return processed_frame, is_aiming
 
 
 # --------------------------
