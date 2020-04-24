@@ -197,7 +197,7 @@ def create_lanes(lane_edges, frame):
             if AbsDistance_center <= 50:
                 int_count += 1
                 with open(logfile, "a") as f:
-                    print("yellow counted")
+                    print("yellow counted", file = f)
             with open(logfile, "a") as f:
                 print("lane counter is ON! - Abs Distance =", AbsDistance_center, "center_line =", avg_center_line, file=f)
 
@@ -520,7 +520,7 @@ def create_intersection(intersection_edges, frame):
                 int_count += 1
                 fail_safe_count += 1
                 with open(logfile, "a") as f:
-                    print("purple counted")
+                    print("purple counted", file =f)
             with open(logfile, "a") as f:
                 print("intersection counter is ON! - Abs Distance =", AbsDistance, "center_line =", avg_y, file=f)
 
@@ -532,7 +532,7 @@ def create_intersection(intersection_edges, frame):
             if (AbsDistance <= 15) and (avg_y > 420):
                 int_count += 1
                 with open(logfile, "a") as f:
-                    print("FAILSAFE purple counted")
+                    print("FAILSAFE purple counted", file = f)
     with open(logfile, "a") as f:
         print("left_int:", left_int, "right_int:", right_int, "quad3int:", quad3_int, file=f)
 
@@ -576,7 +576,7 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
     if left_int_count > 1 or len(left_int) > 0:
         turn = "<LLL>"
         delay = delay_90
-    elif len(quad1_int) > 0 or len(quad2_int) > 0 or len(quad3_int) > 0 or len(quad4_int) > 0:
+    elif (len(quad1_int) > 0 or len(quad2_int) > 0) and len(quad3_int) > 0:
         turn = "<FWD>"
         delay = delay_0
     elif len(right_int) > 0:
