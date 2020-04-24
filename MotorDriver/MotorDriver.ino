@@ -11,8 +11,8 @@
 #define VALUE_SEP ','
 
 //COMMANDS
-long cmd_timeout = 1000;   // milliseconds
-long cmd_timeout_t = 1000; // milliseconds
+long cmd_timeout = 1200;   // milliseconds
+long cmd_timeout_t = 1200; // milliseconds
 long cmd_timeout_r = 500;  // milliseconds
 long cmd_issued = 0; // time command was recieved
 
