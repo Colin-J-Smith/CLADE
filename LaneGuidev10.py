@@ -638,7 +638,8 @@ def main():
         command = navigation(frame, center_line, right_line, left_line)
         msg(command)
     elif intersection_state == 1:
-        command = navigation(frame, center_line, right_line, left_line)
+        # command = navigation(frame, center_line, right_line, left_line)
+        command = "<FWD>"
         msg(command)
         with open(logfile, "a") as q:
             print("drive", command, file=q)
@@ -646,7 +647,7 @@ def main():
     elif intersection_state == 2:
         # execute decision and reset all states
         with open(logfile, "a") as q:
-            print("Go", turn)
+            print("Go", turn, file=q)
         # pause execution of decisions until turn has been completed
         start_turn = time.time()
         while int(time.time() - start_turn) < delay:
