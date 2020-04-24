@@ -405,13 +405,15 @@ def create_intersection(intersection_edges, frame):
     if lines is not None:
         for line in lines:
             x1, y1, x2, y2 = line.reshape(4)
-            if (y2 - 20) < y1 < (y2 + 20):
-                horizontal_fit.append((x1, y1, x2, y2))
-                # cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 255), 2)
+            if x2 == x1:
+                pass
             else:
                 slope = int((y2 - y1) / (x2 - x1))
 
-            if slope < -1 / 2:
+            if (y2 - 20) < y1 < (y2 + 20):
+                horizontal_fit.append((x1, y1, x2, y2))
+                # cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 255), 2)
+            elif slope < -1 / 2:
                 left_fit.append((x1, y1, x2, y2))
                 # cv2.line(line_image, (x1, y1), (x2, y2), (255, 255, 0), 2)
 
