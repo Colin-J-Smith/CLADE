@@ -630,7 +630,7 @@ def main():
     if state1 == 1:
         # make a guidance decision
         guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int)
-        lane_image, command = navigation(frame, center_line, right_line, left_line)
+        command = navigation(frame, center_line, right_line, left_line)
         msg(command)
         state1 = 2
     elif intersection_state == 0:
