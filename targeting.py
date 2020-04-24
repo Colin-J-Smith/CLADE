@@ -24,17 +24,24 @@ from camera_init import camera_init
 # GLOBALS
 # --------------------------
 
-global target_write, camera, initialized, target_last_seen, fire_wait_start, cmd_wait_start, last_cmd
+global target_write     # object to write commands to
+global camera           # Luxonis camera object
+global target_last_seen # time the target was last seen
+global fire_wait_start  # wait start after firing
+global cmd_wait_start   # wait start after sending commands
+global cmd_start        # time first continuous command sent
+global last_cmd         # last command that was send
+
 cmd_delay = 0.5      # sec, delay before processing next image when targeting
 fire_delay = 1.5     # sec, delay before processing next image after shooting
 target_persist = 1.5 # sec, how long that seeing a target "persists"
 cmd_timeout = 0      # sec, how long to send continuous command after issue
 initialized = False  # bool, if module has been initialized yet
-
+sending_cmd = False  # bool, if we are currently sending a command
 
 # commands
 fire    = "<FIR>"
-stop    = "<STP>" # send STP when target is found
+stop    = "<STP>"
 up      = "<UPP>"
 down    = "<DWN>"
 left    = "<LFT>"
@@ -50,11 +57,11 @@ lower_green = np.array([30, 100, 50], dtype=int)
 upper_green = np.array([90, 255, 255], dtype=int)
 
 # targeting callibration
-target_threshold = 5000
-tolX = 10       # tolerance for x "center" of image, in pixels
-tolY = 10       # tolerance for y "center" of image, in pixels
-offsetX = 25   # x-offset of center of image from center of robot, in pixels
-offsetY = 30  # y-offset of center of image from center of robot, in pixels
+target_threshold = 5000 # red area threshold to determine target
+tolX = 10               # tolerance for x "center" of image, in pixels
+tolY = 10               # tolerance for y "center" of image, in pixels
+offsetX = 25            # x-offset of center of image, in pixels
+offsetY = 30            # y-offset of center of image, in pixels
 
 
 # --------------------------
@@ -62,14 +69,23 @@ offsetY = 30  # y-offset of center of image from center of robot, in pixels
 # --------------------------
 
 def target(target_write_input):
-    global target_write, initialized, camera, target_last_seen, fire_wait_start, last_cmd
-    target_write = target_write_input
+    global target_write
+    global initialized
+    global camera
+    global target_last_seen
+    global fire_wait_start
+    global cmd_wait_start
+    global last_cmd
+    global cmd_start
+    global sending_cmd
     
+    target_write = target_write_input
     if not initialized:
         camera = camera_init()
         target_last_seen = time.time()
         fire_wait_start = time.time()
         cmd_wait_start = time.time()
+        cmd_start = time.time()
         last_cmd = home
         initialized = True
 
@@ -78,10 +94,13 @@ def target(target_write_input):
         data_packets = camera.get_available_data_packets()
 
         # timer handling
-        if int(time.time - cmd_start) < cmd_timeout:
+        if sending_cmd and int(time.time - cmd_start) < cmd_timeout:
             send_msg(last_cmd, False)
             continue
-        elif int(time.time() - cmd_wait_start) < cmd_delay:
+        else:
+            sending_cmd = False
+            
+        if int(time.time() - cmd_wait_start) < cmd_delay:
             continue
         elif int(time.time() - fire_wait_start) < fire_delay:
             continue
@@ -96,7 +115,7 @@ def target(target_write_input):
                 frame_bgr = cv2.merge([data0, data1, data2])
                 frame_bgr = cv2.flip(frame_bgr, 0)
                 processed_frame, is_aiming = process_image(frame_bgr)
-                cv2.imshow("targeting", processed_frame)
+                #cv2.imshow("targeting", processed_frame)
                 break
         
         if cv2.waitKey(1) == ord('q'):
@@ -104,13 +123,15 @@ def target(target_write_input):
 
 
 def send_msg(command, send_continuous):
-    global cmd_wait_start, cmd_start, last_cmd
+    global cmd_wait_start, cmd_start, last_cmd, sending_cmd
     if target_write == sys.stdout:
         print(command)
         return
     target_write.write(command.encode('utf-8'))
     cmd_wait_start = time.time()
     if send_continuous:
+        sending_cmd = True
+        last_cmd = cmd
         cmd_start = time.time()
 
 
