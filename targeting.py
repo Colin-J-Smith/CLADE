@@ -98,12 +98,6 @@ def target(target_write_input):
         else:
             sending_cmd = False
         
-        # command/firing wait timer
-        if time_since(cmd_wait_start) < cmd_delay:
-            continue
-        elif time_since(fire_wait_start) < fire_delay:
-            continue
-
         # image processing
         for packet in data_packets:
             if packet.stream_name == 'previewout':
@@ -124,6 +118,10 @@ def target(target_write_input):
 def send_msg(command, start_continuous=False):
     global cmd_wait_start, cmd_start, last_cmd, sending_cmd
     
+    # command wait timer
+    if time_since(cmd_wait_start) < cmd_delay: # currently not used
+        return
+
     # send command
     if target_write == sys.stdout:
         print(command)
@@ -168,8 +166,11 @@ def command_from_target_location(dx, dy):
         send_msg(up, True)
     elif fire_ready:
         #print("firing")
-        send_msg(fire)
-        fire_wait_start = NOW() # wait after firing for target to fall
+        if time_since(fire_wait_start) < fire_delay:
+            return
+        else:
+            send_msg(fire)
+            fire_wait_start = NOW() # wait after firing for target to fall
 
 
 # --------------------------
