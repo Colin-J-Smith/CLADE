@@ -27,7 +27,7 @@ long cmd_issued = 0; // time command was recieved
 const int NSTEPS = 400;
 int posE = 0;//stepper position
 int posR = 0;//stepper position
-const int limE = 20;// limits to elevation position
+const int limE = 1000;// limits to elevation position
 const int limR = NSTEPS / 2; // limits to rotation position
 Stepper stepperE = Stepper(NSTEPS, dirPinE, stepPinE);
 Stepper stepperR = Stepper(NSTEPS, dirPinR, stepPinR);
@@ -58,8 +58,8 @@ void setup()
   pinMode(firePin, OUTPUT);
 
   // set stepper RPM
-  stepperE.setSpeed(30); // 20 rpm
-  stepperR.setSpeed(30); // 20 rpm
+  stepperE.setSpeed(20); // 20 rpm
+  stepperR.setSpeed(20); // 20 rpm
 }
 
 /********************************************************************************/
@@ -151,15 +151,15 @@ void goRight() {
 
 void goUp() {
   if (posE < limE) {
-    stepperE.step(1);
-    posE += 1;
+    stepperE.step(10);
+    posE += 10;
   }
 }
 
 void goDown() {
   if (-posE < limE) {
-    stepperE.step(-1);
-    posE += -1;
+    stepperE.step(-10);
+    posE += -10;
   }
 }
 
