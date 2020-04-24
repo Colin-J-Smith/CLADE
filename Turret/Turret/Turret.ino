@@ -12,7 +12,7 @@
 #define VALUE_SEP ','
 
 //COMMANDS
-const long cmd_timeout = 200; // miliseconds
+const long cmd_timeout = 400; // miliseconds
 long cmd_issued = 0; // time command was recieved
 
 //PINS
@@ -24,7 +24,7 @@ long cmd_issued = 0; // time command was recieved
 #define firePin 3
 
 //STEPPER
-const int NSTEPS = 400;
+const int NSTEPS = 200;
 int posE = 0;//stepper position
 int posR = 0;//stepper position
 const int limE = 1000;// limits to elevation position
@@ -33,7 +33,7 @@ Stepper stepperE = Stepper(NSTEPS, dirPinE, stepPinE);
 Stepper stepperR = Stepper(NSTEPS, dirPinR, stepPinR);
 
 //GUN
-float fireDelay = 2000;
+float fireDelay = 100;
 
 /********************************************************************************/
 
