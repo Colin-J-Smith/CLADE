@@ -38,7 +38,7 @@ from camera_init import camera_init
 
 # constants
 cmd_delay = 0.5      # sec, delay before processing next image when aiming
-fire_delay = 1.5     # sec, delay before processing next image after shooting
+fire_delay = 2       # sec, delay before processing next image after shooting
 target_persist = 1.5 # sec, how long that seeing a target "persists"
 cmd_timeout = 0      # sec, how long to send continuous cmd after first issue
 
@@ -117,7 +117,7 @@ def target(target_write_input):
             continue
         else:
             sending_cmd = False
-            
+        
         # command/firing wait timer
         if time_since(cmd_wait_start) < cmd_delay:
             continue
