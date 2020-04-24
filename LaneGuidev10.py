@@ -576,7 +576,7 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
     if left_int_count > 1 or len(left_int) > 0:
         turn = "<LLL>"
         delay = delay_90
-    elif (len(quad1_int) > 0 or len(quad2_int) > 0) and len(quad3_int) > 0:
+    elif len(quad1_int) > 0 and len(quad3_int) > 0:
         turn = "<FWD>"
         delay = delay_0
     elif len(right_int) > 0:
