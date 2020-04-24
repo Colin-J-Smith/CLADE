@@ -246,7 +246,7 @@ def show_test(lane_image):
     cv2.imshow('lanes', lane_image)  # show the image in that window
 
 
-def navigation(frame, center_line, right_line, left_line, lane_image):
+def navigation(frame, center_line, right_line, left_line):
     global turn
     global delay
     global state1
@@ -310,6 +310,10 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
             with open(logfile, "a") as f:
                 print("right line turn left", file=f)
             command = "<LLL>"
+        elif right_line[2] < 390:
+            with open(logfile, "a") as f:
+                print("two lines lateral left", file=f)
+            command = "<LFT>"
         else:
             with open(logfile, "a") as f:
                 print("right line drive straight", file=f)
@@ -322,6 +326,10 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
             with open(logfile, "a") as f:
                 print("left line turn right", file=f)
             command = "<RRR>"
+        elif left_line[0] > 250:
+            with open(logfile, "a") as f:
+                print("left line lateral right", file=f)
+            command = "<RGT>"
         else:
             with open(logfile, "a") as f:
                 print("left line drive straight", file=f)
@@ -331,8 +339,8 @@ def navigation(frame, center_line, right_line, left_line, lane_image):
             print("no lines detected - drive straight", file=f)
         command = "<FWD>"
 
-    cv2.line(lane_image, (mid, height), (nav_point_x, int(height/2)), [0, 255, 255], 10)
-    return lane_image, command
+    # cv2.line(lane_image, (mid, height), (nav_point_x, int(height/2)), [0, 255, 255], 10)
+    return command
 
 
 def intersection_roi(frame):
@@ -617,20 +625,20 @@ def main():
     intersection_edges = process_intersection(frame, intersection_vertices)
     slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int = create_intersection(intersection_edges,
                                                                                                  frame)
-    lane_image = draw_lanes(frame, right_line, left_line, center_line, left_int, right_int, quad1_int, quad2_int,
-                            quad3_int, quad4_int)
+    # lane_image = draw_lanes(frame, right_line, left_line, center_line, left_int, right_int, quad1_int, quad2_int,
+                          #  quad3_int, quad4_int)
     if state1 == 1:
         # make a guidance decision
         guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int)
-        lane_image, command = navigation(frame, center_line, right_line, left_line, lane_image)
+        lane_image, command = navigation(frame, center_line, right_line, left_line)
         msg(command)
         state1 = 2
     elif intersection_state == 0:
         # Navigate yellow lines
-        lane_image, command = navigation(frame, center_line, right_line, left_line, lane_image)
+        command = navigation(frame, center_line, right_line, left_line)
         msg(command)
     elif intersection_state == 1:
-        lane_image, command = navigation(frame, center_line, right_line, left_line, lane_image)
+        command = navigation(frame, center_line, right_line, left_line)
         msg(command)
         with open(logfile, "a") as q:
             print("drive", command, file=q)
