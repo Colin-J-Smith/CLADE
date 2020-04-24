@@ -58,8 +58,8 @@ void setup()
   pinMode(firePin, OUTPUT);
 
   // set stepper RPM
-  stepperE.setSpeed(40); // 20 rpm
-  stepperR.setSpeed(40); // 20 rpm
+  stepperE.setSpeed(30); // 20 rpm
+  stepperR.setSpeed(30); // 20 rpm
 }
 
 /********************************************************************************/
