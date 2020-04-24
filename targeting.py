@@ -24,13 +24,13 @@ from camera_init import camera_init
 # GLOBALS
 # --------------------------
 
-global target_write
-global camera
-global initialized
-global target_last_seen
-global fire_wait_start
-global cmd_wait_start
-global last_cmd
+global target_write     # object to write commands to
+global camera           # Luxonis camera object
+global target_last_seen # time the target was last seen
+global fire_wait_start  # wait start after firing
+global cmd_wait_start   # wait start after sending commands
+global cmd_start        # time first continuous command sent
+global last_cmd         # last command that was send
 
 cmd_delay = 0.5      # sec, delay before processing next image when targeting
 fire_delay = 1.5     # sec, delay before processing next image after shooting
