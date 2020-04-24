@@ -42,16 +42,6 @@ fire_delay = 3       # sec, delay before processing next image after shooting
 target_persist = 1.5 # sec, how long that seeing a target "persists"
 cmd_timeout = 0      # sec, how long to send continuous cmd after first issue
 
-# variables
-global target_write     # object, to write commands to
-camera = camera_init()  # object, Luxonis camera
-target_last_seen = 0    # time, when target was last seen
-fire_wait_start = 0     # time, wait start after firing
-cmd_wait_start = 0      # time, wait start after sending command
-cmd_start = 0           # time, first continuous command sent
-last_cmd = home         # value, last command that was sent
-sending_cmd = False     # bool, true if currently sending a continuous cmd
-
 # commands
 fire    = "<FIR>"
 stop    = "<STP>" # unused
@@ -73,6 +63,16 @@ tolX = 10               # tolerance for x "center" of image, in pixels
 tolY = 10               # tolerance for y "center" of image, in pixels
 offsetX = 25            # x-offset of center of image, in pixels
 offsetY = 30            # y-offset of center of image, in pixels
+
+# variables
+global target_write     # object, to write commands to
+camera = camera_init()  # object, Luxonis camera
+target_last_seen = 0    # time, when target was last seen
+fire_wait_start = 0     # time, wait start after firing
+cmd_wait_start = 0      # time, wait start after sending command
+cmd_start = 0           # time, first continuous command sent
+last_cmd = home         # value, last command that was sent
+sending_cmd = False     # bool, true if currently sending a continuous cmd
 
 
 # --------------------------
@@ -168,9 +168,8 @@ def command_from_target_location(dx, dy):
         #print("firing")
         if time_since(fire_wait_start) < fire_delay:
             return
-        else:
-            send_msg(fire)
-            fire_wait_start = NOW() # wait after firing for target to fall
+        send_msg(fire)
+        fire_wait_start = NOW() # wait after firing for target to fall
 
 
 # --------------------------
