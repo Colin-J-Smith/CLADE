@@ -11,7 +11,8 @@
 #define VALUE_SEP ','
 
 //COMMANDS
-const long cmd_timeout = 1000; // miliseconds
+long cmd_timeout = 1000; // miliseconds
+long cmd_timeout_r = 500
 long cmd_issued = 0; // time command was recieved
 
 //PIN VARIABLES
