@@ -63,34 +63,35 @@ offsetY = 30  # y-offset of center of image from center of robot, in pixels
 def target(target_write_input):
     global target_write, initialized, camera, call_count, target_last_seen, shoot_start
     target_write = target_write_input
+    send_msg(home, 0)
     
-    if not initialized:
-        camera = camera_init()
-        target_last_seen = time.time()
-        shoot_start = time.time()
-        initialized = True
+    #if not initialized:
+        #camera = camera_init()
+        #target_last_seen = time.time()
+        #shoot_start = time.time()
+        #initialized = True
 
-    is_aiming = True
-    while is_aiming:
-        data_packets = camera.get_available_data_packets()
+    #is_aiming = True
+    #while is_aiming:
+        #data_packets = camera.get_available_data_packets()
 
-        if int(time.time() - shoot_start) < fire_delay:
-            continue
+        #if int(time.time() - shoot_start) < fire_delay:
+            #continue
 
-        for packet in data_packets:
-            if packet.stream_name == 'previewout':
-                data = packet.getData() # [Height, Width, Channel]
-                data0 = data[0,:,:]
-                data1 = data[1,:,:]
-                data2 = data[2,:,:]
-                frame_bgr = cv2.merge([data0, data1, data2])
-                frame_bgr = cv2.flip(frame_bgr, 0)
-                processed_frame, is_aiming = process_image(frame_bgr)
+        #for packet in data_packets:
+            #if packet.stream_name == 'previewout':
+                #data = packet.getData() # [Height, Width, Channel]
+                #data0 = data[0,:,:]
+                #data1 = data[1,:,:]
+                #data2 = data[2,:,:]
+                #frame_bgr = cv2.merge([data0, data1, data2])
+                #frame_bgr = cv2.flip(frame_bgr, 0)
+                #processed_frame, is_aiming = process_image(frame_bgr)
                 #cv2.imshow("targeting", processed_frame)
-                break
+                #break
         
-        if cv2.waitKey(1) == ord('q'):
-            break
+        #if cv2.waitKey(1) == ord('q'):
+            #break
 
 
 def send_msg(command, delay):
