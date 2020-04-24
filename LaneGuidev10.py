@@ -102,7 +102,7 @@ def process_lanes(frame, lane_vertices):
     # Convert image to grayscale and HSV, and filter out colors that aren't yellow
     grey = cv2.cvtColor(ROI, cv2.COLOR_BGR2GRAY)
     processed_hsv = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
-    lower_yellow = np.array([10, 40, 130], dtype=int)
+    lower_yellow = np.array([10, 30, 130], dtype=int)
     upper_yellow = np.array([40, 255, 255], dtype=int)
     mask_yellow = cv2.inRange(processed_hsv, lower_yellow, upper_yellow)
     processed = cv2.bitwise_and(grey, mask_yellow)
