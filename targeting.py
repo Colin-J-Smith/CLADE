@@ -151,6 +151,7 @@ def send_msg(command, start_continuous=False):
     if target_write == sys.stdout:
         print(command)
     else:
+        print(command)
         target_write.write(command.encode('utf-8'))
 
     # start cmd wait timer
@@ -173,23 +174,23 @@ def command_from_target_location(dx, dy):
 
     # horizontal axis alignment
     if dx - offsetX > tolX:
-        print("left")
+        #print("left")
         send_msg(left, True)
     elif dx - offsetX < -tolX:
-        print("right")
+        #print("right")
         send_msg(right, True)
     else:
         fire_ready = True
    
     # vertical axis aligment
     if dy - offsetY > tolY:
-        print("down")
+        #print("down")
         send_msg(down, True)
     elif dy - offsetY < -tolY:
-        print("up")
+        #print("up")
         send_msg(up, True)
     elif fire_ready:
-        print("firing")
+        #print("firing")
         send_msg(fire)
         fire_wait_start = NOW() # wait after firing for target to fall
 
