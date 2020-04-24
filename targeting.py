@@ -111,6 +111,7 @@ def send_msg(command, send_continuous):
     target_write.write(command.encode('utf-8'))
     cmd_wait_start = time.time()
     if send_continuous:
+        last_cmd = cmd
         cmd_start = time.time()
 
 
