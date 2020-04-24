@@ -12,7 +12,7 @@
 #define VALUE_SEP ','
 
 //COMMANDS
-const long cmd_timeout = 500; // miliseconds
+const long cmd_timeout = 200; // miliseconds
 long cmd_issued = 0; // time command was recieved
 
 //PINS
@@ -33,7 +33,7 @@ Stepper stepperE = Stepper(NSTEPS, dirPinE, stepPinE);
 Stepper stepperR = Stepper(NSTEPS, dirPinR, stepPinR);
 
 //GUN
-float fireDelay = 200;
+float fireDelay = 2000;
 
 /********************************************************************************/
 
