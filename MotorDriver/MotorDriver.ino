@@ -34,7 +34,7 @@ long cmd_issued = 0; // time command was recieved
 
 // MOTOR SPEED
 #define SPD 80 // duty cycle for the pwm signal 0-255
-#define RSD 40  // duty cycle for the pwm signal for rotation 0-255
+#define RSD 50  // duty cycle for the pwm signal for rotation 0-255
 
 
 /********************************************************************************/
