@@ -44,14 +44,13 @@ cmd_timeout = 0      # sec, how long to send continuous cmd after first issue
 
 # variables
 global target_write     # object, to write commands to
-global camera           # object, Luxonis camera
-global target_last_seen # time, when target was last seen
-global fire_wait_start  # time, wait start after firing
-global cmd_wait_start   # time, wait start after sending command
-global cmd_start        # time, first continuous command sent
-global last_cmd         # value, last command that was sent
-global sending_cmd      # bool, true if currently sending a continuous cmd
-initialized = False     # bool, true if module has been initialized
+camera = camera_init()  # object, Luxonis camera
+target_last_seen = 0    # time, when target was last seen
+fire_wait_start = 0     # time, wait start after firing
+cmd_wait_start = 0      # time, wait start after sending command
+cmd_start = 0           # time, first continuous command sent
+last_cmd = home         # value, last command that was sent
+sending_cmd = False     # bool, true if currently sending a continuous cmd
 
 # commands
 fire    = "<FIR>"
@@ -81,29 +80,10 @@ offsetY = 30            # y-offset of center of image, in pixels
 # --------------------------
 
 def target(target_write_input):
-    global target_write
-    global initialized
-    global camera
-    global target_last_seen
-    global fire_wait_start
-    global cmd_wait_start
-    global last_cmd
-    global cmd_start
-    global sending_cmd
+    global target_write, sending_cmd
     
-    # writer initialization
+    # global writer initialization
     target_write = target_write_input
-
-    # camera and module initializations
-    if not initialized:
-        camera = camera_init()
-        target_last_seen = NOW()
-        fire_wait_start = NOW()
-        cmd_wait_start = NOW()
-        cmd_start = NOW()
-        last_cmd = home
-        sending_cmd = False
-        initialized = True
 
     is_aiming = True
     while is_aiming:
@@ -142,10 +122,7 @@ def target(target_write_input):
 
 
 def send_msg(command, start_continuous=False):
-    global cmd_wait_start
-    global cmd_start
-    global last_cmd
-    global sending_cmd
+    global cmd_wait_start, cmd_start, last_cmd, sending_cmd
     
     # send command
     if target_write == sys.stdout:
