@@ -218,9 +218,9 @@ def get_contours(frame):
     processed = cv2.threshold(processed, 30, 255, cv2.THRESH_BINARY)[1]
     
     # find contours
-    red_contours = cv2.findContours(processed.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    red_contours = imutils.grab_contours(red_contours)
-    return red_contours
+    contours = cv2.findContours(processed.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours = imutils.grab_contours(contours)
+    return contours
 
 
 def draw_contours(frame, contour):
