@@ -263,7 +263,7 @@ def navigation(frame, center_line, right_line, left_line):
     nav_point_x = mid
 
     # if no intersections are visible and there is a right, left, and center lane command a turn around (dead end)
-    if state1 == 0 and len(center_line) > 50 and (int(center_line[1]) + int(center_line[3])) / 2 > 300 and \
+    if state1 == 0 and len(center_line) > 20 and (int(center_line[1]) + int(center_line[3])) / 2 > 300 and \
             len(right_line) > 0 and len(left_line) > 0:
         left_x2 = left_line[2]
         right_x2 = right_line[0]
