@@ -24,7 +24,14 @@ from camera_init import camera_init
 # GLOBALS
 # --------------------------
 
-global target_write, camera, initialized, target_last_seen, fire_wait_start, cmd_wait_start, last_cmd
+global target_write
+global camera
+global initialized
+global target_last_seen
+global fire_wait_start
+global cmd_wait_start
+global last_cmd
+
 cmd_delay = 0.5      # sec, delay before processing next image when targeting
 fire_delay = 1.5     # sec, delay before processing next image after shooting
 target_persist = 1.5 # sec, how long that seeing a target "persists"
