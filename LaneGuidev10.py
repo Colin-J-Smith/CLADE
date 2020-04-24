@@ -335,7 +335,7 @@ def intersection_roi(frame):
     rows, cols = frame.shape[:2]
     bottom_left = [cols * 0.1, rows * 1]
     top_left = [cols * 0.1, rows * 0.2]
-    bottom_right = [cols * 0.9, rows * 0.9]
+    bottom_right = [cols * 0.9, rows * 1]
     top_right = [cols * 0.9, rows * 0.2]
     intersection_vertices = np.array([[bottom_left, top_left, top_right, bottom_right]], dtype=np.int32)
     return intersection_vertices
@@ -495,7 +495,7 @@ def create_intersection(intersection_edges, frame):
 
     # Count the number of horizontal intersection lines that pass through the detection lane at the bottom of the screen
     # by adding 1 to the int count
-    detection_lane = 300
+    detection_lane = 280
     if len(quad3_int) > 0:
         avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
@@ -513,7 +513,7 @@ def create_intersection(intersection_edges, frame):
         avg_y = (int(quad4_int[1]) + int(quad4_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
         if intersection_state == 1:
-            if (AbsDistance <= 15) and (avg_y > 420):
+            if (AbsDistance <= 30) and (avg_y > 420):
                 int_count += 1
                 with open(logfile, "a") as f:
                     print("FAILSAFE purple counted", file = f)
