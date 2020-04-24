@@ -29,7 +29,7 @@ initialized = False
 " State values modify which if statements the program runs through as it makes decisions"
 intersection_state = 0
 state1 = 0
-int_count = 1  # starts at one for purposes of the "starting area"
+int_count = 0  # start at one for purposes of the "starting area"
 fail_safe_count = 0
 nav_write = sys.stdout
 nav_msg_size = 50
@@ -288,55 +288,33 @@ def navigation(frame, center_line, right_line, left_line):
         right_x2 = right_line[0]
         nav_point_x = int((left_x2 + right_x2) / 2)
         if left_line[0] > 250:
-            with open(logfile, "a") as f:
-                print("two lines lateral right", file=f)
             command = "<RGT>"
         elif right_line[2] < 390:
-            with open(logfile, "a") as f:
-                print("two lines lateral left", file=f)
             command = "<LFT>"
         elif nav_point_x > int(1.1 * mid):
-            with open(logfile, "a") as f:
-                print("two lines turn right", file=f)
             command = "<RRR>"
         elif nav_point_x < int(.9 * mid):
-            with open(logfile, "a") as f:
-                print("two lines turn left", file=f)
             command = "<LLL>"
         else:
-            with open(logfile, "a") as f:
-                print("two lines drive straight", file=f)
             command = "<FWD>"
     elif len(right_line) > 0:
         right_x2 = right_line[0]
         nav_point_x = int(right_x2 - 200)
         if nav_point_x < int(mid):
-            with open(logfile, "a") as f:
-                print("right line turn left", file=f)
             command = "<LLL>"
         elif right_line[2] < 390:
-            with open(logfile, "a") as f:
-                print("two lines lateral left", file=f)
             command = "<LFT>"
         else:
-            with open(logfile, "a") as f:
-                print("right line drive straight", file=f)
             command = "<FWD>"
     elif len(left_line) > 0:
         left_x2 = left_line[2]
         left_x1 = left_line[0]
         nav_point_x = int(left_x2 + 200)
         if nav_point_x > int(mid):
-            with open(logfile, "a") as f:
-                print("left line turn right", file=f)
             command = "<RRR>"
         elif left_line[0] > 250:
-            with open(logfile, "a") as f:
-                print("left line lateral right", file=f)
             command = "<RGT>"
         else:
-            with open(logfile, "a") as f:
-                print("left line drive straight", file=f)
             command = "<FWD>"
     else:
         with open(logfile, "a") as f:
@@ -536,7 +514,8 @@ def create_intersection(intersection_edges, frame):
                 with open(logfile, "a") as f:
                     print("FAILSAFE purple counted", file = f)
     with open(logfile, "a") as f:
-        print("left_int:", left_int, "right_int:", right_int, "quad3int:", quad3_int, file=f)
+        print("L:", left_int, "R:", right_int, "q1", quad1_int, "q2", quad2_int,"q3:",
+              quad3_int, "q4:", quad4_int, file=f)
 
 
     """ state modifier"""
