@@ -34,6 +34,8 @@ long cmd_issued = 0; // time command was recieved
 
 // MOTOR SPEED
 #define SPD 80 // duty cycle for the pwm signal 0-255
+#define RSD 50  // duty cycle for the pwm signal for rotation 0-255
+
 
 /********************************************************************************/
 
@@ -238,10 +240,10 @@ void rotLeft() {
   digitalWrite(DIN1, HIGH);
   digitalWrite(DIN2, LOW);
 
-  analogWrite(PWMA, SPD*.5);
-  analogWrite(PWMC, SPD*.5);
-  analogWrite(PWMB, SPD*.5);
-  analogWrite(PWMD, SPD*.5);
+  analogWrite(PWMA, RSD);
+  analogWrite(PWMC, RSD);
+  analogWrite(PWMB, RSD);
+  analogWrite(PWMD, RSD);
 
   //  Serial.println("Rot Left");
 }
@@ -260,10 +262,10 @@ void rotRight() {
   digitalWrite(DIN1, LOW);
   digitalWrite(DIN2, HIGH);
 
-  analogWrite(PWMA, SPD*.5);
-  analogWrite(PWMC, SPD*.5);
-  analogWrite(PWMB, SPD*.5);
-  analogWrite(PWMD, SPD*.5);
+  analogWrite(PWMA, RSD);
+  analogWrite(PWMC, RSD);
+  analogWrite(PWMB, RSD);
+  analogWrite(PWMD, RSD);
 
   //  Serial.println("Rot Right");
 }
