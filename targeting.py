@@ -36,8 +36,6 @@ from camera_init import camera_init
 # GLOBALS
 # --------------------------
 
-SHOW_PROCESSED_IMAGES = False
-
 # constants
 cmd_delay = 0.5      # sec, delay before processing next image when aiming
 fire_delay = 1.5     # sec, delay before processing next image after shooting
@@ -64,13 +62,11 @@ left    = "<LFT>"
 right   = "<RGT>"
 home    = "<HOM>" # send HOM when target has been hit/no bad target in sight
 
-# image processing masks
-lower_red1 = np.array([0, 100, 120], dtype=int)   # HSV has two red areas
+# image processing masks (HSV has two red areas)
+lower_red1 = np.array([0, 100, 120], dtype=int)
 upper_red1 = np.array([10, 255, 255], dtype=int)
 lower_red2 = np.array([170, 100, 120], dtype=int)
 upper_red2 = np.array([180, 255, 255], dtype=int)
-lower_green = np.array([30, 100, 50], dtype=int)
-upper_green = np.array([90, 255, 255], dtype=int)
 
 # targeting callibration
 target_threshold = 5000 # red area threshold to determine valid target
@@ -138,8 +134,7 @@ def target(target_write_input):
                 frame_bgr = cv2.merge([data0, data1, data2])
                 frame_bgr = cv2.flip(frame_bgr, 0)
                 processed_frame, is_aiming = process_image(frame_bgr)
-                if SHOW_PROCESSED_IMAGES:
-                    cv2.imshow("targeting", processed_frame)
+                #cv2.imshow("targeting", processed_frame)
                 break
         
         if cv2.waitKey(1) == ord('q'):
@@ -203,45 +198,32 @@ def command_from_target_location(dx, dy):
 # IMAGE PROCESSING FUNCTIONS
 # --------------------------
 
-def get_contours(grey_img, mask):
+def get_contours(frame):
     
     # kernel size for img processing (must be odd, larger = more processing)
     kernel_size = 25
 
+    # Convert image to grayscale and HSV
+    grey_img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    hsv_img = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    # create mask for red HSV values
+    mask_red1 = cv2.inRange(hsv_img, lower_red1, upper_red1)
+    mask_red2 = cv2.inRange(hsv_img, lower_red2, upper_red2)
+    mask_red = cv2.bitwise_or(mask_red1, mask_red2)
+
     # apply the mask and a threshold
-    processed = cv2.bitwise_and(grey_img, mask)
+    processed = cv2.bitwise_and(grey_img, mask_red)
     processed = cv2.GaussianBlur(processed, (kernel_size, kernel_size), 0)
     processed = cv2.threshold(processed, 30, 255, cv2.THRESH_BINARY)[1]
     
     # find contours
-    contours = cv2.findContours(processed.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    contours = imutils.grab_contours(contours)
-    return contours, processed
+    red_contours = cv2.findContours(processed.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    red_contours = imutils.grab_contours(contours)
+    return red_contours
 
 
-def process_targets(frame):
-
-    # Convert image to grayscale and HSV
-    grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    processed_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-    # create mask for red HSV values
-    mask_red1 = cv2.inRange(processed_hsv, lower_red1, upper_red1)
-    mask_red2 = cv2.inRange(processed_hsv, lower_red2, upper_red2)
-    mask_red = cv2.bitwise_or(mask_red1, mask_red2)
-   
-    # create mask for green HSV values
-    mask_green = cv2.inRange(processed_hsv, lower_green, upper_green)
-
-    # get red and green contours and thresholded images
-    contours_red, processed_red = get_contours(grey, mask_red)
-    contours_green, processed_green = get_contours(grey, mask_green)
-
-    # return the red and green contours
-    return contours_red, contours_green
-
-
-def draw_contours(frame, contour, label):
+def draw_contours(frame, contour):
     
     # compute the center of the contour
     M = cv2.moments(contour)
@@ -259,7 +241,7 @@ def draw_contours(frame, contour, label):
     dy = cY - y0
     
     # draw the contour and center of the shape on the image
-    text = label+": ("+str(dx)+","+str(dy)+")"
+    text = "Bay Guy: (" + str(dx) + "," + str(dy) + ")"
     cv2.drawContours(contour_img, [contour], -1, (0,255,0), 2)
     cv2.circle(contour_img, (cX, cY), 7, (255, 255, 255), -1)
     cv2.putText(contour_img, text, (cX - 75, cY - 20),
@@ -290,28 +272,21 @@ def process_image(frame):
     global target_last_seen
     contour_img = frame
     
-    # get all red and green contours from the image
-    bad_guy_contours, good_guy_contours = process_targets(frame)
+    # get all red contours from the image
+    red_contours = get_contours(frame)
 
-    # get the largest red and green contours
-    largest_contour_bad, bad_size = get_largest_contour(bad_guy_contours)
-    largest_contour_good, good_size = get_largest_contour(good_guy_contours)
+    # get the largest red contour
+    largest_contour, contour_size = get_largest_contour(red_contours)
 
-    # if the largest contours are too small, assume no target has been found
-    if bad_size < target_threshold and good_size < target_threshold:
-        if SHOW_PROCESSED_IMAGES:
-            contour_img = draw_no_target(frame)
-        
-    # if the red contour is larger, assume a bad guy has been found
-    elif bad_size > good_size:
-        contour_img, dx, dy  = draw_contours(frame, largest_contour_bad, 'Bad guy')
+    # if the largest contour is small, assume no target has been found
+    if contour_size < target_threshold:
+        contour_img = draw_no_target(frame)
+
+    # otherwise, assume a bad guy has been found
+    else:
+        contour_img, dx, dy  = draw_contours(frame, largest_contour)
         command_from_target_location(dx, dy)
         target_last_seen = NOW()
-        
-    # if the green contour is larger, assume a good guy has been found
-    else:
-        if SHOW_PROCESSED_IMAGES:
-            contour_img, _, _ = draw_contours(frame, largest_contour_good, 'Good guy')
 
     # If the target was seen recently, assume we still see the it (the camera
     # takes a sec to refocus when it moves). Otherwise, return turret to home
