@@ -33,7 +33,7 @@ Stepper stepperE = Stepper(NSTEPS, dirPinE, stepPinE);
 Stepper stepperR = Stepper(NSTEPS, dirPinR, stepPinR);
 
 //GUN
-float fireDelay = 100;
+float fireDelay = 200;
 
 /********************************************************************************/
 
