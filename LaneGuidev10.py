@@ -627,15 +627,17 @@ def main():
     intersection_edges = process_intersection(frame, intersection_vertices)
     slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int = create_intersection(intersection_edges,
                                                                                                  frame)
-    # lane_image = draw_lanes(frame, right_line, left_line, center_line, left_int, right_int, quad1_int, quad2_int,
-                          #  quad3_int, quad4_int)
+    lane_image = draw_lanes(frame, right_line, left_line, center_line, left_int, right_int, quad1_int, quad2_int,
+                            quad3_int, quad4_int)
     if state1 == 1:
         # make a guidance decision
         guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int)
         filename = 'test_image' + str(time.time()) + ".jpg"
         cv2.imwrite(filename, frame)
         filename_2 = 'edge_image' + str(time.time()) + ".jpg"
-        cv2.imwrite(filename_2, intersection_edges )
+        cv2.imwrite(filename_2, intersection_edges)
+        filename_3 = 'lane_image' + str(time.time()) + ".jpg"
+        cv2.imwrite(filename_3, lane_image)
         command = navigation(frame, center_line, right_line, left_line)
         msg(command)
         state1 = 2
