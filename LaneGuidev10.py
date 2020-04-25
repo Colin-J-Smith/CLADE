@@ -639,7 +639,7 @@ def main():
         filename_3 = '1lane_image' + str(time.time()) + ".jpg"
         cv2.imwrite(filename_3, lane_image)
         filename_4 = '1processed_image' + str(time.time()) + ".jpg"
-        cv2.imwrite(filename_3, processed)
+        cv2.imwrite(filename_4, processed)
         command = navigation(frame, center_line, right_line, left_line)
         msg(command)
         state1 = 2
