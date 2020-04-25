@@ -369,8 +369,8 @@ def process_intersection(frame, intersection_vertices):
     processed = cv2.GaussianBlur(processed, (kernel_size, kernel_size), 0)
 
     # detect edges in the image
-    low_threshold = 100
-    high_threshold = 150
+    low_threshold = 120
+    high_threshold = 200
 
     intersection_edges = cv2.Canny(processed, low_threshold, high_threshold)
 
