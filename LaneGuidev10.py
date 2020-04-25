@@ -21,6 +21,8 @@ from picamera import PiCamera
 global turn
 global delay
 
+rawCapture.truncate(0)
+
 # camera intialization global
 global initialized, camera
 initialized = False
