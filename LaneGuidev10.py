@@ -569,7 +569,9 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
         turn = "<LLL>"
         delay = delay_90
         intersection_state = 1
-    elif len(quad1_int) > 0 and len(quad3_int) > 0:
+    elif (len(quad1_int) > 0 and len(quad2_int) > 0 and (abs(quad1_int[1] - quad2_int[1]) > 100)) or \
+            (len(quad1_int) > 0 and len(quad3_int) > 0) or (len(quad2_int) > 0 and
+                                                len(quad3_int) > 0 and (abs(quad2_int[1] - quad3_int[1]) > 100)):
         turn = "<FWD>"
         delay = delay_0
         intersection_state = 1
