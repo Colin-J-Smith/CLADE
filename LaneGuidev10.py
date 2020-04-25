@@ -369,7 +369,7 @@ def process_intersection(frame, intersection_vertices):
     processed = cv2.GaussianBlur(processed, (kernel_size, kernel_size), 0)
 
     # detect edges in the image
-    low_threshold = 120
+    low_threshold = 130
     high_threshold = 150
 
     intersection_edges = cv2.Canny(processed, low_threshold, high_threshold)
@@ -629,8 +629,8 @@ def main():
     intersection_edges, processed = process_intersection(frame, intersection_vertices)
     slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int = create_intersection(intersection_edges,
                                                                                                  frame)
-    lane_image = draw_lanes(frame, right_line, left_line, center_line, left_int, right_int, quad1_int, quad2_int,
-                            quad3_int, quad4_int)
+    # lane_image = draw_lanes(frame, right_line, left_line, center_line, left_int, right_int, quad1_int, quad2_int,
+                            # quad3_int, quad4_int)
     if state1 == 1:
         # make a guidance decision
         guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int)
@@ -638,8 +638,6 @@ def main():
         cv2.imwrite(filename, frame)
         filename_2 = '1edge_image' + str(time.time()) + ".jpg"
         cv2.imwrite(filename_2, intersection_edges)
-        filename_3 = '1lane_image' + str(time.time()) + ".jpg"
-        cv2.imwrite(filename_3, lane_image)
         filename_4 = '1processed_image' + str(time.time()) + ".jpg"
         cv2.imwrite(filename_4, processed)
         command = navigation(frame, center_line, right_line, left_line)
