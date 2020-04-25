@@ -591,7 +591,6 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
         print("guidance decision is:", turn, file=f)
 
 
-
 def main():
     global state1
     global intersection_state
@@ -633,10 +632,10 @@ def main():
     if state1 == 1:
         # make a guidance decision
         guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int)
-        #filename = 'test_image' + str(time.time()) + ".jpg"
-        #cv2.imwrite(filename, frame)
-        #filename_2 = 'edge_image' + str(time.time()) + ".jpg"
-        #cv2.imwrite(filename_2, intersection_edges )
+        filename = 'test_image' + str(time.time()) + ".jpg"
+        cv2.imwrite(filename, frame)
+        filename_2 = 'edge_image' + str(time.time()) + ".jpg"
+        cv2.imwrite(filename_2, intersection_edges )
         command = navigation(frame, center_line, right_line, left_line)
         msg(command)
         state1 = 2
