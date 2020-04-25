@@ -566,12 +566,15 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
     if len(left_int) > 0:
         turn = "<LLL>"
         delay = delay_90
+        intersection_state = 1
     elif len(quad1_int) > 0 and len(quad3_int) > 0:
         turn = "<FWD>"
         delay = delay_0
+        intersection_state = 1
     elif len(right_int) > 0:
         turn = "<RRR>"
         delay = delay_90
+        intersection_state = 1
     else:
         with open(logfile, "a") as f:
             print("guidance decisions aren't working", turn, file=f)
@@ -585,7 +588,6 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
     with open(logfile, "a") as f:
         print("guidance decision is:", turn, file=f)
 
-    intersection_state = 1
 
 
 def main():
