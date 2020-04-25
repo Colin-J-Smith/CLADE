@@ -406,6 +406,7 @@ def create_intersection(intersection_edges, frame):
         for line in lines:
             x1, y1, x2, y2 = line.reshape(4)
             if x2 == x1:
+                slope = 0
                 pass
             else:
                 slope = int((y2 - y1) / (x2 - x1))
