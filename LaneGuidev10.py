@@ -273,9 +273,6 @@ def navigation(frame, center_line, right_line, left_line):
         print("C=", center_line, center_length, "L_l=", left_line, "R_l=", right_line, file=f)
     if state1 == 0 and len(center_line) > 0 and center_length > 20 and \
             (int(center_line[1]) + int(center_line[3])) / 2 > 200 and (len(right_line) > 0 or len(left_line) > 0):
-        left_x2 = left_line[2]
-        right_x2 = right_line[0]
-        nav_point_x = int((left_x2 + right_x2) / 2)
         with open(logfile, "a") as f:
             print("turn around", file=f)
         delay = delay_180
