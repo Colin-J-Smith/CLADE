@@ -32,6 +32,7 @@ intersection_state = 0
 state1 = 0
 int_count = 0  # start at one for purposes of the "starting area"
 fail_safe_count = 0
+start_count = 0
 count_time = time.time()
 nav_write = sys.stdout
 nav_msg_size = 50
@@ -197,7 +198,7 @@ def create_lanes(lane_edges, frame):
             avg_center_line = (int(center_line[1]) + int(center_line[3])) / 2
             AbsDistance_center = abs(avg_center_line - detection_lane)
             if AbsDistance_center <= 60:
-                int_count += 1
+                int_count += 2
                 with open(logfile, "a") as f:
                     print("yellow counted", file = f)
             with open(logfile, "a") as f:
@@ -559,6 +560,7 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
     global turn
     global intersection_state
     global int_count
+    global start_count
     global state1
     global delay
     global delay_180
@@ -582,13 +584,22 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
         turn = "<RRR>"
         delay = delay_90
         intersection_state = 1
+    elif len(quad3_int) > 0:
+        if start_count == 0:
+            turn = "<FWD>"
+            delay = delay_0
+            intersection_state = 1
+        else:
+            turn = "LLL"
+            delay = delay_180
+            intersection_state = 1
     else:
-        with open(logfile, "a") as f:
-            print("guidance decisions aren't working", turn, file=f)
         state1 = 0
         intersection_state = 0
         int_count = 0
         turn = "<FWD>"
+        with open(logfile, "a") as f:
+            print("guidance decisions aren't working", turn, file=f)
         delay = delay_0
 
     # for testing
@@ -603,6 +614,7 @@ def main():
     global logfile
     global fail_safe_count
     global camera
+    global start_count
 
     # camera distortion corrections
     k = np.array([[243.48186479, 0., 305.08168044],
@@ -668,6 +680,7 @@ def main():
         intersection_state = 0
         int_count = 0
         fail_safe_count = 0
+        start_count += 1
 
     with open(logfile, "a") as q:
         print("intersection_state=", intersection_state, "state1=", state1,  file=q)
