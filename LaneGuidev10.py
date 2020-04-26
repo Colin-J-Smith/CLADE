@@ -270,7 +270,7 @@ def navigation(frame, center_line, right_line, left_line):
     # if no intersections are visible and there is a right, left, and center lane command a turn around (dead end)
     with open(logfile, "a") as f:
         print("C=", center_line, center_length, "L_l=", left_line, "R_l=", right_line, file=f)
-    if state1 == 0 and len(center_line) > 0 and center_length > 20 and \
+    if state1 == 0 and len(center_line) > 0 and center_length > 10 and \
             (int(center_line[1]) + int(center_line[3])) / 2 > 200 and len(right_line) > 0 and len(left_line) > 0:
         left_x2 = left_line[2]
         right_x2 = right_line[0]
