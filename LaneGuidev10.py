@@ -649,8 +649,8 @@ def main():
         command = navigation(frame, center_line, right_line, left_line)
         msg(command)
     elif intersection_state == 1:
-        # command = navigation(frame, center_line, right_line, left_line)
-        command = "<FWD>"
+        command = navigation(frame, center_line, right_line, left_line)
+        # command = "<FWD>"
         msg(command)
         with open(logfile, "a") as q:
             print("drive", command, file=q)
