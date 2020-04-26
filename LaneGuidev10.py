@@ -195,7 +195,7 @@ def create_lanes(lane_edges, frame):
         if intersection_state == 1:
             avg_center_line = (int(center_line[1]) + int(center_line[3])) / 2
             AbsDistance_center = abs(avg_center_line - detection_lane)
-            if AbsDistance_center <= 50:
+            if AbsDistance_center <= 60:
                 int_count += 1
                 with open(logfile, "a") as f:
                     print("yellow counted", file = f)
@@ -505,7 +505,7 @@ def create_intersection(intersection_edges, frame):
         avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
         if intersection_state == 1:
-            if AbsDistance <= 30 and avg_y > detection_lane:
+            if AbsDistance <= 40 and avg_y > detection_lane:
                 int_count += 1
                 fail_safe_count += 1
                 with open(logfile, "a") as f:
@@ -520,7 +520,7 @@ def create_intersection(intersection_edges, frame):
         avg_y = (int(quad4_int[1]) + int(quad4_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
         if intersection_state == 1:
-            if (AbsDistance <= 30) and (avg_y > 420):
+            if (AbsDistance <= 50) and (avg_y > 420):
                 int_count += 1
                 with open(logfile, "a") as f:
                     print("FAILSAFE purple counted", file = f)
