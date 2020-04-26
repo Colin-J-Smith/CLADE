@@ -414,7 +414,7 @@ def create_intersection(intersection_edges, frame):
             else:
                 slope = int((y2 - y1) / (x2 - x1))
 
-            if (y2 - 30) < y1 < (y2 + 30):
+            if (y2 - 40) < y1 < (y2 + 40):
                 horizontal_fit.append((x1, y1, x2, y2))
                 # cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 255), 2)
             elif slope < -1 / 2:
