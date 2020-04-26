@@ -545,11 +545,11 @@ def create_intersection(intersection_edges, frame):
         if int_count >= 2:
             intersection_state = 2
     elif lines is not None:
-        if len(left_int) > 0 and left_int[1] > 200:
+        if len(left_int) > 0 and (320 > left_int[1] > 200):
             state1 = 1
         elif len(quad3_int) > 0 and 240 < quad3_int[1] < 300:
             state1 = 1
-        elif len(right_int) > 0 and right_int[3] > 200:
+        elif len(right_int) > 0 and (320 > right_int[3] > 200):
             state1 = 1
 
     return slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int
