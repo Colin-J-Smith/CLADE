@@ -510,6 +510,8 @@ def create_intersection(intersection_edges, frame):
                 fail_safe_count += 1
                 with open(logfile, "a") as f:
                     print("purple counted", file =f)
+                filename_4 = '1count_image' + str(datetime.now()) + ".jpg"
+                cv2.imwrite(filename_4, intersection_edges)
             with open(logfile, "a") as f:
                 print("intersection counter is ON! - Abs Distance =", AbsDistance, "center_line =", avg_y, file=f)
 
@@ -634,12 +636,10 @@ def main():
     if state1 == 1:
         # make a guidance decision
         guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int)
-        filename = '1test_image' + str(time.time()) + ".jpg"
-        cv2.imwrite(filename, frame)
-        filename_2 = '1edge_image' + str(time.time()) + ".jpg"
+        filename_2 = '1edge_image' + str(datetime.now()) + ".jpg"
         cv2.imwrite(filename_2, intersection_edges)
-        filename_4 = '1processed_image' + str(time.time()) + ".jpg"
-        cv2.imwrite(filename_4, processed)
+        #filename_4 = '1processed_image' + str(time.time()) + ".jpg"
+        #cv2.imwrite(filename_4, processed)
         command = navigation(frame, center_line, right_line, left_line)
         msg(command)
         state1 = 2
