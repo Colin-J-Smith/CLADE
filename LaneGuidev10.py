@@ -391,7 +391,7 @@ def create_intersection(intersection_edges, frame):
     global fail_safe_count
 
     # Hough Lines for intersection
-    lines = cv2.HoughLinesP(intersection_edges, rho=1, theta=np.pi / 360, threshold=50, minLineLength=50, maxLineGap=70)
+    lines = cv2.HoughLinesP(intersection_edges, rho=1, theta=np.pi / 360, threshold=50, minLineLength=60, maxLineGap=70)
     line_image = np.zeros_like(frame)
 
     # Create Main Lines by averaging all detected hough lines for intersection
@@ -406,13 +406,13 @@ def create_intersection(intersection_edges, frame):
     if lines is not None:
         for line in lines:
             x1, y1, x2, y2 = line.reshape(4)
-            if x2 == x1:
+            if (x1 -5) < x2 < (x1 + 5):
                 slope = 0
                 pass
             else:
                 slope = int((y2 - y1) / (x2 - x1))
 
-            if (y2 - 20) < y1 < (y2 + 20):
+            if (y2 - 30) < y1 < (y2 + 30):
                 horizontal_fit.append((x1, y1, x2, y2))
                 # cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 255), 2)
             elif slope < -1 / 2:
