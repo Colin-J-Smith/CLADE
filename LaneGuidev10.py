@@ -364,13 +364,13 @@ def process_intersection(frame, intersection_vertices):
     processed = cv2.bitwise_and(gray, mask_purple)
 
     # smoothing
-    kernel_size = 3
+    kernel_size = 5
 
     processed = cv2.GaussianBlur(processed, (kernel_size, kernel_size), 0)
 
     # detect edges in the image
-    low_threshold = 130
-    high_threshold = 150
+    low_threshold = 110
+    high_threshold = 130
 
     intersection_edges = cv2.Canny(processed, low_threshold, high_threshold)
 
@@ -391,7 +391,7 @@ def create_intersection(intersection_edges, frame):
     global fail_safe_count
 
     # Hough Lines for intersection
-    lines = cv2.HoughLinesP(intersection_edges, rho=1, theta=np.pi / 360, threshold=50, minLineLength=30, maxLineGap=70)
+    lines = cv2.HoughLinesP(intersection_edges, rho=1, theta=np.pi / 360, threshold=50, minLineLength=40, maxLineGap=70)
     line_image = np.zeros_like(frame)
 
     # Create Main Lines by averaging all detected hough lines for intersection
