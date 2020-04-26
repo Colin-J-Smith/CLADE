@@ -32,6 +32,7 @@ intersection_state = 0
 state1 = 0
 int_count = 0  # start at one for purposes of the "starting area"
 fail_safe_count = 0
+count_time = time.time()
 nav_write = sys.stdout
 nav_msg_size = 50
 
@@ -389,6 +390,7 @@ def create_intersection(intersection_edges, frame):
     global left_int_count
     global right_int_count
     global fail_safe_count
+    global count_time
 
     # Hough Lines for intersection
     lines = cv2.HoughLinesP(intersection_edges, rho=1, theta=np.pi / 360, threshold=50, minLineLength=60, maxLineGap=70)
@@ -506,8 +508,9 @@ def create_intersection(intersection_edges, frame):
         avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
         if intersection_state == 1:
-            if AbsDistance <= 45 and avg_y > detection_lane:
+            if AbsDistance <= 45 and avg_y > detection_lane and (time.time() - count_time > 2):
                 int_count += 1
+                count_time = time.time()
                 fail_safe_count += 1
                 with open(logfile, "a") as f:
                     print("purple counted", file =f)
