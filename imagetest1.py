@@ -63,13 +63,13 @@ mask_purple = cv2.inRange(processed_hsv, lower_purple, upper_purple)
 processed = cv2.bitwise_and(gray, mask_purple)
 
 # smoothing
-kernel_size = 3
+kernel_size = 5
 
 processed = cv2.GaussianBlur(processed, (kernel_size, kernel_size), 0)
 
 # detect edges in the image
 low_threshold = 110
-high_threshold = 140
+high_threshold = 130
 
 intersection_edges = cv2.Canny(processed, low_threshold, high_threshold)
 
