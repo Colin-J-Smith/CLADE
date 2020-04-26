@@ -189,7 +189,7 @@ def create_lanes(lane_edges, frame):
 
         # this is a detection lane at 400 pixels down from the top of the screen (out of 480) that will assist counting
         # when a center line crosses
-        detection_lane = 300  # may need to be tweaked
+        detection_lane = 320  # may need to be tweaked
         # count the number of times a center line crosses the detection lane
         # two int_counts lets the robot know its in the center of an intersection
         if intersection_state == 1:
@@ -391,7 +391,7 @@ def create_intersection(intersection_edges, frame):
     global fail_safe_count
 
     # Hough Lines for intersection
-    lines = cv2.HoughLinesP(intersection_edges, rho=1, theta=np.pi / 360, threshold=50, minLineLength=40, maxLineGap=70)
+    lines = cv2.HoughLinesP(intersection_edges, rho=1, theta=np.pi / 360, threshold=50, minLineLength=50, maxLineGap=70)
     line_image = np.zeros_like(frame)
 
     # Create Main Lines by averaging all detected hough lines for intersection
@@ -424,7 +424,8 @@ def create_intersection(intersection_edges, frame):
                 # cv2.line(line_image, (x1, y1), (x2, y2), (0, 255, 255), 2)
 
             else:
-                horizontal_fit.append((x1, y1, x2, y2))
+                pass
+                # horizontal_fit.append((x1, y1, x2, y2))
                 # cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 255), 2)
     else:
         pass
