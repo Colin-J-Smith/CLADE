@@ -30,7 +30,7 @@ initialized = False
 " State values modify which if statements the program runs through as it makes decisions"
 intersection_state = 0
 state1 = 0
-int_count = 0  # start at one for purposes of the "starting area"
+int_count = 1  # start at one for purposes of the "starting area"
 fail_safe_count = 0
 start_count = 0
 count_time = time.time()
