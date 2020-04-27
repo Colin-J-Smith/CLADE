@@ -653,8 +653,8 @@ def main():
         #cv2.imwrite(filename_2, intersection_edges)
         #filename_4 = '1processed_image' + str(time.time()) + ".jpg"
         #cv2.imwrite(filename_4, processed)
-        command = navigation(frame, center_line, right_line, left_line)
-        msg(command)
+        #command = navigation(frame, center_line, right_line, left_line)
+        #msg(command)
         state1 = 2
     elif intersection_state == 0:
         # Navigate yellow lines
@@ -662,20 +662,20 @@ def main():
         msg(command)
     elif intersection_state == 1:
         command = navigation(frame, center_line, right_line, left_line)
-        # command = "<FWD>"
         msg(command)
         with open(logfile, "a") as q:
             print("drive", command, file=q)
             print("int count is:", int_count, file=q)
     elif intersection_state == 2:
         # execute decision and reset all states
-        with open(logfile, "a") as q:
-            print("Go", turn, file=q)
-        # pause execution of decisions until turn has been completed
         start_turn = time.time()
         while int(time.time() - start_turn) < delay:
             command = turn
             msg(command)
+        with open(logfile, "a") as q:
+            print("Go", turn, file=q)
+        # pause execution of decisions until turn has been completed
+
         state1 = 0
         intersection_state = 0
         int_count = 0
