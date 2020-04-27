@@ -499,39 +499,6 @@ def create_intersection(intersection_edges, frame):
         quad4_int = [x1, y1, x2, y2]
     quad4_int = np.array(quad4_int)
 
-    # Count the number of horizontal intersection lines that pass through the detection lane at the bottom of the screen
-    # by adding 1 to the int count
-    detection_lane = 260
-    if len(quad3_int) > 0:
-        avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
-        AbsDistance = abs(avg_y - detection_lane)
-        if intersection_state == 1:
-            if AbsDistance <= 60 and avg_y > detection_lane and (time.time() - count_time > 2):
-                int_count += 1
-                count_time = time.time()
-                fail_safe_count += 1
-                with open(logfile, "a") as f:
-                    print("purple counted", file =f)
-                filename_4 = '1count_image' + str(datetime.now()) + ".jpg"
-                cv2.imwrite(filename_4, intersection_edges)
-            with open(logfile, "a") as f:
-                print("intersection counter is ON! - Abs Distance =", AbsDistance, "center_line =", avg_y, file=f)
-
-    #  Fail safe counter for tight intersections. If it misses the quad three this will back it up
-    elif len(quad4_int) > 0 and fail_safe_count == 0:
-        avg_y = (int(quad4_int[1]) + int(quad4_int[3]))/2
-        AbsDistance = abs(avg_y - detection_lane)
-        if intersection_state == 1:
-            if (AbsDistance <= 100) and (avg_y > 360):
-                int_count += 1
-                fail_safe_count += 1
-                with open(logfile, "a") as f:
-                    print("FAILSAFE purple counted", file = f)
-    with open(logfile, "a") as f:
-        print("L:", left_int, "R:", right_int, "q1", quad1_int, "q2", quad2_int,"q3:",
-              quad3_int, "q4:", quad4_int, file=f)
-
-
     """ state modifier"""
     # state1 == 1 when the camera detects intersection lines and the bottom of those lines is low enough in the field
     # of view that the system can make a guidance decision with a high degree of confidence. This ensures we see the
@@ -553,6 +520,38 @@ def create_intersection(intersection_edges, frame):
             state1 = 1
         elif len(right_int) > 0 and ((200 < right_int[3] < 320) or (200 < right_int[1] < 320)):
             state1 = 1
+
+    # Count the number of horizontal intersection lines that pass through the detection lane at the bottom of the screen
+    # by adding 1 to the int count
+    detection_lane = 260
+    if len(quad3_int) > 0:
+        avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
+        AbsDistance = abs(avg_y - detection_lane)
+        if intersection_state == 1 or state1 == 1:
+            if AbsDistance <= 60 and avg_y > detection_lane and (time.time() - count_time > 2):
+                int_count += 1
+                count_time = time.time()
+                fail_safe_count += 1
+                with open(logfile, "a") as f:
+                    print("purple counted", file =f)
+                filename_4 = '1count_image' + str(datetime.now()) + ".jpg"
+                cv2.imwrite(filename_4, intersection_edges)
+            with open(logfile, "a") as f:
+                print("intersection counter is ON! - Abs Distance =", AbsDistance, "center_line =", avg_y, file=f)
+
+    #  Fail safe counter for tight intersections. If it misses the quad three this will back it up
+    elif len(quad4_int) > 0 and fail_safe_count == 0:
+        avg_y = (int(quad4_int[1]) + int(quad4_int[3]))/2
+        AbsDistance = abs(avg_y - detection_lane)
+        if intersection_state == 1 or state1 == 1:
+            if (AbsDistance <= 100) and (avg_y > 360):
+                int_count += 1
+                fail_safe_count += 1
+                with open(logfile, "a") as f:
+                    print("FAILSAFE purple counted", file = f)
+    with open(logfile, "a") as f:
+        print("L:", left_int, "R:", right_int, "q1", quad1_int, "q2", quad2_int,"q3:",
+              quad3_int, "q4:", quad4_int, file=f)
 
     return slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int
 
