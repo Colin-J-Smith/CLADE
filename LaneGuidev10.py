@@ -528,7 +528,7 @@ def create_intersection(intersection_edges, frame):
         avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
         if intersection_state == 1 or state1 == 1:
-            if AbsDistance <= 60 and avg_y > detection_lane and (time.time() - count_time > 2):
+            if AbsDistance <= 60 and avg_y > detection_lane and (time.time() - count_time > 3):
                 int_count += 1
                 count_time = time.time()
                 fail_safe_count += 1
