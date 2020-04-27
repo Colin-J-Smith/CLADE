@@ -44,7 +44,7 @@ camera_init = 0
 # delay timers
 delay_90 = 6
 delay_180 = 13
-delay_0 = 1
+delay_0 = 0
 
 # create log file
 now = datetime.now()
