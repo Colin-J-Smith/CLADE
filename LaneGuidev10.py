@@ -43,7 +43,7 @@ camera_init = 0
 
 # delay timers
 delay_90 = 6
-delay_180 = 12
+delay_180 = 13
 delay_0 = 1
 
 # create log file
@@ -292,9 +292,9 @@ def navigation(frame, center_line, right_line, left_line):
         right_x2 = right_line[0]
         nav_point_x = int((left_x2 + right_x2) / 2)
         if left_line[0] > 250:
-            command = "<RGT>"
-        elif right_line[2] < 390:
             command = "<LFT>"
+        elif right_line[2] < 390:
+            command = "<RGT>"
         elif nav_point_x > int(1.1 * mid):
             command = "<RRR>"
         elif nav_point_x < int(.9 * mid):
@@ -307,7 +307,7 @@ def navigation(frame, center_line, right_line, left_line):
         if nav_point_x < int(mid):
             command = "<LLL>"
         elif right_line[2] < 340:
-            command = "<LFT>"
+            command = "<RGT>"
         else:
             command = "<FWD>"
     elif len(left_line) > 0:
@@ -317,7 +317,7 @@ def navigation(frame, center_line, right_line, left_line):
         if nav_point_x > int(mid):
             command = "<RRR>"
         elif left_line[0] > 300:
-            command = "<RGT>"
+            command = "<LFT>"
         else:
             command = "<FWD>"
     else:
