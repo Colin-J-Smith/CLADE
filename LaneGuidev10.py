@@ -570,7 +570,7 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
     turn_left = 0
     priority = turn_left
 
-    if len(right_int) > 0:
+    if len(right_int) > 0 and right_int[1] < 300:
         turn = "<RRR>"
         delay = delay_90
         intersection_state = 1
@@ -652,8 +652,8 @@ def main():
         guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int)
         #filename_2 = '1edge_image' + str(datetime.now()) + ".jpg"
         #cv2.imwrite(filename_2, intersection_edges)
-        #filename_4 = '1processed_image' + str(time.time()) + ".jpg"
-        #cv2.imwrite(filename_4, processed)
+        filename_4 = '1processed_image' + str(time.time()) + ".jpg"
+        cv2.imwrite(filename_4, processed)
         #command = navigation(frame, center_line, right_line, left_line)
         #msg(command)
         state1 = 2
