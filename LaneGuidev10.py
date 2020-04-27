@@ -17,7 +17,7 @@ from datetime import datetime
 import sys
 from picamera.array import PiRGBArray
 from picamera import PiCamera
-
+71
 global turn
 global delay
 
@@ -82,8 +82,8 @@ def lane_roi(frame):
     rows, cols = frame.shape[:2]
     bottom_left = [cols * 0.00, rows * 1.00]
     mid_left = [cols * 0.00, rows * 0.7]
-    top_left = [cols * 0.1, rows * 0.40]
-    top_right = [cols * 0.9, rows * 0.40]
+    top_left = [cols * 0.0, rows * 0.40]
+    top_right = [cols * 1, rows * 0.40]
     mid_right = [cols * 1.0, rows * 0.7]
     bottom_right = [cols * 1.00, rows * 1.00]
 
