@@ -523,7 +523,7 @@ def create_intersection(intersection_edges, frame):
 
     # Count the number of horizontal intersection lines that pass through the detection lane at the bottom of the screen
     # by adding 1 to the int count
-    detection_lane = 260
+    detection_lane = 250
     if len(quad3_int) > 0:
         avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
