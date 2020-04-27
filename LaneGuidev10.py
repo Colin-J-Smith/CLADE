@@ -522,8 +522,9 @@ def create_intersection(intersection_edges, frame):
         avg_y = (int(quad4_int[1]) + int(quad4_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
         if intersection_state == 1:
-            if (AbsDistance <= 60) and (avg_y > 420):
+            if (AbsDistance <= 100) and (avg_y > 360):
                 int_count += 1
+                fail_safe_count += 1
                 with open(logfile, "a") as f:
                     print("FAILSAFE purple counted", file = f)
     with open(logfile, "a") as f:
