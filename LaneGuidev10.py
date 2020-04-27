@@ -540,9 +540,9 @@ def create_intersection(intersection_edges, frame):
                 print("intersection counter is ON! - Abs Distance =", AbsDistance, "center_line =", avg_y, file=f)
 
     #  Fail safe counter for tight intersections. If it misses the quad three this will back it up
-    elif len(quad4_int) > 0 and fail_safe_count == 0:
+    if len(quad4_int) > 0 and fail_safe_count == 0:
         avg_y = (int(quad4_int[1]) + int(quad4_int[3]))/2
-        AbsDistance = abs(avg_y - detection_lane)
+        AbsDistance = abs(avg_y - 360)
         if intersection_state == 1 or state1 == 1:
             if (AbsDistance <= 100) and (avg_y > 360):
                 int_count += 1
