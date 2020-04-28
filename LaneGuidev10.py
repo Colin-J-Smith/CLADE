@@ -512,7 +512,7 @@ def create_intersection(intersection_edges, frame):
               quad3_int, "q4:", quad4_int, file=f)
 
     if state1 == 2:
-        if forward_count > 4:
+        if forward_count > 6:
             intersection_state = 2
     elif lines is not None:
         if len(left_int) > 0 and 220 < left_int[1] < 300:
