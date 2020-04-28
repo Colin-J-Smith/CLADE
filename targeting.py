@@ -61,8 +61,8 @@ upper_red2 = np.array([180, 255, 255], dtype=int)
 target_threshold = 5000 # red area threshold to determine valid target
 tolX = 10               # tolerance for x "center" of image, in pixels
 tolY = 10               # tolerance for y "center" of image, in pixels
-offsetX = 25            # x-offset of center of image, in pixels
-offsetY = 30            # y-offset of center of image, in pixels
+offsetX = 22            # x-offset of center of image, in pixels
+offsetY = 15            # y-offset of center of image, in pixels
 
 # variables
 global target_write     # object, to write commands to
@@ -108,7 +108,7 @@ def target(target_write_input):
                 frame_bgr = cv2.merge([data0, data1, data2])
                 frame_bgr = cv2.flip(frame_bgr, 0)
                 processed_frame, is_aiming = process_image(frame_bgr)
-                cv2.imshow("targeting", processed_frame)
+                # cv2.imshow("targeting", processed_frame)
                 break
         
         if cv2.waitKey(1) == ord('q'):
