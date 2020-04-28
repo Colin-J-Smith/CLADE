@@ -532,7 +532,7 @@ def create_intersection(intersection_edges, frame):
             with open(logfile, "a") as f:
                 print("purple counted", file=f)
     with open(logfile, "a") as f:
-        print("intersection counter is ON! - Abs Distance =", AbsDistance, "center_line =", avg_y, file=f)
+        print("intersection counter is ON!")
 
     return slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int
 
