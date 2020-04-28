@@ -17,7 +17,6 @@ from datetime import datetime
 import sys
 from picamera.array import PiRGBArray
 from picamera import PiCamera
-71
 global turn
 global delay
 
@@ -30,7 +29,7 @@ initialized = False
 " State values modify which if statements the program runs through as it makes decisions"
 intersection_state = 0
 state1 = 0
-int_count = 1  # start at one for purposes of the "starting area"
+int_count = 0  # start at one for purposes of the "starting area"
 fail_safe_count = 0
 start_count = 0
 count_time = time.time()
@@ -194,15 +193,6 @@ def create_lanes(lane_edges, frame):
         detection_lane = 300  # may need to be tweaked
         # count the number of times a center line crosses the detection lane
         # two int_counts lets the robot know its in the center of an intersection
-        if intersection_state == 1:
-            avg_center_line = (int(center_line[1]) + int(center_line[3])) / 2
-            AbsDistance_center = abs(avg_center_line - detection_lane)
-            if AbsDistance_center <= 60:
-                int_count += 2
-                with open(logfile, "a") as f:
-                    print("yellow counted", file = f)
-            with open(logfile, "a") as f:
-                print("lane counter is ON! - Abs Distance =", AbsDistance_center, "center_line =", avg_center_line, file=f)
 
     return right_line, left_line, center_line
 
@@ -256,8 +246,10 @@ def navigation(frame, center_line, right_line, left_line):
     global delay
     global state1
     global intersection_state
+    global fail_safe_count
     global int_count
     global delay_180
+    global delay_90
 
     """ Navigation decision making script """
     center_recalibration = 0.95  # move the center point slightly left
@@ -265,18 +257,14 @@ def navigation(frame, center_line, right_line, left_line):
     mid = int((width / 2)*center_recalibration)
     nav_point_x = mid
 
-    if len(center_line) > 0:
-        center_length = abs(center_line[0] - center_line[3])
-    else:
-        center_length = 0
     # if no intersections are visible and there is a right, left, and center lane command a turn around (dead end)
     with open(logfile, "a") as f:
         print("C=", center_line, center_length, "L_l=", left_line, "R_l=", right_line, file=f)
-    if state1 == 0 and len(center_line) > 0 and center_length > 20 and \
-            (int(center_line[1]) + int(center_line[3])) / 2 > 200 and (len(right_line) > 0 or len(left_line) > 0):
+
+    if len(center_line) > 0 and abs(center_line[0] - center_line[3]) > 10 and (int(center_line[1]) + int(center_line[3])) / 2 > 300:
         with open(logfile, "a") as f:
-            print("turn around", file=f)
-        delay = delay_180
+            print("Yellow Line GO Left", file=f)
+        delay = delay_90
         turn = "<LLL>"
         start_turn = time.time()
         while int(time.time() - start_turn) < delay:
@@ -285,7 +273,9 @@ def navigation(frame, center_line, right_line, left_line):
         state1 = 0
         intersection_state = 0
         int_count = 0
+        fail_safe_count = 0
         command = "<FWD>"
+
     # guidance decisions for most normal situations - may need to add later movement based on testing
     elif len(right_line) > 0 and len(left_line) > 0:
         left_x2 = left_line[2]
@@ -333,9 +323,9 @@ def intersection_roi(frame):
     """ Define Region of Interest (ROI) for the intersection """
     # currently the full screen, but can be adjusted to filter further
     rows, cols = frame.shape[:2]
-    bottom_left = [cols * 0.1, rows * 1]
+    bottom_left = [cols * 0.0, rows * 1]
     top_left = [cols * 0.1, rows * 0.2]
-    bottom_right = [cols * 0.9, rows * 1]
+    bottom_right = [cols * 1, rows * 1]
     top_right = [cols * 0.9, rows * 0.2]
     intersection_vertices = np.array([[bottom_left, top_left, top_right, bottom_right]], dtype=np.int32)
     return intersection_vertices
@@ -511,19 +501,19 @@ def create_intersection(intersection_edges, frame):
     # after counting two lines, the robot is approximately in the center of the intersection,
     # intersection_state == 2....the robot sends a command to go left, straight, or right and resets all states to zero
     if state1 == 2:
-        if int_count >= 2:
+        if int_count >= 2:  #### this will go away or change
             intersection_state = 2
     elif lines is not None:
-        if len(left_int) > 0 and 200 < left_int[3] < 250:
+        if len(left_int) > 0 and 120 < left_int[3] < 250:
             state1 = 1
-        elif len(quad3_int) > 0 and 240 < quad3_int[1] < 300:
+        elif len(right_int) > 0 and 120 < right_int[1] < 250:
             state1 = 1
-        elif len(right_int) > 0 and 200 < right_int[1] < 250:
-            state1 = 1
+        # elif len(quad3_int) > 0 and 240 < quad3_int[1] < 300:
+            # state1 = 1
 
     # Count the number of horizontal intersection lines that pass through the detection lane at the bottom of the screen
     # by adding 1 to the int count
-    detection_lane = 250
+    detection_lane = 300
     if len(quad3_int) > 0:
         avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
@@ -567,20 +557,16 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
     global delay_90
     global delay_0
 
-    turn_left = 0
-    priority = turn_left
-
-    if len(right_int) > 0 and right_int[1] < 300:
+    if len(right_int) > 0 and right_int[1] < 360:
         turn = "<RRR>"
         delay = delay_90
         intersection_state = 1
-    elif (len(quad1_int) > 0 and len(quad2_int) > 0 and (abs(quad1_int[1] - quad2_int[1]) > 100)) or \
-            (len(quad1_int) > 0 and len(quad3_int) > 0) or (len(quad2_int) > 0 and
-                                                len(quad3_int) > 0 and (abs(quad2_int[1] - quad3_int[1]) > 100)):
+    elif (len(quad2_int) > 0 and len(quad3_int) > 0 and (abs(quad2_int[1] - quad3_int[1]) > 100)) or \
+            (len(quad2_int) > 0 and len(quad4_int) > 0):
         turn = "<FWD>"
         delay = delay_0
         intersection_state = 1
-    elif len(left_int) > 0:
+    elif len(left_int) > 0 and left_int[3] < 360:
         turn = "<LLL>"
         delay = delay_90
         intersection_state = 1
@@ -592,7 +578,7 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
             start_count += 1
         else:
             turn = "LLL"
-            delay = delay_180
+            delay = delay_90
             intersection_state = 1
     else:
         state1 = 0
