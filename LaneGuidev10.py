@@ -505,7 +505,7 @@ def create_intersection(intersection_edges, frame):
     # after counting two lines, the robot is approximately in the center of the intersection,
     # intersection_state == 2....the robot sends a command to go left, straight, or right and resets all states to zero
     if state1 == 2:
-        if forward_count > 3:
+        if forward_count > 4:
             intersection_state = 2
     elif lines is not None:
         if len(left_int) > 0 and 220 < left_int[1] < 360:
