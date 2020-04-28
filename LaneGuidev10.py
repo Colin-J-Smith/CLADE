@@ -266,8 +266,11 @@ def navigation(frame, center_line, right_line, left_line):
         with open(logfile, "a") as f:
             print("Yellow Line GO Left", file=f)
         delay = delay_90
-        turn = "<LLL>"
         start_turn = time.time()
+        if turn == "<LLL>" or turn == "<RRR>":
+            pass
+        else:
+            turn = "<LLL>"
         while int(time.time() - start_turn) < delay:
             command = turn
             msg(command)
