@@ -62,7 +62,7 @@ target_threshold = 5000 # red area threshold to determine valid target
 tolX = 10               # tolerance for x "center" of image, in pixels
 tolY = 10               # tolerance for y "center" of image, in pixels
 offsetX = 22            # x-offset of center of image, in pixels
-offsetY = 15            # y-offset of center of image, in pixels
+offsetY = 20            # y-offset of center of image, in pixels
 
 # variables
 global target_write     # object, to write commands to
@@ -165,6 +165,7 @@ def command_from_target_location(dx, dy):
         #print("up")
         send_msg(up, True)
     elif fire_ready:
+        time.sleep(.5)
         #print("firing")
         if time_since(fire_wait_start) < fire_delay:
             return
