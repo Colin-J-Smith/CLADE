@@ -504,6 +504,11 @@ def create_intersection(intersection_edges, frame):
     # navigate while counting purple and yellow lines that cross through a boundary line at the bottom of the screen.
     # after counting two lines, the robot is approximately in the center of the intersection,
     # intersection_state == 2....the robot sends a command to go left, straight, or right and resets all states to zero
+
+    with open(logfile, "a") as f:
+        print("L:", left_int, "R:", right_int, "q1", quad1_int, "q2", quad2_int,"q3:",
+              quad3_int, "q4:", quad4_int, file=f)
+
     if state1 == 2:
         if forward_count > 4:
             intersection_state = 2
@@ -518,21 +523,22 @@ def create_intersection(intersection_edges, frame):
     # Count the number of horizontal intersection lines that pass through the detection lane at the bottom of the screen
     # by adding 1 to the int count
     detection_lane = 300
-    if len(quad3_int) > 0:
-        avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
-        AbsDistance = abs(avg_y - detection_lane)
-        if intersection_state == 1 or state1 == 1:
-            if AbsDistance <= 60 and avg_y > detection_lane:
+    if state1 == 2:
+        if len(quad3_int) > 0:
+            avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
+            AbsDistance = abs(avg_y - detection_lane)
+            if intersection_state == 1 or state1 == 1:
+                if AbsDistance <= 60 and avg_y > detection_lane:
+                    int_count += 1
+                    with open(logfile, "a") as f:
+                        print("purple counted", file =f)
+        elif len(quad4_int) > 0:
+            if intersection_state == 1 or state1 == 1:
                 int_count += 1
                 with open(logfile, "a") as f:
-                    print("purple counted", file =f)
-    elif len(quad4_int) > 0:
-        if intersection_state == 1 or state1 == 1:
-            int_count += 1
-            with open(logfile, "a") as f:
-                print("purple counted", file=f)
-    with open(logfile, "a") as f:
-        print("intersection counter is ON!")
+                    print("purple counted", file=f)
+        with open(logfile, "a") as f:
+            print("intersection counter is ON!")
 
     return slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int
 
