@@ -251,6 +251,7 @@ def navigation(frame, center_line, right_line, left_line):
     global int_count
     global delay_180
     global delay_90
+    global forward_count
 
     """ Navigation decision making script """
     center_recalibration = 0.95  # move the center point slightly left
@@ -278,6 +279,7 @@ def navigation(frame, center_line, right_line, left_line):
         intersection_state = 0
         int_count = 0
         fail_safe_count = 0
+        forward_count = 0
         command = "<FWD>"
 
     # guidance decisions for most normal situations - may need to add later movement based on testing
@@ -513,9 +515,9 @@ def create_intersection(intersection_edges, frame):
         if forward_count > 4:
             intersection_state = 2
     elif lines is not None:
-        if len(left_int) > 0 and 220 < left_int[1] < 360:
+        if len(left_int) > 0 and 220 < left_int[1] < 300:
             state1 = 1
-        elif len(right_int) > 0 and 220 < right_int[3] < 360:
+        elif len(right_int) > 0 and 220 < right_int[3] < 300:
             state1 = 1
         # elif len(quad3_int) > 0 and 240 < quad3_int[1] < 300:
             # state1 = 1
@@ -538,7 +540,7 @@ def create_intersection(intersection_edges, frame):
                 with open(logfile, "a") as f:
                     print("purple counted", file=f)
         with open(logfile, "a") as f:
-            print("intersection counter is ON!")
+            print("intersection counter is ON!", file = f)
 
     return slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int
 
@@ -670,9 +672,10 @@ def main():
         int_count = 0
         fail_safe_count = 0
         start_count += 1
+        forward_count = 0
 
     with open(logfile, "a") as q:
-        print("intersection_state=", intersection_state, "state1=", state1,  file=q)
+        print("intersection_state=", intersection_state, "state1=", state1, "int count=", int_count, file=q)
     # show_test(lane_image)
 
     key_pressed = cv2.waitKey(1) & 0xFF          # Delay for key press to quit and frame rate (1 ms)
