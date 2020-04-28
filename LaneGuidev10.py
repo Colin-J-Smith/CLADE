@@ -38,6 +38,7 @@ nav_msg_size = 50
 
 right_int_count = 0
 left_int_count = 0
+forward_count = 0
 camera_init = 0
 
 # delay timers
@@ -501,12 +502,12 @@ def create_intersection(intersection_edges, frame):
     # after counting two lines, the robot is approximately in the center of the intersection,
     # intersection_state == 2....the robot sends a command to go left, straight, or right and resets all states to zero
     if state1 == 2:
-        if int_count >= 2:  #### this will go away or change
+        if forward_count > 3:
             intersection_state = 2
     elif lines is not None:
-        if len(left_int) > 0 and 120 < left_int[3] < 250:
+        if len(left_int) > 0 and 220 < left_int[1] < 360:
             state1 = 1
-        elif len(right_int) > 0 and 120 < right_int[1] < 250:
+        elif len(right_int) > 0 and 220 < right_int[3] < 360:
             state1 = 1
         # elif len(quad3_int) > 0 and 240 < quad3_int[1] < 300:
             # state1 = 1
@@ -514,34 +515,20 @@ def create_intersection(intersection_edges, frame):
     # Count the number of horizontal intersection lines that pass through the detection lane at the bottom of the screen
     # by adding 1 to the int count
     detection_lane = 300
-    if len(quad3_int) > 0:
+    if len(quad3_int) > 0 or len(quad4_int) > 0:
         avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
         if intersection_state == 1 or state1 == 1:
-            if AbsDistance <= 60 and avg_y > detection_lane and (time.time() - count_time > 3):
+            if AbsDistance <= 60 and avg_y > detection_lane:
                 int_count += 1
-                count_time = time.time()
-                fail_safe_count += 1
                 with open(logfile, "a") as f:
                     print("purple counted", file =f)
-                # filename_4 = '1count_image' + str(datetime.now()) + ".jpg"
-                # cv2.imwrite(filename_4, intersection_edges)
+            elif len(quad4_int) > 0:
+                int_count += 1
+                with open(logfile, "a") as f:
+                    print("purple counted", file=f)
             with open(logfile, "a") as f:
                 print("intersection counter is ON! - Abs Distance =", AbsDistance, "center_line =", avg_y, file=f)
-
-    #  Fail safe counter for tight intersections. If it misses the quad three this will back it up
-    if len(quad4_int) > 0 and fail_safe_count == 0:
-        avg_y = (int(quad4_int[1]) + int(quad4_int[3]))/2
-        AbsDistance = abs(avg_y - 360)
-        if intersection_state == 1 or state1 == 1:
-            if (AbsDistance <= 100) and (avg_y > 360):
-                int_count += 1
-                fail_safe_count += 1
-                with open(logfile, "a") as f:
-                    print("FAILSAFE purple counted", file = f)
-    with open(logfile, "a") as f:
-        print("L:", left_int, "R:", right_int, "q1", quad1_int, "q2", quad2_int,"q3:",
-              quad3_int, "q4:", quad4_int, file=f)
 
     return slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int
 
@@ -561,8 +548,9 @@ def guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad
         turn = "<RRR>"
         delay = delay_90
         intersection_state = 1
-    elif (len(quad2_int) > 0 and len(quad3_int) > 0 and (abs(quad2_int[1] - quad3_int[1]) > 100)) or \
-            (len(quad2_int) > 0 and len(quad4_int) > 0):
+    elif (len(quad1_int) > 0 and len(quad2_int) > 0 and (abs(quad2_int[1] - quad1_int[1]) > 50)) or \
+            (len(quad2_int) > 0 and len(quad3_int) > 0 and (abs(quad2_int[1] - quad3_int[1]) > 50)) or \
+            (len(quad3_int) > 0 and len(quad1_int) > 0) or (len(quad2_int) > 0 and len(quad4_int) > 0):
         turn = "<FWD>"
         delay = delay_0
         intersection_state = 1
@@ -602,6 +590,7 @@ def main():
     global fail_safe_count
     global camera
     global start_count
+    global forward_count
 
     # camera distortion corrections
     k = np.array([[243.48186479, 0., 305.08168044],
@@ -650,6 +639,9 @@ def main():
     elif intersection_state == 1:
         command = navigation(frame, center_line, right_line, left_line)
         msg(command)
+        if int_count > 0:
+            if command == "<FWD>":
+                forward_count += 1
         with open(logfile, "a") as q:
             print("drive", command, file=q)
             print("int count is:", int_count, file=q)
