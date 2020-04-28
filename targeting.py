@@ -58,7 +58,7 @@ lower_red2 = np.array([170, 100, 120], dtype=int)
 upper_red2 = np.array([180, 255, 255], dtype=int)
 
 # targeting callibration
-target_threshold = 5000 # red area threshold to determine valid target
+target_threshold = 4000 # red area threshold to determine valid target
 tolX = 10               # tolerance for x "center" of image, in pixels
 tolY = 10               # tolerance for y "center" of image, in pixels
 offsetX = 22            # x-offset of center of image, in pixels
