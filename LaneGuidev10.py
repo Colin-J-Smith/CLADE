@@ -146,10 +146,10 @@ def create_lanes(lane_edges, frame):
                 cv2.line(line_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
             else:
                 slope = (y2 - y1) / (x2 - x1)
-                if slope < 0:
+                if slope < -1/2:
                     left_fit.append((x1, y1, x2, y2))
                     cv2.line(line_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                elif slope > 0:
+                elif slope > 1/2:
                     right_fit.append((x1, y1, x2, y2))
                     cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 0), 2)
                 elif x1 < 300:
