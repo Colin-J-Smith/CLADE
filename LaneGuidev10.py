@@ -518,7 +518,7 @@ def create_intersection(intersection_edges, frame):
     # Count the number of horizontal intersection lines that pass through the detection lane at the bottom of the screen
     # by adding 1 to the int count
     detection_lane = 300
-    if len(quad3_int) > 0 or len(quad4_int) > 0:
+    if len(quad3_int) > 0:
         avg_y = (int(quad3_int[1]) + int(quad3_int[3]))/2
         AbsDistance = abs(avg_y - detection_lane)
         if intersection_state == 1 or state1 == 1:
@@ -526,12 +526,13 @@ def create_intersection(intersection_edges, frame):
                 int_count += 1
                 with open(logfile, "a") as f:
                     print("purple counted", file =f)
-            elif len(quad4_int) > 0:
-                int_count += 1
-                with open(logfile, "a") as f:
-                    print("purple counted", file=f)
+    elif len(quad4_int) > 0:
+        if intersection_state == 1 or state1 == 1:
+            int_count += 1
             with open(logfile, "a") as f:
-                print("intersection counter is ON! - Abs Distance =", AbsDistance, "center_line =", avg_y, file=f)
+                print("purple counted", file=f)
+    with open(logfile, "a") as f:
+        print("intersection counter is ON! - Abs Distance =", AbsDistance, "center_line =", avg_y, file=f)
 
     return slope, left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int
 
