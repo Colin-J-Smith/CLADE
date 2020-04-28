@@ -308,7 +308,7 @@ def navigation(frame, center_line, right_line, left_line):
             command = "<FWD>"
     elif len(right_line) > 0:
         right_x2 = right_line[0]
-        nav_point_x = int(right_x2 - 160)
+        nav_point_x = int(right_x2 - 140)
         if nav_point_x < int(mid):
             command = "<LLL>"
         elif right_line[2] < 340:
@@ -318,7 +318,7 @@ def navigation(frame, center_line, right_line, left_line):
     elif len(left_line) > 0:
         left_x2 = left_line[2]
         left_x1 = left_line[0]
-        nav_point_x = int(left_x2 + 160)
+        nav_point_x = int(left_x2 + 140)
         if nav_point_x > int(mid):
             command = "<RRR>"
         elif left_line[0] > 300:
