@@ -262,7 +262,7 @@ def navigation(frame, center_line, right_line, left_line):
     # if no intersections are visible and there is a right, left, and center lane command a turn around (dead end)
     with open(logfile, "a") as f:
         print("C=", center_line, "L_l=", left_line, "R_l=", right_line, file=f)
-    if state1 == 0 and len(center_line) > 0 and abs(center_line[0] - center_line[3]) > 20 and int(center_line[1]) + \
+    if state1 == 0 and len(center_line) > 0 and abs(center_line[0] - center_line[2]) > 20 and int(center_line[1]) + \
             int(center_line[3]) / 2 > 300 and len(right_line) > 0 and len(left_line) > 0:
         with open(logfile, "a") as f:
             print("Turn Around", file=f)
@@ -271,7 +271,7 @@ def navigation(frame, center_line, right_line, left_line):
         while int(time.time() - start_turn) < delay:
             command = turn
             msg(command)
-    elif len(center_line) > 0 and abs(center_line[0] - center_line[3]) > 10 and (int(center_line[1]) +
+    elif len(center_line) > 0 and abs(center_line[0] - center_line[2]) > 10 and (int(center_line[1]) +
                                                                                  int(center_line[3])) / 2 > 380:
         with open(logfile, "a") as f:
             print("Yellow Line GO Left", file=f)
