@@ -165,7 +165,7 @@ def command_from_target_location(dx, dy):
         #print("up")
         send_msg(up, True)
     elif fire_ready:
-        time.sleep(1)
+        #time.sleep(1)
         #print("firing")
         if time_since(fire_wait_start) < fire_delay:
             return
