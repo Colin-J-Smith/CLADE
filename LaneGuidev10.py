@@ -262,8 +262,8 @@ def navigation(frame, center_line, right_line, left_line):
     # if no intersections are visible and there is a right, left, and center lane command a turn around (dead end)
     with open(logfile, "a") as f:
         print("C=", center_line, "L_l=", left_line, "R_l=", right_line, file=f)
-    if state1 == 0 and len(center_line) > 0 and abs(center_line[0] - center_line[2]) > 20 and int(center_line[1]) + \
-            int(center_line[3]) / 2 > 300 and len(right_line) > 0 and len(left_line) > 0:
+    if state1 == 0 and len(center_line) > 0 and abs(center_line[0] - center_line[2]) > 20 and \
+            (int(center_line[1]) + int(center_line[3])) / 2 > 300 and len(right_line) > 0 and len(left_line) > 0:
         with open(logfile, "a") as f:
             print("Turn Around", file=f)
         delay = delay_180
@@ -362,7 +362,7 @@ def process_intersection(frame, intersection_vertices):
     # Convert image to grayscale and HSV, and filter out colors that aren't purple"
     gray = cv2.cvtColor(ROI, cv2.COLOR_BGR2GRAY)
     processed_hsv = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
-    lower_purple = np.array([130, 70, 80], dtype=int)
+    lower_purple = np.array([130, 80, 80], dtype=int)
     upper_purple = np.array([170, 255, 220], dtype=int)
     mask_purple = cv2.inRange(processed_hsv, lower_purple, upper_purple)
     processed = cv2.bitwise_and(gray, mask_purple)
@@ -417,7 +417,7 @@ def create_intersection(intersection_edges, frame):
             else:
                 slope = int((y2 - y1) / (x2 - x1))
 
-            if (y2 - 40) < y1 < (y2 + 40):
+            if (y2 - 20) < y1 < (y2 + 20):
                 horizontal_fit.append((x1, y1, x2, y2))
                 # cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 255), 2)
             elif slope < -1 / 2:
