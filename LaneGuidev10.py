@@ -271,16 +271,17 @@ def navigation(frame, center_line, right_line, left_line):
         while int(time.time() - start_turn) < delay:
             command = turn
             msg(command)
-    elif len(center_line) > 0 and abs(center_line[0] - center_line[2]) > 10 and (int(center_line[1]) +
-                                                                                 int(center_line[3])) / 2 > 380:
-        with open(logfile, "a") as f:
-            print("Yellow Line GO Left", file=f)
+    elif len(center_line) > 0 and abs(center_line[0] - center_line[2]) > 10 and \
+            (int(center_line[1]) + int(center_line[3])) / 2 > 380 \
+            and 200 < ((int(center_line[0]) + int(center_line[2])) /2) < 440:
         delay = delay_90
         start_turn = time.time()
         if turn == "<LLL>" or turn == "<RRR>":
             pass
         else:
             turn = "<LLL>"
+        with open(logfile, "a") as f:
+            print("Yellow Line GO", turn, file=f)
         while int(time.time() - start_turn) < delay:
             command = turn
             msg(command)
