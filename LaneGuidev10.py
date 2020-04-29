@@ -27,28 +27,28 @@ initialized = False
 
 # set initial state machine
 " State values modify which if statements the program runs through as it makes decisions"
-intersection_state = 0
-state1 = 0
-int_count = 0  # start at one for purposes of the "starting area"
-fail_safe_count = 0
-start_count = 0
-count_time = time.time()
+intersection_state = 0      # state machine input
+state1 = 0                  # state machine input
+int_count = 0               # state machine input
+fail_safe_count = 0         # state machine input
+start_count = 0             # state machine input
+count_time = time.time()    # timer
 nav_write = sys.stdout
-nav_msg_size = 50
+nav_msg_size = 50           # size of msg sent to arduino
 
-right_int_count = 0
-left_int_count = 0
-forward_count = 0
-camera_init = 0
+right_int_count = 0         # counter input
+left_int_count = 0          # counter input
+forward_count = 0           # counter input
+camera_init = 0             # counter input
 
 # delay timers
-delay_90 = 6
-delay_180 = 12
-delay_0 = 0
+delay_90 = 6                # delay for L and R turns
+delay_180 = 12              # delay for turn around
+delay_0 = 0                 # delay for FWD
 
 # create log file
 now = datetime.now()
-logfile = str("log") + str(now) + str(".txt")
+logfile = str("log") + str(now) + str(".txt")      # creates event log to track operation
 
 
 def nav(nav_write_input):
@@ -62,12 +62,12 @@ def nav(nav_write_input):
         camera.rotation = 180
         initialized = True
 
-    # # Uncomment to diable nav with testing turret
+    # # Uncomment to disable nav with testing turret
     # msg("<STP>")
     main()
 
 
-def msg(command):
+def msg(command):              # sends message to driver software
     global nav_write
     if nav_write == sys.stdout:
         print(command)
@@ -80,12 +80,12 @@ def lane_roi(frame):
     """Define a region of interest (polygon) for processing yellow lanes"""
     # Define Region of Interest (ROI)
     rows, cols = frame.shape[:2]
-    bottom_left = [cols * 0.00, rows * 1.00]
-    mid_left = [cols * 0.00, rows * 0.7]
-    top_left = [cols * 0.0, rows * 0.20]
-    top_right = [cols * 1, rows * 0.20]
-    mid_right = [cols * 1.0, rows * 0.7]
-    bottom_right = [cols * 1.00, rows * 1.00]
+    bottom_left = [cols * 0.00, rows * 1.00]        # bottom left corner of ROI
+    mid_left = [cols * 0.00, rows * 0.7]            # mid left corner of ROI
+    top_left = [cols * 0.0, rows * 0.20]            # top left corner of ROI
+    top_right = [cols * 1, rows * 0.20]             # top right corner of ROI
+    mid_right = [cols * 1.0, rows * 0.7]            # mid right corner of ROI
+    bottom_right = [cols * 1.00, rows * 1.00]       # bottom right corner of ROI
 
     lane_vertices = np.array([[bottom_left, mid_left, top_left, top_right, mid_right, bottom_right]], dtype=np.int32)
     return lane_vertices
@@ -95,31 +95,31 @@ def process_lanes(frame, lane_vertices):
     """ Process yellow lane lines using a series of open cv modules"""
     mask = np.zeros_like(frame)
     if len(mask.shape) == 2:
-        cv2.fillPoly(mask, lane_vertices, 255)
+        cv2.fillPoly(mask, lane_vertices, 255)      # create a mask in the shape of the ROI
     else:
         # In case the input image has a channel dimension
         cv2.fillPoly(mask, lane_vertices, (255,) * mask.shape[2])
 
-    ROI = cv2.bitwise_and(frame, mask)
+    ROI = cv2.bitwise_and(frame, mask)              # crop the image to only show the ROI area
 
     # Convert image to grayscale and HSV, and filter out colors that aren't yellow
-    grey = cv2.cvtColor(ROI, cv2.COLOR_BGR2GRAY)
-    processed_hsv = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
-    lower_yellow = np.array([10, 30, 130], dtype=int)
-    upper_yellow = np.array([40, 255, 255], dtype=int)
-    mask_yellow = cv2.inRange(processed_hsv, lower_yellow, upper_yellow)
-    processed = cv2.bitwise_and(grey, mask_yellow)
+    grey = cv2.cvtColor(ROI, cv2.COLOR_BGR2GRAY)                            # convert to grey
+    processed_hsv = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)                    # convert to HSV
+    lower_yellow = np.array([10, 30, 130], dtype=int)                       # lower HSV boundary for yellow
+    upper_yellow = np.array([40, 255, 255], dtype=int)                      # upper HSV boundary for yellow
+    mask_yellow = cv2.inRange(processed_hsv, lower_yellow, upper_yellow)    # yellow mask
+    processed = cv2.bitwise_and(grey, mask_yellow)                          # image with only yellow
 
     # Smooth the Image for processing. Kernel size must be odd. Larger kernel size means more processing
     kernel_size = 3
 
-    processed = cv2.GaussianBlur(processed, (kernel_size, kernel_size), 0)
+    processed = cv2.GaussianBlur(processed, (kernel_size, kernel_size), 0)  # slightly blurred image
 
     # detect edges in the image
-    low_threshold = 50
-    high_threshold = 150
+    low_threshold = 50                  # lower threshold for edge detection
+    high_threshold = 150                # upper threshold for edge detection
 
-    lane_edges = cv2.Canny(processed, low_threshold, high_threshold)
+    lane_edges = cv2.Canny(processed, low_threshold, high_threshold)        # lane edges image
     return lane_edges
 
 
