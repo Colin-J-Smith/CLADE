@@ -151,14 +151,14 @@ void goRight() {
 
 void goUp() {
   if (posE < limE) {
-    stepperE.step(1);
+    stepperE.step(5);
     posE += 1;
   }
 }
 
 void goDown() {
   if (-posE < limE) {
-    stepperE.step(-1);
+    stepperE.step(-5);
     posE += -1;
   }
 }
