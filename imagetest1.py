@@ -73,7 +73,6 @@ high_threshold = 130
 
 intersection_edges = cv2.Canny(processed, low_threshold, high_threshold)
 
-
 filename = '1edge_image' + str(datetime.now()) + ".jpg"
 cv2.imwrite(filename, intersection_edges)
 filename = '1processed_image' + str(datetime.now()) + ".jpg"
@@ -82,3 +81,141 @@ filename = '1HSV_image' + str(datetime.now()) + ".jpg"
 cv2.imwrite(filename, processed_hsv)
 filename = '1frame_image' + str(datetime.now()) + ".jpg"
 cv2.imwrite(filename, frame)
+
+# for report
+# Hough Lines for intersection
+lines = cv2.HoughLinesP(intersection_edges, rho=1, theta=np.pi / 360, threshold=50, minLineLength=60, maxLineGap=70)
+line_image = np.zeros_like(frame)
+
+# Create Main Lines by averaging all detected hough lines for intersection
+left_fit = []
+right_fit = []
+horizontal_fit = []
+quad1 = []
+quad2 = []
+quad3 = []
+quad4 = []
+slope = []
+if lines is not None:
+    for line in lines:
+        x1, y1, x2, y2 = line.reshape(4)
+        if (x1 - 5) < x2 < (x1 + 5):
+            slope = 0
+            pass
+        else:
+            slope = int((y2 - y1) / (x2 - x1))
+
+        if (y2 - 40) < y1 < (y2 + 40):
+            horizontal_fit.append((x1, y1, x2, y2))
+            cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 255), 2)
+        elif slope < -1 / 2:
+            left_fit.append((x1, y1, x2, y2))
+            cv2.line(line_image, (x1, y1), (x2, y2), (255, 255, 0), 2)
+
+        elif slope > 1 / 2:
+            right_fit.append((x1, y1, x2, y2))
+            cv2.line(line_image, (x1, y1), (x2, y2), (0, 255, 255), 2)
+
+        else:
+            horizontal_fit.append((x1, y1, x2, y2))
+            cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 255), 2)
+
+
+else:
+    pass
+# Average horizontal lines into four quadrants
+if len(horizontal_fit) > 0:
+    for [x1, y1, x2, y2] in horizontal_fit:
+        if 0 < ((int(y1) + int(y2)) / 2) <= 120:
+            quad1.append((x1, y1, x2, y2))
+        elif 120 < ((int(y1) + int(y2)) / 2) <= 240:
+            quad2.append((x1, y1, x2, y2))
+        elif 240 < ((int(y1) + int(y2)) / 2) <= 360:
+            quad3.append((x1, y1, x2, y2))
+        else:
+            quad4.append((x1, y1, x2, y2))
+
+left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int = [], [], [], [], [], []
+
+if len(left_fit) > 0:
+    left_fit_avg = np.average(left_fit, axis=0)
+    x1 = int(left_fit_avg[0])
+    y1 = int(left_fit_avg[1])
+    x2 = int(left_fit_avg[2])
+    y2 = int(left_fit_avg[3])
+    left_int = [x1, y1, x2, y2]
+
+left_int = np.array(left_int)
+
+if len(right_fit) > 0:
+    right_fit_avg = np.average(right_fit, axis=0)
+    x1 = int(right_fit_avg[0])
+    y1 = int(right_fit_avg[1])
+    x2 = int(right_fit_avg[2])
+    y2 = int(right_fit_avg[3])
+    right_int = [x1, y1, x2, y2]
+
+right_int = np.array(right_int)
+
+if len(quad1) > 0:
+    quad1_avg = np.average(quad1, axis=0)
+    x1 = int(quad1_avg[0])
+    y1 = int(quad1_avg[1])
+    x2 = int(quad1_avg[2])
+    y2 = int(quad1_avg[3])
+    quad1_int = [x1, y1, x2, y2]
+quad1_int = np.array(quad1_int)
+
+if len(quad2) > 0:
+    quad2_avg = np.average(quad2, axis=0)
+    x1 = int(quad2_avg[0])
+    y1 = int(quad2_avg[1])
+    x2 = int(quad2_avg[2])
+    y2 = int(quad2_avg[3])
+    quad2_int = [x1, y1, x2, y2]
+quad2_int = np.array(quad2_int)
+
+if len(quad3) > 0:
+    quad3_avg = np.average(quad3, axis=0)
+    x1 = int(quad3_avg[0])
+    y1 = int(quad3_avg[1])
+    x2 = int(quad3_avg[2])
+    y2 = int(quad3_avg[3])
+    quad3_int = [x1, y1, x2, y2]
+quad3_int = np.array(quad3_int)
+
+if len(quad4) > 0:
+    quad4_avg = np.average(quad4, axis=0)
+    x1 = int(quad4_avg[0])
+    y1 = int(quad4_avg[1])
+    x2 = int(quad4_avg[2])
+    y2 = int(quad4_avg[3])
+    quad4_int = [x1, y1, x2, y2]
+quad4_int = np.array(quad4_int)
+
+thickness = 10
+lane_image = np.zeros_like(frame)
+if len(left_int) > 0:
+    x1, y1, x2, y2 = left_int.reshape(4)
+    cv2.line(lane_image, (x1, y1), (x2, y2), [255, 255, 0], thickness)
+if len(right_int) > 0:
+    x1, y1, x2, y2 = right_int.reshape(4)
+    cv2.line(lane_image, (x1, y1), (x2, y2), [255, 0, 255], thickness)
+if len(quad1_int) > 0:
+    x1, y1, x2, y2 = quad1_int.reshape(4)
+    cv2.line(lane_image, (x1, y1), (x2, y2), [255, 255, 255], thickness)
+if len(quad2_int) > 0:
+    x1, y1, x2, y2 = quad2_int.reshape(4)
+    cv2.line(lane_image, (x1, y1), (x2, y2), [200, 200, 200], thickness)
+if len(quad3_int) > 0:
+    x1, y1, x2, y2 = quad3_int.reshape(4)
+    cv2.line(lane_image, (x1, y1), (x2, y2), [120, 120, 120], thickness)
+if len(quad4_int) > 0:
+    x1, y1, x2, y2 = quad4_int.reshape(4)
+    cv2.line(lane_image, (x1, y1), (x2, y2), [80, 80, 80], thickness)
+
+filename = '1line_image' + str(datetime.now()) + ".jpg"
+cv2.imwrite(filename, line_image)
+
+filename = '1lane_image' + str(datetime.now()) + ".jpg"
+cv2.imwrite(filename, lane_image)
