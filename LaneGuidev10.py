@@ -342,7 +342,7 @@ def intersection_roi(frame):
     bottom_left = [cols * 0.0, rows * 1]
     top_left = [cols * 0.0, rows * 0.0]
     bottom_right = [cols * 1, rows * 1]
-    top_right = [cols * 0.0, rows * 0.0]
+    top_right = [cols * 0.0, rows * 1.0]
     intersection_vertices = np.array([[bottom_left, top_left, top_right, bottom_right]], dtype=np.int32)
     return intersection_vertices
 
