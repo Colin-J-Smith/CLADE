@@ -84,32 +84,33 @@ def target(target_write_input):
     
     # global writer initialization
     target_write = target_write_input
+    send_msg(home)
 
-    is_aiming = True
-    while is_aiming:
+    #is_aiming = True
+    #while is_aiming:
 
         # get camera data
-        data_packets = camera.get_available_data_packets()
+        #data_packets = camera.get_available_data_packets()
 
         # continous command timer (currently not sending continuous)
-        if sending_cmd and time_since(cmd_start) < cmd_timeout:
-            send_msg(last_cmd)
+        #if sending_cmd and time_since(cmd_start) < cmd_timeout:
+            #send_msg(last_cmd)
             continue
-        else:
-            sending_cmd = False
+        #else:
+            #sending_cmd = False
         
         # image processing
-        for packet in data_packets:
-            if packet.stream_name == 'previewout':
-                data = packet.getData() # [Height, Width, Channel]
-                data0 = data[0,:,:]
-                data1 = data[1,:,:]
-                data2 = data[2,:,:]
-                frame_bgr = cv2.merge([data0, data1, data2])
-                frame_bgr = cv2.flip(frame_bgr, 0)
+        #for packet in data_packets:
+            #if packet.stream_name == 'previewout':
+                #data = packet.getData() # [Height, Width, Channel]
+                #data0 = data[0,:,:]
+                #data1 = data[1,:,:]
+                #data2 = data[2,:,:]
+                #frame_bgr = cv2.merge([data0, data1, data2])
+                #frame_bgr = cv2.flip(frame_bgr, 0)
                 processed_frame, is_aiming = process_image(frame_bgr)
                 #cv2.imshow("targeting", processed_frame)
-                break
+                #break
         
         if cv2.waitKey(1) == ord('q'):
             break
