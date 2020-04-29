@@ -340,9 +340,9 @@ def intersection_roi(frame):
     # currently the full screen, but can be adjusted to filter further
     rows, cols = frame.shape[:2]
     bottom_left = [cols * 0.0, rows * 1]
-    top_left = [cols * 0.0, rows * 0.0]
+    top_left = [cols * 0.0, rows * 0.1]
     bottom_right = [cols * 1, rows * 1]
-    top_right = [cols * 1.0, rows * 0]
+    top_right = [cols * 1.0, rows * 0.1]
     intersection_vertices = np.array([[bottom_left, top_left, top_right, bottom_right]], dtype=np.int32)
     return intersection_vertices
 
@@ -363,7 +363,7 @@ def process_intersection(frame, intersection_vertices):
     # Convert image to grayscale and HSV, and filter out colors that aren't purple"
     gray = cv2.cvtColor(ROI, cv2.COLOR_BGR2GRAY)
     processed_hsv = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
-    lower_purple = np.array([130, 80, 80], dtype=int)
+    lower_purple = np.array([130, 85, 85], dtype=int)
     upper_purple = np.array([170, 255, 220], dtype=int)
     mask_purple = cv2.inRange(processed_hsv, lower_purple, upper_purple)
     processed = cv2.bitwise_and(gray, mask_purple)
