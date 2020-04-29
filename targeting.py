@@ -112,8 +112,8 @@ def target(target_write_input):
                 #cv2.imshow("targeting", processed_frame)
                 #break
         
-        if cv2.waitKey(1) == ord('q'):
-            break
+        #if cv2.waitKey(1) == ord('q'):
+            #break
 
 
 def send_msg(command, start_continuous=False):
