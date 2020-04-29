@@ -57,7 +57,7 @@ ROI = cv2.bitwise_and(frame, mask)
 # Convert image to grayscale and HSV, and filter out colors that aren't purple"
 gray = cv2.cvtColor(ROI, cv2.COLOR_BGR2GRAY)
 processed_hsv = cv2.cvtColor(ROI, cv2.COLOR_BGR2HSV)
-lower_purple = np.array([130, 70, 80], dtype=int)
+lower_purple = np.array([130, 80, 80], dtype=int)
 upper_purple = np.array([170, 255, 220], dtype=int)
 mask_purple = cv2.inRange(processed_hsv, lower_purple, upper_purple)
 processed = cv2.bitwise_and(gray, mask_purple)
