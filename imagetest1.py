@@ -36,10 +36,10 @@ frame = cv2.remap(raw_frame, map_x, map_y, cv2.INTER_LINEAR)
 """ Define Region of Interest (ROI) for the intersection """
 # currently the full screen, but can be adjusted to filter further
 rows, cols = frame.shape[:2]
-bottom_left = [cols * 0.1, rows * 1]
-top_left = [cols * 0.1, rows * 0.0]
-bottom_right = [cols * 0.9, rows * 1]
-top_right = [cols * 0.9, rows * 0.0]
+bottom_left = [cols * 0.0, rows * 1]
+top_left = [cols * 0.0, rows * 0.0]
+bottom_right = [cols * 1, rows * 1]
+top_right = [cols * 1, rows * 0.0]
 intersection_vertices = np.array([[bottom_left, top_left, top_right, bottom_right]], dtype=np.int32)
 
 """ filter the region of interest (ROI) for the intersection using open cv modules"""
@@ -117,8 +117,9 @@ if lines is not None:
             cv2.line(line_image, (x1, y1), (x2, y2), (0, 255, 255), 2)
 
         else:
-            horizontal_fit.append((x1, y1, x2, y2))
-            cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 255), 2)
+            pass
+            #horizontal_fit.append((x1, y1, x2, y2))
+            #cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 255), 2)
 
 
 else:
