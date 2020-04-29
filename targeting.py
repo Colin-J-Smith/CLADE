@@ -95,7 +95,7 @@ def target(target_write_input):
         # continous command timer (currently not sending continuous)
         #if sending_cmd and time_since(cmd_start) < cmd_timeout:
             #send_msg(last_cmd)
-            continue
+            #continue
         #else:
             #sending_cmd = False
         
