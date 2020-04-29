@@ -105,7 +105,7 @@ if lines is not None:
         else:
             slope = int((y2 - y1) / (x2 - x1))
 
-        if (y2 - 40) < y1 < (y2 + 40):
+        if (y2 - 20) < y1 < (y2 + 20) and abs(x2 - x1) > 30:
             horizontal_fit.append((x1, y1, x2, y2))
             cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 255), 2)
         elif slope < -1 / 2:
