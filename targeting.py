@@ -62,7 +62,7 @@ target_threshold = 3000 # red area threshold to determine valid target
 tolX = 10               # tolerance for x "center" of image, in pixels
 tolY = 10               # tolerance for y "center" of image, in pixels
 offsetX = 22            # x-offset of center of image, in pixels
-offsetY = 20            # y-offset of center of image, in pixels
+offsetY = 35            # y-offset of center of image, in pixels
 
 # variables
 global target_write     # object, to write commands to
