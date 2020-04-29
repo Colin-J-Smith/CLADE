@@ -47,8 +47,9 @@ def driver():
         tur_write = sys.stdout
         print("test output")
     else:
-        tur_write = serial.Serial(port=arduino_port_tur, baudrate=arduino_baudrate_tur)
+        #tur_write = serial.Serial(port=arduino_port_tur, baudrate=arduino_baudrate_tur)
         mtr_write = serial.Serial(port=arduino_port_mtr, baudrate=arduino_baudrate_mtr)
+        tur_write = sys.stdout
         print("HW output")
 
     # Run navigation and targeting frame by frame. If navigation is turning, it
