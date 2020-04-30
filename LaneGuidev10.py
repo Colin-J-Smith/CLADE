@@ -1,13 +1,7 @@
 # LaneGuidance Software
 # Version: 10!
 # Date Created: 2 Mar 2020
-# Last Modified: 21 April 2020
-# Updates this version: 
-# Navigation is ON through the intersection. 
-# Dead end logic is ON. 
-# Opening logic adjusted (starts at int_count =1). 
-# Intersection logic updated to allow for tight intersection areas
-
+# Last Modified: 29 April 2020
 
 # setup
 import cv2
@@ -17,6 +11,7 @@ from datetime import datetime
 import sys
 from picamera.array import PiRGBArray
 from picamera import PiCamera
+
 global turn
 global delay
 
@@ -51,15 +46,15 @@ now = datetime.now()
 logfile = str("log") + str(now) + str(".txt")      # creates event log to track operation
 
 
-def nav(nav_write_input):
+def nav(nav_write_input):                          # Interface with Driver software
     global nav_write, camera, initialized
     nav_write = nav_write_input
     
     # initialize the camera
     if not initialized:
         camera = PiCamera()
-        camera.resolution = (640, 480)
-        camera.rotation = 180
+        camera.resolution = (640, 480)              # use 640 x 480 resolution
+        camera.rotation = 180                       # rotate camera (mounted upside down)
         initialized = True
 
     # # Uncomment to disable nav with testing turret
@@ -67,7 +62,7 @@ def nav(nav_write_input):
     main()
 
 
-def msg(command):              # sends message to driver software
+def msg(command):                                   # sends message to driver software
     global nav_write
     if nav_write == sys.stdout:
         print(command)
@@ -141,28 +136,29 @@ def create_lanes(lane_edges, frame):
     if lines is not None:
         for line in lines:
             x1, y1, x2, y2 = line.reshape(4)
-            if (y2 - 50) < y1 < (y2 + 50):
-                center_fit.append((x1, y1, x2, y2))
-                cv2.line(line_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
+            if (y2 - 50) < y1 < (y2 + 50):                                      # center line category
+                center_fit.append((x1, y1, x2, y2))                             # append center line directory
+                cv2.line(line_image, (x1, y1), (x2, y2), (0, 0, 255), 2)        # draw line on line image
             else:
                 slope = (y2 - y1) / (x2 - x1)
-                if slope < -1/2:
+
+                if slope < -1/2:                                                # left lane category
                     left_fit.append((x1, y1, x2, y2))
                     cv2.line(line_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                elif slope > 1/2:
+                elif slope > 1/2:                                               # right lane category
                     right_fit.append((x1, y1, x2, y2))
                     cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 0), 2)
-                elif x1 < 300:
+                elif x1 < 300:                                                  # left lane category
                     left_fit.append((x1, y1, x2, y2))
                     cv2.line(line_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                elif x1 > 340:
+                elif x1 > 340:                                                  # right lane category
                     right_fit.append((x1, y1, x2, y2))
                     cv2.line(line_image, (x1, y1), (x2, y2), (255, 0, 0), 2)
-                else:
+                else:                                                           # if it doesn't fit any of these pass
                     pass
 
     left_line, right_line, center_line = [], [], []
-    if len(left_fit) > 0:
+    if len(left_fit) > 0:                                                       # average left lines
         left_fit_avg = np.average(left_fit, axis=0)
         x1 = int(left_fit_avg[0])
         y1 = int(left_fit_avg[1])
@@ -171,7 +167,7 @@ def create_lanes(lane_edges, frame):
         left_line = [x1, y1, x2, y2]
         left_line = np.array(left_line)
 
-    if len(right_fit) > 0:
+    if len(right_fit) > 0:                                                      # average right lines
         right_fit_avg = np.average(right_fit, axis=0)
         x1 = int(right_fit_avg[0])
         y1 = int(right_fit_avg[1])
@@ -180,7 +176,7 @@ def create_lanes(lane_edges, frame):
         right_line = [x1, y1, x2, y2]
         right_line = np.array(right_line)
 
-    if len(center_fit) > 0:
+    if len(center_fit) > 0:                                                     # average center lines
         center_fit_avg = np.average(center_fit, axis=0)
         x1 = int(center_fit_avg[0])
         y1 = int(center_fit_avg[1])
@@ -189,15 +185,9 @@ def create_lanes(lane_edges, frame):
         center_line = [x1, y1, x2, y2]
         center_line = np.array(center_line)
 
-        # this is a detection lane at 400 pixels down from the top of the screen (out of 480) that will assist counting
-        # when a center line crosses
-        detection_lane = 300  # may need to be tweaked
-        # count the number of times a center line crosses the detection lane
-        # two int_counts lets the robot know its in the center of an intersection
-
     return right_line, left_line, center_line
 
-
+# this function draws lanes on the lane image - used in testing but not in final to save CPU
 def draw_lanes(frame, right_line, left_line, center_line, left_int, right_int, quad1_int, quad2_int, quad3_int,
                quad4_int):
     # draw lane lines
@@ -235,7 +225,7 @@ def draw_lanes(frame, right_line, left_line, center_line, left_int, right_int, q
 
     return lane_image
 
-
+# displays images on screen - used in testing, not in final to save CPU
 def show_test(lane_image):
     """ displays picture with lanes and intersections - for testing/visualization purposes only """
     cv2.namedWindow('lanes', cv2.WINDOW_AUTOSIZE)  # create a window
@@ -254,14 +244,16 @@ def navigation(frame, center_line, right_line, left_line):
     global forward_count
 
     """ Navigation decision making script """
-    center_recalibration = 0.95  # move the center point slightly left
-    height, width, _ = frame.shape
-    mid = int((width / 2)*center_recalibration)
+    center_recalibration = 0.95                                 # move the center point slightly left
+    height, width, _ = frame.shape                              # take h, w based on frame size
+    mid = int((width / 2)*center_recalibration)                 # middle of screen
     nav_point_x = mid
 
-    # if no intersections are visible and there is a right, left, and center lane command a turn around (dead end)
+
     with open(logfile, "a") as f:
         print("C=", center_line, "L_l=", left_line, "R_l=", right_line, file=f)
+
+    # if no intersections are visible and there is a right, left, and center lane command a turn around (dead end)
     if state1 == 0 and len(center_line) > 0 and abs(center_line[0] - center_line[2]) > 20 and \
             (int(center_line[1]) + int(center_line[3])) / 2 > 300 and len(right_line) > 0 and len(left_line) > 0:
         with open(logfile, "a") as f:
@@ -285,7 +277,7 @@ def navigation(frame, center_line, right_line, left_line):
         while int(time.time() - start_turn) < delay:
             command = turn
             msg(command)
-        state1 = 0
+        state1 = 0                                      # reset states
         intersection_state = 0
         int_count = 0
         fail_safe_count = 0
@@ -331,7 +323,6 @@ def navigation(frame, center_line, right_line, left_line):
             print("no lines detected - drive straight", file=f)
         command = "<FWD>"
 
-    # cv2.line(lane_image, (mid, height), (nav_point_x, int(height/2)), [0, 255, 255], 10)
     return command
 
 
@@ -647,8 +638,6 @@ def main():
     if state1 == 1:
         # make a guidance decision
         guidance_decision(left_int, right_int, quad1_int, quad2_int, quad3_int, quad4_int)
-        #filename_2 = '1edge_image' + str(datetime.now()) + ".jpg"
-        #cv2.imwrite(filename_2, intersection_edges)
         filename_4 = '1processed_image' + str(time.time()) + ".jpg"
         cv2.imwrite(filename_4, processed)
         #command = navigation(frame, center_line, right_line, left_line)
